@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pro Notary Seal Application</title>
+    <!-- Icons and Libraries -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f2f5; height: 100vh; display: flex; overflow: hidden; }
+
+        /* Sidebar Styles */
+        #sidebar {
+            width: 320px; background: #1e293b; color: #fff; display: flex; flex-direction: column; box-shadow: 2px 0 10px rgba(0,0,0,0.2);
+        }
+        .sidebar-header { padding: 20px; background: #0f172a; border-bottom: 2px solid #38bdf8; }
+        .sidebar-header h2 { font-size: 18px; color: #38bdf8; }
+        
+        .upload-section { padding: 20px; border-bottom: 1px solid #334155; }
+        .upload-btn {
+            display: block; width: 100%; padding: 15px; background: #38bdf8; color: #000; text-align: center;
+            font-weight: bold; border-radius: 8px; cursor: pointer; transition: 0.3s;
+        }
+        .upload-btn:hover { background: #7dd3fc; }
+        
+        .seal-folders { padding: 20px; overflow-y: auto; flex: 1; }
+        .folder-title { font-size: 14px; font-weight: bold; color: #94a3b8; margin: 15px 0 10px; text-transform: uppercase; letter-spacing: 1px; }
+        .seal-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
+        
+        .seal-item {
+            background: #fff; border-radius: 10px; padding: 10px; display: flex; justify-content: center; align-items: center;
+            cursor: pointer; aspect-ratio: 1; transition: 0.3s; border: 2px solid transparent;
+        }
+        .seal-item:hover { border-color: #38bdf8; transform: scale(1.05); }
+        .seal-item img { max-width: 90%; max-height: 90%; object-fit: contain; }
+
+        /* Main Canvas */
+        #main-area { flex: 1; display: flex; flex-direction: column; background: #e2e8f0; position: relative; }
+        #pdf-pagination { background: #fff; padding: 10px; display: flex; justify-content: center; align-items: center; gap: 20px; border-bottom: 1px solid #cbd5e1; display: none; }
+        #pdf-pagination button { padding: 5px 15px; border: none; background: #0f172a; color: #fff; border-radius: 5px; cursor: pointer; }
+        
+        #canvas-scroll-area { flex: 1; overflow: auto; display: flex; justify-content: center; padding: 20px; }
+        
+        /* A4 Page */
+        #a4-page {
+            width: 794px; height: 1123px; background: #fff; box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            position: relative; overflow: hidden; flex-shrink: 0;
+        }
+        
+        /* Uploaded Content */
+        #uploaded-content { width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; }
+        #uploaded-content img, #uploaded-content canvas { max-width: 100%; max-height: 100%; object-fit: contain; }
+
+        /* Seal Overlay */
+        .seal-overlay {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            cursor: move; user-select: none; z-index: 10; box-shadow: 0 0 0 1px rgba(0,0,0,0.1);
+        }
+        .seal-overlay img { pointer-events: none; width: 100%; height: 100%; }
+
+        /* Floating Seal Toolbar */
+        #seal-toolbar {
+            position: absolute; background: #0f172a; color: #fff; border-radius: 8px; padding: 10px;
+            display: none; align-items: center; gap: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.4); z-index: 100;
+            transform: translate(-50%, -150%);
+        }
+        #seal-toolbar button {
+            background: none; border: none; color: #fff; cursor: pointer; font-size: 16px;
+            width: 30px; height: 30px; border-radius: 5px; transition: 0.2s; display: flex; justify-content: center; align-items: center;
+        }
+        #seal-toolbar button:hover { background: #38bdf8; color: #000; }
+        #seal-toolbar .btn-danger:hover { background: #ef4444; color: #fff; }
+        .toolbar-section { display: flex; align-items: center; gap: 5px; padding-right: 10px; border-right: 1px solid #334155; }
+        .toolbar-section:last-child { border-right: none; }
+
+        /* Floating Action Buttons (Download/Print) */
+        #action-buttons {
+            position: fixed; bottom: 20px; right: 20px; background: #0f172a; padding: 10px;
+            border-radius: 10px; display: flex; gap: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        #action-buttons button { padding: 12px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 14px; }
+        .btn-download { background: #10b981; color: #fff; }
+        .btn-print { background: #f59e0b; color: #fff; }
+        .btn-clear { background: #ef4444; color: #fff; }
+
+        #loading { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #fff; padding: 20px; border-radius: 50%; box-shadow: 0 4px 15px rgba(0,0,0,0.2); z-index: 200; }
+
+        @media print {
+            body * { visibility: hidden; }
+            #a4-page, #a4-page * { visibility: visible; }
+            #a4-page { position: absolute; left: 0; top: 0; box-shadow: none; transform: none; }
+            #sidebar, #action-buttons, #seal-toolbar, #pdf-pagination { display: none !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Loading Spinner -->
+    <div id="loading"><i class="fas fa-circle-notch fa-spin fa-3x" style="color:#38bdf8;"></i></div>
+
+    <!-- Sidebar -->
+    <div id="sidebar">
+        <div class="sidebar-header">
+            <h2><i class="fas fa-stamp"></i> প্রফেশনাল নোটারি অ্যাপ</h2>
+        </div>
+
+        <div class="upload-section">
+            <label for="file-upload" class="upload-btn"><i class="fas fa-upload"></i> ফাইল/PDF আপলোড করুন</label>
+            <input id="file-upload" type="file" accept="application/pdf,image/*" onchange="handleFileUpload(event)">
+        </div>
+
+        <div class="seal-folders">
+            <div class="folder-title"><i class="far fa-folder-open"></i> নোটারি ফোল্ডার</div>
+            <div class="seal-container">
+                <div class="seal-item" onclick="addSeal('seal1')">
+                    <!-- আপনার সিলের ইমেজ সোর্স এখানে বসান -->
+                    <img src="https://i.ibb.co/5G9Y4m0/seal1.png" alt="Seal 1">
+                </div>
+                <div class="seal-item" onclick="addSeal('seal2')">
+                    <img src="https://i.ibb.co/5G9Y4m0/seal1.png" alt="Seal 2">
+                </div>
+                <div class="seal-item" onclick="addSeal('seal3')">
+                    <img src="https://i.ibb.co/5G9Y4m0/seal1.png" alt="Seal 3">
+                </div>
+            </div>
+            
+            <div class="folder-title"><i class="far fa-folder-open"></i> অন্যান্য সিল</div>
+            <div class="seal-container">
+                <div class="seal-item" onclick="addSeal('seal4')">
+                    <img src="https://i.ibb.co/5G9Y4m0/seal1.png" alt="Seal 4">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Area -->
+    <div id="main-area">
+        <div id="pdf-pagination">
+            <button onclick="prevPage()"><i class="fas fa-chevron-left"></i> আগের পেজ</button>
+            <span id="page-num">পেজ ১ / ১</span>
+            <button onclick="nextPage()">পরের পেজ <i class="fas fa-chevron-right"></i></button>
+        </div>
+
+        <div id="canvas-scroll-area">
+            <div id="a4-page">
+                <div id="uploaded-content">
+                    <div style="text-align: center; color: #94a3b8;">
+                        <i class="fas fa-file-signature fa-5x" style="margin-bottom: 20px;"></i>
+                        <h3>এখানে আপনার PDF বা ছবি আপলোড করুন</h3>
+                        <p>আপলোড করার পর সিল সিলেক্ট করে A4 পেজে বসান</p>
+                    </div>
+                </div>
+                <!-- Active Seal Toolbar -->
+                <div id="seal-toolbar">
+                    <button onclick="rotateSeal(-15)" title="ঘড়ির কাঁটার বিপরীত"><i class="fas fa-undo"></i></button>
+                    <button onclick="rotateSeal(15)" title="ঘড়ির কাঁটার দিকে"><i class="fas fa-redo"></i></button>
+                    
+                    <div class="toolbar-section">
+                        <button onclick="resizeSeal(-10)"><i class="fas fa-minus"></i></button>
+                        <button onclick="resizeSeal(10)"><i class="fas fa-plus"></i></button>
+                    </div>
+
+                    <div class="toolbar-section">
+                        <input type="range" min="10" max="100" value="100" oninput="setOpacity(this.value)" title="স্বচ্ছতা" style="width: 60px;">
+                    </div>
+
+                    <div class="toolbar-section">
+                        <button onclick="layerSeal('front')" title="সামনে আনুন"><i class="fas fa-arrow-up"></i></button>
+                        <button onclick="layerSeal('back')" title="পেছনে পাঠান"><i class="fas fa-arrow-down"></i></button>
+                    </div>
+
+                    <div class="toolbar-section">
+                        <button class="btn-danger" onclick="removeSeal()" title="মুছে ফেলুন"><i class="fas fa-trash"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Action Buttons -->
+    <div id="action-buttons">
+        <button class="btn-clear" onclick="clearPage()"><i class="fas fa-eraser"></i> সব মুছুন</button>
+        <button class="btn-print" onclick="printPage()"><i class="fas fa-print"></i> প্রিন্ট</button>
+        <button class="btn-download" onclick="downloadImage()"><i class="fas fa-download"></i> HD ডাউনলোড</button>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        let currentPDF = null;
+        let currentPage = 1;
+        let totalPages = 1;
+        let activeSeal = null;
+        let isDragging = false;
+        let startX, startY, initialLeft, initialTop;
+        let currentScale = 200;
+        let currentRotation = 0;
+        let currentOpacity = 100;
+
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const fileType = file.type;
+            const reader = new FileReader();
+
+            document.getElementById('loading').style.display = 'block';
+
+            reader.onload = function(e) {
+                const content = e.target.result;
+                const container = document.getElementById('uploaded-content');
+                const pagination = document.getElementById('pdf-pagination');
+                
+                container.innerHTML = '';
+
+                if (fileType === 'application/pdf') {
+                    const loadingTask = pdfjsLib.getDocument({ data: content });
+                    loadingTask.promise.then(function(pdf) {
+                        currentPDF = pdf;
+                        totalPages = pdf.numPages;
+                        currentPage = 1;
+                        pagination.style.display = 'flex';
+                        renderPDFPage(currentPage);
+                    }).catch(err => {
+                        alert('PDF লোড করতে সমস্যা হচ্ছে: ' + err.message);
+                        document.getElementById('loading').style.display = 'none';
+                    });
+                } else {
+                    pagination.style.display = 'none';
+                    currentPDF = null;
+                    const img = document.createElement('img');
+                    img.src = content;
+                    img.onload = function() {
+                        img.style.width = '100%';
+                        img.style.height = '100%';
+                        img.style.objectFit = 'contain';
+                        container.appendChild(img);
+                        document.getElementById('loading').style.display = 'none';
+                    };
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function renderPDFPage(num) {
+            const container = document.getElementById('uploaded-content');
+            currentPDF.getPage(num).then(function(page) {
+                const viewport = page.getViewport({ scale: 2.5 });
+                const canvas = document.createElement('canvas');
+                canvas.id = 'pdf-canvas';
+                const ctx = canvas.getContext('2d');
+                canvas.width = viewport.width;
+                canvas.height = viewport.height;
+
+                page.render({ canvasContext: ctx, viewport: viewport }).promise.then(() => {
+                    canvas.style.width = '100%';
+                    canvas.style.height = '100%';
+                    canvas.style.objectFit = 'contain';
+                    container.innerHTML = '';
+                    container.appendChild(canvas);
+                    document.getElementById('page-num').innerText = `পেজ ${num} / ${totalPages}`;
+                    document.getElementById('loading').style.display = 'none';
+                });
+            });
+        }
+
+        function nextPage() { if(currentPage < totalPages) { currentPage++; renderPDFPage(currentPage); } }
+        function prevPage() { if(currentPage > 1) { currentPage--; renderPDFPage(currentPage); } }
+
+        function addSeal(id) {
+            removeSeal(); // একসাথে একাধিক সিল না রাখার জন্য (চাইলে রাখতে পারেন)
+
+            const page = document.getElementById('a4-page');
+            const sealDiv = document.createElement('div');
+            sealDiv.className = 'seal-overlay';
+            sealDiv.id = 'active-seal';
+            sealDiv.style.width = currentScale + 'px';
+            sealDiv.style.height = currentScale + 'px';
+
+            const imgSrcs = {
+                'seal1': 'https://i.ibb.co/5G9Y4m0/seal1.png',
+                'seal2': 'https://i.ibb.co/5G9Y4m0/seal1.png',
+                'seal3': 'https://i.ibb.co/5G9Y4m0/seal1.png',
+                'seal4': 'https://i.ibb.co/5G9Y4m0/seal1.png'
+            };
+
+            sealDiv.innerHTML = `<img src="${imgSrcs[id]}">`;
+            page.appendChild(sealDiv);
+
+            activeSeal = sealDiv;
+            makeInteractive(sealDiv);
+        }
+
+        function makeInteractive(elmnt) {
+            const toolbar = document.getElementById('seal-toolbar');
+
+            elmnt.onmousedown = dragMouseDown;
+            
+            function dragMouseDown(e) {
+                if (e.target.closest('#seal-toolbar')) return; 
+                
+                e.preventDefault();
+                isDragging = true;
+                startX = e.clientX;
+                startY = e.clientY;
+                initialLeft = elmnt.offsetLeft;
+                initialTop = elmnt.offsetTop;
+
+                showToolbar(e);
+                
+                document.onmouseup = closeDragElement;
+                document.onmousemove = elementDrag;
+            }
+
+            function elementDrag(e) {
+                if (!isDragging) return;
+                e.preventDefault();
+                const pageRect = document.getElementById('a4-page').getBoundingClientRect();
+                
+                let newX = initialLeft + (e.clientX - startX);
+                let newY = initialTop + (e.clientY - startY);
+                
+                elmnt.style.left = newX + 'px';
+                elmnt.style.top = newY + 'px';
+                elmnt.style.transform = `rotate(${currentRotation}deg)`;
+                
+                showToolbar(e);
+            }
+
+            function closeDragElement() {
+                isDragging = false;
+                document.onmouseup = null;
+                document.onmousemove = null;
+            }
+        }
+
+        function showToolbar(e) {
+            const toolbar = document.getElementById('seal-toolbar');
+            const page = document.getElementById('a4-page');
+            const pageRect = page.getBoundingClientRect();
+            const sealRect = activeSeal.getBoundingClientRect();
+            
+            toolbar.style.display = 'flex';
+            toolbar.style.left = (sealRect.left - pageRect.left + sealRect.width / 2) + 'px';
+            toolbar.style.top = (sealRect.top - pageRect.top) + 'px';
+        }
+
+        function resizeSeal(val) {
+            if (!activeSeal) return;
+            currentScale += val;
+            if (currentScale < 50) currentScale = 50;
+            if (currentScale > 500) currentScale = 500;
+            activeSeal.style.width = currentScale + 'px';
+            activeSeal.style.height = currentScale + 'px';
+        }
+
+        function rotateSeal(val) {
+            if (!activeSeal) return;
+            currentRotation += val;
+            activeSeal.style.transform = `rotate(${currentRotation}deg)`;
+        }
+
+        function setOpacity(val) {
+            if (!activeSeal) return;
+            currentOpacity = val;
+            activeSeal.style.opacity = val / 100;
+        }
+
+        function layerSeal(pos) {
+            if (!activeSeal) return;
+            if (pos === 'front') activeSeal.style.zIndex = 20;
+            else activeSeal.style.zIndex = 5;
+        }
+
+        function removeSeal() {
+            const existing = document.getElementById('active-seal');
+            const toolbar = document.getElementById('seal-toolbar');
+            if (existing) existing.remove();
+            if (toolbar) toolbar.style.display = 'none';
+            activeSeal = null;
+        }
+
+        function clearPage() {
+            removeSeal();
+            document.getElementById('uploaded-content').innerHTML = `
+                <div style="text-align: center; color: #94a3b8;">
+                    <i class="fas fa-file-signature fa-5x" style="margin-bottom: 20px;"></i>
+                    <h3>এখানে আপনার PDF বা ছবি আপলোড করুন</h3>
+                </div>`;
+            document.getElementById('pdf-pagination').style.display = 'none';
+            currentPDF = null;
+        }
+
+        // Scroll wheel resize
+        document.getElementById('a4-page').addEventListener('wheel', function(e) {
+            if (activeSeal) {
+                e.preventDefault();
+                if (e.deltaY < 0) resizeSeal(10);
+                else resizeSeal(-10);
+            }
+        }, { passive: false });
+
+        // Click outside to hide toolbar
+        document.addEventListener('click', function(e) {
+            const toolbar = document.getElementById('seal-toolbar');
+            if (activeSeal && !activeSeal.contains(e.target) && !toolbar.contains(e.target)) {
+                toolbar.style.display = 'none';
+            }
+        });
+
+        function printPage() {
+            window.print();
+        }
+
+        // High-Quality Download
+        function downloadImage() {
+            const page = document.getElementById('a4-page');
+            document.getElementById('seal-toolbar').style.display = 'none';
+            document.getElementById('loading').style.display = 'block';
+            
+            html2canvas(page, { scale: 3, useCORS: true }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = 'notary-document.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+                document.getElementById('loading').style.display = 'none';
+            }).catch(err => {
+                alert('ডাউনলোডে সমস্যা: ' + err);
+                document.getElementById('loading').style.display = 'none';
+            });
+        }
+    </script>
+</body>
+</html>
