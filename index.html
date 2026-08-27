@@ -3,99 +3,120 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Pro Notary Seal App</title>
+    <title>Pro Seal & Stamp App</title>
     
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    
-    <!-- PDF.js - সঠিক ভার্সন ও Worker সোর্স -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <script src="data.js"></script>
 
     <style>
-        :root { --primary: #6366f1; --primary-light: #818cf8; --dark: #0f172a; --darker: #020617; --bg: #f1f5f9; --success: #10b981; --danger: #ef4444; }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; }
-        body { height: 100vh; display: flex; flex-direction: column; overflow: hidden; background: var(--bg); }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { height: 100vh; display: flex; flex-direction: column; overflow: hidden; background: #f1f5f9; }
 
-        #header { height: 60px; background: linear-gradient(135deg, var(--dark), #1e293b); color: white; display: flex; align-items: center; justify-content: space-between; padding: 0 15px; z-index: 100; }
-        #header h2 { font-size: 16px; display: flex; align-items: center; gap: 10px; }
-        #header h2 i { color: var(--primary-light); font-size: 22px; }
+        /* Header */
+        #header { height: 60px; background: linear-gradient(135deg, #0f172a, #1e293b); color: white; display: flex; align-items: center; justify-content: space-between; padding: 0 15px; z-index: 100; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        #header h2 { font-size: 16px; display: flex; align-items: center; gap: 10px; font-weight: 700; }
+        #header h2 i { color: #6366f1; font-size: 24px; filter: drop-shadow(0 2px 4px rgba(99,102,241,0.5)); }
         #lang-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3); color: white; padding: 8px 15px; border-radius: 20px; font-size: 12px; font-weight: bold; cursor: pointer; }
-        #menu-btn { background: none; border: none; color: white; font-size: 22px; cursor: pointer; padding: 10px; }
+        #menu-btn { background: none; border: none; color: white; font-size: 24px; cursor: pointer; }
 
+        /* Upload Bar */
         #quick-upload { background: #1e293b; padding: 12px 15px; border-bottom: 1px solid #334155; }
-        #quick-upload-btn { background: linear-gradient(135deg, #6366f1, #818cf8); color: white; border: none; border-radius: 12px; padding: 15px; font-weight: 700; font-size: 14px; cursor: pointer; display: flex; align-items: center; gap: 10px; width: 100%; justify-content: center; }
+        #quick-upload-btn { background: linear-gradient(135deg, #6366f1, #818cf8); color: white; border: none; border-radius: 12px; padding: 15px; font-weight: 700; font-size: 14px; cursor: pointer; display: flex; align-items: center; gap: 10px; width: 100%; justify-content: center; transition: 0.2s; }
         #quick-upload-btn:active { transform: scale(0.98); }
         input[type="file"] { display: none; }
 
-        #sidebar { position: fixed; top: 0; left: 0; height: 100%; width: 340px; max-width: 85%; background: linear-gradient(180deg, #1e293b, var(--dark)); color: white; transform: translateX(-100%); transition: 0.3s; z-index: 200; display: flex; flex-direction: column; }
+        /* Sidebar */
+        #sidebar { position: fixed; top: 0; left: 0; height: 100%; width: 340px; max-width: 85%; background: linear-gradient(180deg, #1e293b, #0f172a); color: white; transform: translateX(-100%); transition: 0.3s; z-index: 200; display: flex; flex-direction: column; }
         #sidebar.open { transform: translateX(0); }
         .side-header { padding: 15px; background: rgba(2, 6, 23, 0.5); display: flex; justify-content: space-between; align-items: center; }
-        #close-btn { background: rgba(255,255,255,0.1); border: none; color: white; font-size: 22px; padding: 8px; border-radius: 8px; cursor: pointer; }
+        .side-header h3 { color: #818cf8; font-size: 16px; }
+        #close-btn { background: none; border: none; color: white; font-size: 22px; cursor: pointer; }
         #menu-tree { flex: 1; overflow-y: auto; padding: 15px; }
         
         .level-btn { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; padding: 14px; border-radius: 10px; font-size: 14px; font-weight: 600; display: flex; justify-content: space-between; align-items: center; cursor: pointer; margin-bottom: 10px; }
-        .level-btn i { color: var(--primary-light); transition: 0.3s; }
+        .level-btn i { color: #818cf8; transition: 0.3s; }
         .level-btn.active i { transform: rotate(90deg); }
         .nested-container { display: none; padding-left: 12px; border-left: 2px solid #334155; }
         .nested-container.show { display: block; }
         .images-container { display: none; grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 10px; background: rgba(2, 6, 23, 0.5); border-radius: 10px; }
         .images-container.show { display: grid; }
-        .seal-item { background: white; border-radius: 10px; padding: 10px; display: flex; justify-content: center; align-items: center; cursor: pointer; aspect-ratio: 1; }
-        .seal-item:active { transform: scale(0.95); border: 2px solid var(--primary); }
+        .seal-item { background: white; border-radius: 10px; padding: 10px; display: flex; justify-content: center; align-items: center; cursor: pointer; aspect-ratio: 1; border: 2px solid transparent; }
+        .seal-item:active { transform: scale(0.95); border-color: #6366f1; }
         .seal-item img { max-width: 100%; max-height: 100%; object-fit: contain; }
         #overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 150; display: none; }
         #overlay.show { display: block; }
 
-        #main-area { flex: 1; display: flex; flex-direction: column; position: relative; }
-        #pdf-controls { background: white; padding: 10px; display: none; justify-content: center; align-items: center; gap: 20px; border-bottom: 1px solid #e2e8f0; position: absolute; top: 0; left: 0; right: 0; z-index: 90; }
-        #pdf-controls button { padding: 8px 20px; border: none; background: var(--dark); color: white; border-radius: 8px; font-size: 14px; cursor: pointer; }
-        #scroll-area { flex: 1; overflow-y: auto; padding: 10px; padding-top: 55px; display: flex; flex-direction: column; align-items: center; touch-action: pan-x pan-y; }
+        /* Main Area */
+        #main-area { flex: 1; display: flex; flex-direction: column; position: relative; overflow: hidden; }
+        
+        /* Page Navigation (Next / Prev) */
+        #pdf-controls { background: #fff; padding: 10px; display: none; justify-content: center; align-items: center; gap: 20px; border-bottom: 1px solid #e2e8f0; position: absolute; top: 0; left: 0; right: 0; z-index: 90; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        #pdf-controls button { padding: 8px 20px; border: none; background: #0f172a; color: white; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; }
+        #pdf-controls button:disabled { background: #cbd5e1; color: #64748b; cursor: not-allowed; }
+        #page-num { font-weight: bold; color: #0f172a; font-size: 14px; }
 
-        .a4-page { width: 794px; height: 1123px; background: white; box-shadow: 0 10px 30px rgba(0,0,0,0.15); position: relative; overflow: hidden; flex-shrink: 0; margin-bottom: 20px; }
-        @media (max-width: 850px) { .a4-page { width: 100%; max-width: 794px; height: auto; aspect-ratio: 210/297; } }
+        #scroll-area { flex: 1; overflow-y: auto; padding: 10px; padding-top: 55px; display: flex; justify-content: center; touch-action: pan-y; }
+        #a4-page { width: 794px; height: 1123px; background: white; box-shadow: 0 10px 30px rgba(0,0,0,0.15); position: relative; overflow: hidden; flex-shrink: 0; }
+        @media (max-width: 850px) { #a4-page { width: 100%; max-width: 794px; height: auto; aspect-ratio: 210/297; } }
 
-        #content-layer { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; }
+        #content-layer { width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; }
+        #content-layer img, #content-layer canvas { max-width: 100%; max-height: 100%; object-fit: contain; }
 
+        /* Seal Customization - Advanced & Mobile Friendly */
         .seal-wrapper { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 10; }
-        .move-handle { position: absolute; top: -30px; left: 50%; transform: translateX(-50%); width: 45px; height: 45px; background: var(--primary); color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 18px; cursor: grab; z-index: 20; }
-        .resize-handle { position: absolute; bottom: -25px; right: -25px; width: 40px; height: 40px; background: #f59e0b; color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 14px; cursor: nwse-resize; z-index: 20; }
+        
+        /* Move Handle */
+        .move-handle { position: absolute; top: -35px; left: 50%; transform: translateX(-50%); width: 50px; height: 50px; background: #6366f1; color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 20px; cursor: grab; z-index: 20; box-shadow: 0 5px 15px rgba(99,102,241,0.5); }
+        /* Resize Handle */
+        .resize-handle { position: absolute; bottom: -30px; right: -30px; width: 45px; height: 45px; background: #f59e0b; color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 16px; cursor: nwse-resize; z-index: 20; box-shadow: 0 5px 15px rgba(245,158,11,0.5); }
+        /* Rotate Handle */
+        .rotate-handle { position: absolute; top: -35px; right: -35px; width: 45px; height: 45px; background: #10b981; color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 16px; cursor: grab; z-index: 20; box-shadow: 0 5px 15px rgba(16,185,129,0.5); }
+        
         .seal-img { width: 100%; height: 100%; object-fit: contain; pointer-events: none; }
 
         #toolbar { position: absolute; background: rgba(15, 23, 42, 0.95); color: white; border-radius: 12px; padding: 8px; display: none; align-items: center; gap: 10px; z-index: 100; transform: translate(-50%, -180%); box-shadow: 0 10px 30px rgba(0,0,0,0.4); }
         #toolbar button { background: none; border: none; color: white; font-size: 16px; padding: 10px; border-radius: 8px; cursor: pointer; }
-        #toolbar button:active { background: var(--primary); }
+        #toolbar button:active { background: #6366f1; }
         .tb-sep { width: 1px; height: 25px; background: #334155; }
-        #opacity-slider { width: 50px; accent-color: var(--primary); }
+        #opacity-slider { width: 50px; accent-color: #6366f1; }
 
         #bottom-actions { position: fixed; bottom: 70px; right: 15px; z-index: 95; }
-        #export-btn { background: linear-gradient(135deg, #6366f1, #818cf8); color: white; border: none; border-radius: 12px; padding: 15px 20px; font-size: 14px; font-weight: bold; cursor: pointer; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        #export-btn { background: linear-gradient(135deg, #6366f1, #818cf8); color: white; border: none; border-radius: 12px; padding: 15px 20px; font-size: 14px; font-weight: bold; cursor: pointer; box-shadow: 0 5px 15px rgba(99,102,241,0.4); }
         #export-options { position: fixed; bottom: 130px; right: 15px; background: rgba(15, 23, 42, 0.95); border-radius: 12px; padding: 8px; display: none; flex-direction: column; gap: 8px; z-index: 300; min-width: 220px; }
         #export-options.show { display: flex; }
         #export-options button { background: rgba(255,255,255,0.05); border: none; color: white; text-align: left; padding: 15px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 10px; }
-        #export-options button:active { background: var(--primary); }
+        #export-options button:active { background: #6366f1; }
 
-        #footer { background: linear-gradient(135deg, var(--dark), #1e293b); color: #94a3b8; text-align: center; padding: 14px; font-size: 13px; font-weight: 600; position: fixed; bottom: 0; left: 0; right: 0; z-index: 96; }
+        #footer { background: linear-gradient(135deg, #0f172a, #1e293b); color: #94a3b8; text-align: center; padding: 14px; font-size: 13px; font-weight: 600; position: fixed; bottom: 0; left: 0; right: 0; z-index: 96; }
         #toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-100px); background: rgba(15, 23, 42, 0.95); color: white; padding: 15px 25px; border-radius: 12px; font-size: 14px; font-weight: 600; z-index: 1000; display: flex; align-items: center; gap: 10px; transition: 0.3s; }
         #toast.show { transform: translateX(-50%) translateY(0); }
-        #toast.success { border: 1px solid var(--success); }
-        #toast.error { border: 1px solid var(--danger); }
+        #toast.success { border: 1px solid #10b981; }
+        #toast.error { border: 1px solid #ef4444; }
 
-        #loader { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(15, 23, 42, 0.9); padding: 20px; border-radius: 50%; z-index: 500; color: var(--primary-light); }
+        #loader { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(15, 23, 42, 0.9); padding: 20px; border-radius: 50%; z-index: 500; color: #818cf8; }
         #loader i { font-size: 40px; animation: spin 1s linear infinite; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
+        @media (max-width: 600px) {
+            #header h2 { font-size: 15px; }
+            #quick-upload-btn { font-size: 13px; padding: 13px; }
+            #toolbar { width: 95%; justify-content: space-around; padding: 6px; }
+        }
+
         @media print { 
             body * { visibility: hidden; } 
-            .a4-page, .a4-page * { visibility: visible; } 
-            .a4-page { position: absolute; left: 0; top: 0; }
-            #header, #footer, #bottom-actions, #toolbar, #sidebar, #quick-upload, #overlay { display: none !important; }
+            #a4-page, #a4-page * { visibility: visible; } 
+            #a4-page { position: absolute; left: 0; top: 0; box-shadow: none; }
+            #header, #footer, #bottom-actions, #toolbar, #sidebar, #quick-upload, #overlay, #pdf-controls { display: none !important; }
         }
     </style>
 </head>
 <body>
 
+    <!-- Header -->
     <header id="header">
         <button id="menu-btn" onclick="toggleSidebar(true)"><i class="fas fa-bars"></i></button>
         <h2><i class="fas fa-stamp"></i> <span id="title-text">প্রফেশনাল সিল অ্যাপ</span></h2>
@@ -109,25 +130,41 @@
 
     <div id="sidebar">
         <div class="side-header">
-            <h3 id="sidebar-title"><i class="fas fa-folder-tree"></i> <span>সিল লাইব্রেরি</span></h3>
+            <h3><i class="fas fa-folder-tree"></i> <span id="sidebar-title">সিল লাইব্রেরি</span></h3>
             <button id="close-btn" onclick="toggleSidebar(false)"><i class="fas fa-times"></i></button>
         </div>
         <div id="menu-tree"></div>
     </div>
     <div id="overlay" onclick="toggleSidebar(false)"></div>
 
+    <!-- Main Area -->
     <div id="main-area">
         <div id="pdf-controls">
-            <button onclick="scrollToTop()"><i class="fas fa-arrow-up"></i></button>
-            <span id="page-count">১ / ১</span>
-            <button onclick="scrollToBottom()"><i class="fas fa-arrow-down"></i></button>
+            <button id="prev-btn" onclick="prevPage()"><i class="fas fa-chevron-left"></i> <span>আগের</span></button>
+            <span id="page-num">১ / ১</span>
+            <button id="next-btn" onclick="nextPage()"><i class="fas fa-chevron-right"></i> <span>পরের</span></button>
         </div>
 
         <div id="scroll-area">
-            <div id="content-layer">
-                <div style="text-align: center; padding-top: 100px;">
-                    <i class="fas fa-file-upload fa-5x" style="color: #cbd5e1; margin-bottom: 20px;"></i>
-                    <h3 id="doc-placeholder" style="color: #64748b;">ডকুমেন্ট আপলোড করুন</h3>
+            <div id="a4-page">
+                <div id="content-layer">
+                    <div style="text-align: center; color: #94a3b8;">
+                        <i class="fas fa-file-upload fa-5x" style="margin-bottom: 15px; color: #cbd5e1;"></i>
+                        <h3 id="doc-placeholder">ডকুমেন্ট আপলোড করুন</h3>
+                        <p style="margin-top: 8px; font-size: 13px; color: #64748b;" id="doc-instruction">উপরের বাটন থেকে যেকোনো PDF বা ছবি আপলোড করুন</p>
+                    </div>
+                </div>
+                
+                <div id="toolbar">
+                    <button onclick="deleteSeal(this)"><i class="fas fa-trash"></i></button>
+                    <div class="tb-sep"></div>
+                    <button onclick="rotateSeal(this, -15)"><i class="fas fa-undo"></i></button>
+                    <button onclick="rotateSeal(this, 15)"><i class="fas fa-redo"></i></button>
+                    <div class="tb-sep"></div>
+                    <button onclick="resizeSeal(this, -10)"><i class="fas fa-minus"></i></button>
+                    <button onclick="resizeSeal(this, 10)"><i class="fas fa-plus"></i></button>
+                    <div class="tb-sep"></div>
+                    <input type="range" id="opacity-slider" min="10" max="100" value="100" oninput="changeOpacity(this)">
                 </div>
             </div>
         </div>
@@ -148,14 +185,23 @@
     <div id="loader"><i class="fas fa-circle-notch"></i></div>
 
     <script>
-        let currentPDF = null, currentLang = 'bn', toastTimeout, activeSeal = null;
+        // Global Variables
+        let currentPDF = null;
+        let currentPage = 1;
+        let totalPages = 1;
+        let currentLang = 'bn';
+        let activeSeal = null;
+        let toastTimeout;
+
+        // Store seals for each page (Persistent across navigation)
+        let pageSeals = {};
 
         const translations = {
-            bn: { title: "প্রফেশনাল সিল অ্যাপ", sidebar: "সিল লাইব্রেরি", quick_upload: "যেকোনো ডকুমেন্ট আপলোড করুন", placeholder: "ডকুমেন্ট আপলোড করুন", export: "Export", png: "HD ইমেজ", jpeg: "HD JPEG", pdf: "PDF ডাউনলোড", print: "প্রিন্ট", footer: "এটি একটি সিল মারার প্রফেশনাল ওয়েবসাইট", toast_upload: "ফাইল সফলভাবে আপলোড হয়েছে!", toast_error: "PDF লোড করা যায়নি! ফাইলটি সঠিক কিনা দেখুন।", toast_seal: "সিল যোগ হয়েছে!", toast_delete: "সিল মুছে ফেলা হয়েছে!", toast_download: "ডাউনলোড সম্পন্ন!", toast_print: "প্রিন্ট হচ্ছে!" },
-            en: { title: "Professional Seal App", sidebar: "Seal Library", quick_upload: "Upload any document", placeholder: "Upload your document", export: "Export", png: "HD Image", jpeg: "HD JPEG", pdf: "Download PDF", print: "Print", footer: "This is a professional seal stamping website", toast_upload: "File uploaded successfully!", toast_error: "Unable to load PDF! Please check the file.", toast_seal: "Seal added!", toast_delete: "Seal deleted!", toast_download: "Download complete!", toast_print: "Printing!" }
+            bn: { title: "প্রফেশনাল সিল অ্যাপ", sidebar: "সিল লাইব্রেরি", quick_upload: "যেকোনো ডকুমেন্ট আপলোড করুন", placeholder: "ডকুমেন্ট আপলোড করুন", instruction: "উপরের বাটন থেকে যেকোনো PDF বা ছবি আপলোড করুন", export: "Export", png: "HD ইমেজ", jpeg: "HD JPEG", pdf: "PDF ডাউনলোড", print: "প্রিন্ট", footer: "এটি একটি সিল মারার প্রফেশনাল ওয়েবসাইট", toast_upload: "ফাইল সফলভাবে আপলোড হয়েছে!", toast_error: "PDF লোড করা যায়নি!", toast_seal: "সিল যোগ হয়েছে!", toast_delete: "সিল মুছে ফেলা হয়েছে!", toast_download: "ডাউনলোড সম্পন্ন!", toast_print: "প্রিন্ট হচ্ছে!" },
+            en: { title: "Professional Seal App", sidebar: "Seal Library", quick_upload: "Upload any document", placeholder: "Upload your document", instruction: "Upload any PDF or Image from the top button", export: "Export", png: "HD Image", jpeg: "HD JPEG", pdf: "Download PDF", print: "Print", footer: "This is a professional seal stamping website", toast_upload: "File uploaded successfully!", toast_error: "Unable to load PDF!", toast_seal: "Seal added!", toast_delete: "Seal deleted!", toast_download: "Download complete!", toast_print: "Printing!" }
         };
 
-        function showToast(msg, type) {
+        function showToast(msg, type = 'success') {
             const t = document.getElementById('toast');
             document.getElementById('toast-message').innerText = msg;
             t.className = type;
@@ -168,9 +214,10 @@
             currentLang = currentLang === 'bn' ? 'en' : 'bn';
             const tr = translations[currentLang];
             document.getElementById('title-text').innerText = tr.title;
-            document.getElementById('sidebar-title').innerHTML = `<i class="fas fa-folder-tree"></i> <span>${tr.sidebar}</span>`;
+            document.getElementById('sidebar-title').innerText = tr.sidebar;
             document.getElementById('quick-upload-text').innerText = tr.quick_upload;
             document.getElementById('doc-placeholder').innerText = tr.placeholder;
+            document.getElementById('doc-instruction').innerText = tr.instruction;
             document.getElementById('export-text').innerText = tr.export;
             document.getElementById('opt-png').innerText = tr.png;
             document.getElementById('opt-jpeg').innerText = tr.jpeg;
@@ -185,6 +232,7 @@
         function toggleExportMenu() { document.getElementById('export-options').classList.toggle('show'); }
         document.addEventListener('click', (e) => { if(!e.target.closest('#export-options') && !e.target.closest('#export-btn')) document.getElementById('export-options').classList.remove('show'); });
 
+        // Menu Builder
         function buildMenu() {
             const tree = document.getElementById('menu-tree'); tree.innerHTML = '';
             sealData.forEach((root, rIdx) => {
@@ -225,10 +273,13 @@
 
         function toggleLevel(btn) { btn.classList.toggle('active'); btn.nextElementSibling.classList.toggle('show'); }
 
-        // ✅ ROBUST PDF UPLOAD SYSTEM
+        // 📌 Core Fix: Upload PDF/Images
         function handleFileUpload(event) {
             const file = event.target.files[0];
             if (!file) return;
+
+            // Reset on New Upload
+            pageSeals = {};
 
             const reader = new FileReader();
             document.getElementById('loader').style.display = 'block';
@@ -240,36 +291,19 @@
                 container.innerHTML = '';
                 
                 if (file.type === 'application/pdf') {
-                    // PDF.js Worker সেটআপ (নতুন ভার্সন)
                     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-
                     const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
 
                     loadingTask.promise.then(function(pdf) {
                         currentPDF = pdf;
+                        totalPages = pdf.numPages;
+                        currentPage = 1;
+                        
                         document.getElementById('pdf-controls').style.display = 'flex';
-                        document.getElementById('page-count').innerText = `${pdf.numPages} Pages`;
-
-                        // সব পেজ রেন্ডার করা
-                        for (let i = 1; i <= pdf.numPages; i++) {
-                            pdf.getPage(i).then(function(page) {
-                                const viewport = page.getViewport({ scale: 1.5 }); // মোবাইলের জন্য পারফেক্ট স্কেল
-                                const canvas = document.createElement('canvas');
-                                const ctx = canvas.getContext('2d');
-                                canvas.width = viewport.width;
-                                canvas.height = viewport.height;
-
-                                page.render({ canvasContext: ctx, viewport: viewport }).promise.then(() => {
-                                    const pageDiv = document.createElement('div');
-                                    pageDiv.className = 'a4-page';
-                                    canvas.style.width = '100%';
-                                    canvas.style.height = '100%';
-                                    canvas.style.objectFit = 'contain';
-                                    pageDiv.appendChild(canvas);
-                                    container.appendChild(pageDiv);
-                                });
-                            });
-                        }
+                        document.getElementById('page-num').innerText = `১ / ${totalPages}`;
+                        
+                        renderPDFPage(currentPage);
+                        
                         document.getElementById('loader').style.display = 'none';
                         showToast(translations[currentLang].toast_upload, 'success');
                     }).catch(function(err) {
@@ -280,12 +314,15 @@
                 } 
                 else if (file.type.startsWith('image/')) {
                     currentPDF = null;
+                    totalPages = 1;
+                    currentPage = 1;
+                    document.getElementById('pdf-controls').style.display = 'none';
+                    
                     const img = document.createElement('img');
                     img.src = URL.createObjectURL(file);
                     img.onload = function() {
-                        const pageDiv = document.createElement('div'); pageDiv.className = 'a4-page';
                         img.style.width = '100%'; img.style.height = '100%'; img.style.objectFit = 'contain';
-                        pageDiv.appendChild(img); container.appendChild(pageDiv);
+                        container.appendChild(img);
                         document.getElementById('loader').style.display = 'none';
                         showToast(translations[currentLang].toast_upload, 'success');
                     };
@@ -294,50 +331,159 @@
                     showToast(translations[currentLang].toast_error, 'error');
                 }
             };
-            reader.readAsArrayBuffer(file); // PDF-এর জন্য সঠিক ফরম্যাট
+            reader.readAsArrayBuffer(file);
         }
 
-        function scrollToTop() { document.getElementById('scroll-area').scrollTo({ top: 0, behavior: 'smooth' }); }
-        function scrollToBottom() { const el = document.getElementById('scroll-area'); el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' }); }
+        // 📌 Render Single Page
+        function renderPDFPage(pageNum) {
+            const container = document.getElementById('content-layer');
+            container.innerHTML = '';
+            
+            currentPDF.getPage(pageNum).then(function(page) {
+                const viewport = page.getViewport({ scale: 1.5 });
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                canvas.width = viewport.width;
+                canvas.height = viewport.height;
 
+                page.render({ canvasContext: ctx, viewport: viewport }).promise.then(() => {
+                    canvas.style.width = '100%';
+                    canvas.style.height = '100%';
+                    canvas.style.objectFit = 'contain';
+                    container.appendChild(canvas);
+                    
+                    // Restore seals for this page
+                    if (pageSeals[pageNum]) {
+                        pageSeals[pageNum].forEach(sealData => {
+                            addSealToPage(sealData.src, sealData, false);
+                        });
+                    }
+                });
+            });
+        }
+
+        // 📌 Page Navigation (Next/Prev) with Seal Persistence
+        function nextPage() {
+            if (currentPage < totalPages) {
+                saveCurrentPageSeals();
+                currentPage++;
+                renderPDFPage(currentPage);
+                document.getElementById('page-num').innerText = `${currentPage} / ${totalPages}`;
+                updateButtons();
+            }
+        }
+
+        function prevPage() {
+            if (currentPage > 1) {
+                saveCurrentPageSeals();
+                currentPage--;
+                renderPDFPage(currentPage);
+                document.getElementById('page-num').innerText = `${currentPage} / ${totalPages}`;
+                updateButtons();
+            }
+        }
+
+        function updateButtons() {
+            document.getElementById('prev-btn').disabled = currentPage <= 1;
+            document.getElementById('next-btn').disabled = currentPage >= totalPages;
+        }
+
+        // Save seals on current page to array
+        function saveCurrentPageSeals() {
+            const seals = document.querySelectorAll('.seal-wrapper');
+            const pageData = [];
+            seals.forEach(seal => {
+                const src = seal.querySelector('.seal-img').src;
+                const left = seal.style.left;
+                const top = seal.style.top;
+                const width = seal.style.width;
+                const height = seal.style.height;
+                const opacity = seal.style.opacity;
+                const img = seal.querySelector('.seal-img');
+                const rotation = img.style.transform;
+                
+                pageData.push({ src, left, top, width, height, opacity, rotation });
+            });
+            pageSeals[currentPage] = pageData;
+        }
+
+        // Add Seal (calls specific page adder)
         function addSeal(src) {
             toggleSidebar(false);
-            const container = document.getElementById('content-layer');
-            let targetPage = container.querySelector('.a4-page:last-child');
-            
-            if (!targetPage) {
-                const newPage = document.createElement('div'); newPage.className = 'a4-page'; newPage.style.position = 'relative';
-                container.appendChild(newPage); targetPage = newPage;
-            }
-
-            const wrap = document.createElement('div'); wrap.className = 'seal-wrapper';
-            wrap.style.width = '150px'; wrap.style.height = '150px';
-            wrap.innerHTML = `<div class="move-handle" onmousedown="startDrag(event, this.parentElement)" ontouchstart="startDrag(event, this.parentElement)"><i class="fas fa-arrows-alt"></i></div><img src="${src}" class="seal-img"><div class="resize-handle" onmousedown="startResize(event, this.parentElement)" ontouchstart="startResize(event, this.parentElement)"><i class="fas fa-expand"></i></div>`;
-            targetPage.appendChild(wrap);
-            selectSeal(wrap);
+            const page = document.getElementById('a4-page');
+            addSealToPage(src, null, true);
             showToast(translations[currentLang].toast_seal, 'success');
         }
 
+        function addSealToPage(src, data, isNew) {
+            const page = document.getElementById('a4-page');
+            const wrap = document.createElement('div'); 
+            wrap.className = 'seal-wrapper'; 
+            
+            let left = '50%', top = '50%', width = '150px', height = '150px', opacity = '1', rotation = 'rotate(0deg)';
+            
+            if (data) {
+                left = data.left;
+                top = data.top;
+                width = data.width;
+                height = data.height;
+                opacity = data.opacity;
+                rotation = data.rotation;
+            }
+
+            wrap.style.left = left;
+            wrap.style.top = top;
+            wrap.style.width = width;
+            wrap.style.height = height;
+            wrap.style.opacity = opacity;
+            
+            wrap.innerHTML = `
+                <div class="move-handle" onmousedown="startDrag(event, this.parentElement)" ontouchstart="startDrag(event, this.parentElement)"><i class="fas fa-arrows-alt"></i></div>
+                <img src="${src}" class="seal-img" style="transform: ${rotation};">
+                <div class="resize-handle" onmousedown="startResize(event, this.parentElement)" ontouchstart="startResize(event, this.parentElement)"><i class="fas fa-expand"></i></div>
+                <div class="rotate-handle" onmousedown="startRotate(event, this.parentElement)" ontouchstart="startRotate(event, this.parentElement)"><i class="fas fa-sync-alt"></i></div>
+            `;
+            page.appendChild(wrap); 
+            if (isNew) selectSeal(wrap);
+        }
+
+        // Customizable Controls (Drag, Resize, Rotate)
         function selectSeal(el) {
             document.querySelectorAll('.seal-wrapper').forEach(w => w.style.outline = 'none');
-            activeSeal = el; activeSeal.style.outline = '2px dashed #6366f1';
-            const tb = document.getElementById('toolbar'); tb.style.display = 'flex';
+            activeSeal = el; 
+            activeSeal.style.outline = '2px dashed #6366f1';
+            const tb = document.getElementById('toolbar'); 
+            tb.style.display = 'flex';
+            const r = el.getBoundingClientRect(); 
             const pr = el.parentElement.getBoundingClientRect();
-            const r = el.getBoundingClientRect();
-            tb.style.left = (r.left - pr.left + r.width/2) + 'px'; tb.style.top = (r.top - pr.top) + 'px';
+            tb.style.left = (r.left - pr.left + r.width/2)+'px'; 
+            tb.style.top = (r.top - pr.top)+'px';
             if(window.innerWidth < 600) { tb.style.left='50%'; tb.style.top='10px'; }
         }
 
         function startDrag(e, wrap) {
-            e.preventDefault();
+            e.preventDefault(); 
             const pr = wrap.parentElement.getBoundingClientRect();
             const sx = e.clientX || (e.touches && e.touches[0].clientX);
             const sy = e.clientY || (e.touches && e.touches[0].clientY);
             const ol = wrap.offsetLeft, ot = wrap.offsetTop;
             selectSeal(wrap);
-            function move(ev) { const cx = ev.clientX || (ev.touches && ev.touches[0].clientX); const cy = ev.clientY || (ev.touches && ev.touches[0].clientY); let nl = ol+(cx-sx), nt = ot+(cy-sy); if(nl<0)nl=0; if(nt<0)nt=0; if(nl+wrap.offsetWidth>pr.width)nl=pr.width-wrap.offsetWidth; if(nt+wrap.offsetHeight>pr.height)nt=pr.height-wrap.offsetHeight; wrap.style.left=nl+'px'; wrap.style.top=nt+'px'; }
-            function up() { document.removeEventListener('mousemove', move); document.removeEventListener('mouseup', up); document.removeEventListener('touchmove', move); document.removeEventListener('touchend', up); }
-            document.addEventListener('mousemove', move); document.addEventListener('mouseup', up); document.addEventListener('touchmove', move, { passive: false }); document.addEventListener('touchend', up);
+            
+            function move(ev) {
+                const cx = ev.clientX || (ev.touches && ev.touches[0].clientX);
+                const cy = ev.clientY || (ev.touches && ev.touches[0].clientY);
+                let nl = ol + (cx - sx), nt = ot + (cy - sy);
+                if(nl < 0) nl = 0; if(nt < 0) nt = 0;
+                if(nl + wrap.offsetWidth > pr.width) nl = pr.width - wrap.offsetWidth;
+                if(nt + wrap.offsetHeight > pr.height) nt = pr.height - wrap.offsetHeight;
+                wrap.style.left = nl+'px'; wrap.style.top = nt+'px';
+            }
+            function up() { 
+                document.removeEventListener('mousemove', move); document.removeEventListener('mouseup', up); 
+                document.removeEventListener('touchmove', move); document.removeEventListener('touchend', up); 
+            }
+            document.addEventListener('mousemove', move); document.addEventListener('mouseup', up);
+            document.addEventListener('touchmove', move, { passive: false }); document.addEventListener('touchend', up, { passive: false });
         }
 
         function startResize(e, wrap) {
@@ -345,47 +491,134 @@
             const sx = e.clientX || (e.touches && e.touches[0].clientX);
             const sy = e.clientY || (e.touches && e.touches[0].clientY);
             const sw = wrap.offsetWidth, sh = wrap.offsetHeight;
-            function move(ev) { const cx = ev.clientX || (ev.touches && ev.touches[0].clientX); const cy = ev.clientY || (ev.touches && ev.touches[0].clientY); const nw = sw+(cx-sx), nh = sh+(cy-sy); if(nw>50 && nh>50) { wrap.style.width=nw+'px'; wrap.style.height=nh+'px'; } }
-            function up() { document.removeEventListener('mousemove', move); document.removeEventListener('mouseup', up); document.removeEventListener('touchmove', move); document.removeEventListener('touchend', up); }
-            document.addEventListener('mousemove', move); document.addEventListener('mouseup', up); document.addEventListener('touchmove', move, { passive: false }); document.addEventListener('touchend', up);
+
+            function move(ev) {
+                const cx = ev.clientX || (ev.touches && ev.touches[0].clientX);
+                const cy = ev.clientY || (ev.touches && ev.touches[0].clientY);
+                const nw = sw + (cx - sx), nh = sh + (cy - sy);
+                if(nw > 50 && nh > 50) { wrap.style.width = nw+'px'; wrap.style.height = nh+'px'; }
+            }
+            function up() { 
+                document.removeEventListener('mousemove', move); document.removeEventListener('mouseup', up); 
+                document.removeEventListener('touchmove', move); document.removeEventListener('touchend', up); 
+            }
+            document.addEventListener('mousemove', move); document.addEventListener('mouseup', up);
+            document.addEventListener('touchmove', move, { passive: false }); document.addEventListener('touchend', up, { passive: false });
         }
 
-        function deleteSeal(btn) { const w = btn.closest('.seal-wrapper'); if(w) w.remove(); document.getElementById('toolbar').style.display = 'none'; activeSeal = null; showToast(translations[currentLang].toast_delete, 'success'); }
+        function startRotate(e, wrap) {
+            e.preventDefault();
+            const sx = e.clientX || (e.touches && e.touches[0].clientX);
+            const sy = e.clientY || (e.touches && e.touches[0].clientY);
+            const img = wrap.querySelector('.seal-img');
+            const startRot = img.style.transform ? parseFloat(img.style.transform.replace('rotate(','').replace(')','')) : 0;
+
+            function move(ev) {
+                const cx = ev.clientX || (ev.touches && ev.touches[0].clientX);
+                const cy = ev.clientY || (ev.touches && ev.touches[0].clientY);
+                const angle = Math.atan2(cy - sy, cx - sx) * (180 / Math.PI);
+                img.style.transform = `rotate(${startRot + angle}deg)`;
+            }
+            function up() { 
+                document.removeEventListener('mousemove', move); document.removeEventListener('mouseup', up); 
+                document.removeEventListener('touchmove', move); document.removeEventListener('touchend', up); 
+            }
+            document.addEventListener('mousemove', move); document.addEventListener('mouseup', up);
+            document.addEventListener('touchmove', move, { passive: false }); document.addEventListener('touchend', up, { passive: false });
+        }
+
+        function deleteSeal(btn) { 
+            const w = btn.closest('.seal-wrapper'); 
+            if(w) w.remove(); 
+            document.getElementById('toolbar').style.display = 'none'; 
+            activeSeal = null; 
+            showToast(translations[currentLang].toast_delete, 'success');
+        }
+        
         function rotateSeal(btn, v) { if(!activeSeal) return; const img = activeSeal.querySelector('.seal-img'); const cr = img.style.transform ? parseFloat(img.style.transform.replace('rotate(','')) : 0; img.style.transform = `rotate(${cr+v}deg)`; }
         function resizeSeal(btn, v) { if(!activeSeal) return; const w = activeSeal.offsetWidth+v, h = activeSeal.offsetHeight+v; if(w>50 && h>50) { activeSeal.style.width=w+'px'; activeSeal.style.height=h+'px'; } }
         function changeOpacity(inp) { if(!activeSeal) return; activeSeal.style.opacity = inp.value/100; }
 
+        // High Quality Download (Multi-page)
         async function downloadHDImage(format) {
-            document.getElementById('toolbar').style.display = 'none'; document.getElementById('export-options').classList.remove('show');
-            const pages = document.querySelectorAll('.a4-page');
-            if (pages.length === 0) return showToast("No Document", 'error');
+            saveCurrentPageSeals();
+            document.getElementById('toolbar').style.display = 'none';
+            document.getElementById('export-options').classList.remove('show');
+            
             document.getElementById('loader').style.display = 'block';
-            const canvas = await html2canvas(pages[0], { scale: 4, useCORS: true });
+            const canvas = await html2canvas(document.getElementById('a4-page'), { scale: 4, useCORS: true });
+            
             const link = document.createElement('a');
             link.download = `document.${format}`;
             link.href = canvas.toDataURL(format === 'jpeg' ? 'image/jpeg' : 'image/png');
-            link.click(); document.getElementById('loader').style.display = 'none';
+            link.click();
+            document.getElementById('loader').style.display = 'none';
             showToast(translations[currentLang].toast_download, 'success');
         }
 
         async function downloadPDF() {
-            document.getElementById('toolbar').style.display = 'none'; document.getElementById('export-options').classList.remove('show');
-            const pages = document.querySelectorAll('.a4-page');
-            if (pages.length === 0) return;
+            saveCurrentPageSeals();
+            document.getElementById('toolbar').style.display = 'none';
+            document.getElementById('export-options').classList.remove('show');
+            
             document.getElementById('loader').style.display = 'block';
             const { jsPDF } = window.jspdf;
             const pdf = new jsPDF('p', 'mm', 'a4');
-            for (let i = 0; i < pages.length; i++) {
-                const canvas = await html2canvas(pages[i], { scale: 3, useCORS: true });
+            
+            // Loop through all pages and render
+            for (let i = 1; i <= totalPages; i++) {
+                currentPage = i;
+                await renderPDFPageForExport(i); // Custom render function
+                
+                const canvas = await html2canvas(document.getElementById('a4-page'), { scale: 3, useCORS: true });
                 const imgData = canvas.toDataURL('image/jpeg', 1.0);
-                if (i > 0) pdf.addPage();
+                
+                if (i > 1) pdf.addPage();
                 pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297);
             }
-            pdf.save('document.pdf'); document.getElementById('loader').style.display = 'none';
+            
+            pdf.save('document.pdf');
+            currentPage = 1;
+            renderPDFPage(1);
+            document.getElementById('loader').style.display = 'none';
             showToast(translations[currentLang].toast_download, 'success');
         }
 
-        function printPage() { document.getElementById('toolbar').style.display = 'none'; document.getElementById('export-options').classList.remove('show'); showToast(translations[currentLang].toast_print, 'success'); setTimeout(() => window.print(), 500); }
+        // Helper for downloading multi-page PDF
+        async function renderPDFPageForExport(pageNum) {
+            const container = document.getElementById('content-layer');
+            container.innerHTML = '';
+            
+            await currentPDF.getPage(pageNum).then(function(page) {
+                const viewport = page.getViewport({ scale: 1.5 });
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                canvas.width = viewport.width;
+                canvas.height = viewport.height;
+
+                return page.render({ canvasContext: ctx, viewport: viewport }).promise.then(() => {
+                    canvas.style.width = '100%';
+                    canvas.style.height = '100%';
+                    canvas.style.objectFit = 'contain';
+                    container.appendChild(canvas);
+                    
+                    // Restore seals
+                    if (pageSeals[pageNum]) {
+                        pageSeals[pageNum].forEach(sealData => {
+                            addSealToPage(sealData.src, sealData, false);
+                        });
+                    }
+                });
+            });
+        }
+
+        function printPage() {
+            saveCurrentPageSeals();
+            document.getElementById('toolbar').style.display = 'none';
+            document.getElementById('export-options').classList.remove('show');
+            showToast(translations[currentLang].toast_print, 'success');
+            setTimeout(() => { window.print(); }, 500);
+        }
 
         window.onload = buildMenu;
     </script>
