@@ -12,9 +12,9 @@ const sealData = [
                 name: "ঢাকা বিভাগ",
                 icon: "fa-solid fa-folder-open",
                 images: [
-                    "images/seal1.png",
-                    "images/seal2.png",
-                    "images/seal3.png"
+                    "images/Notary-Public/mizen/1000753542-removebg-preview.png",
+                    "images/Notary-Public/mizen/1000753542-removebg-preview.png",
+                    "images"
                 ]
             },
             {
@@ -22,7 +22,7 @@ const sealData = [
                 icon: "fa-solid fa-folder-open",
                 images: [
                     "images/seal4.png",
-                    "images/seal5.png"
+                    "images/Notary-Public/mizen/1000753542-removebg-preview.png"
                 ]
             }
         ]
@@ -50,7 +50,7 @@ const sealData = [
                 icon: "fa-solid fa-folder-open",
                 images: [
                     "images/Others/extra1.png",
-                    "images/Others/extra2.png"
+                    "images/Notary-Public/mizen/1000753542-removebg-preview.png"
                 ]
             }
         ]
