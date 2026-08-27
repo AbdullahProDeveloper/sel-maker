@@ -25,10 +25,10 @@
             --muted: #64748b;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { height: 100vh; display: flex; flex-direction: column; overflow: hidden; background: var(--bg); }
 
-        /* Modern Header with Gradient */
+        /* Header */
         #header {
             height: 65px;
             background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
@@ -45,52 +45,18 @@
         #header h2 i { color: var(--primary-light); font-size: 24px; filter: drop-shadow(0 2px 4px rgba(99,102,241,0.5)); }
         
         .header-actions { display: flex; align-items: center; gap: 12px; }
-        #lang-btn {
-            background: rgba(255,255,255,0.1);
-            border: 1px solid rgba(255,255,255,0.2);
-            color: white;
-            padding: 8px 15px;
-            border-radius: 25px;
-            font-size: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            backdrop-filter: blur(10px);
-            transition: 0.2s;
-        }
+        #lang-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 8px 15px; border-radius: 25px; font-size: 12px; font-weight: 600; cursor: pointer; transition: 0.2s; }
         #lang-btn:active { background: white; color: var(--dark); }
-        
-        #menu-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; font-size: 20px; cursor: pointer; padding: 10px; border-radius: 12px; backdrop-filter: blur(10px); transition: 0.2s; }
+        #menu-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; font-size: 20px; cursor: pointer; padding: 10px; border-radius: 12px; transition: 0.2s; }
         #menu-btn:active { background: white; color: var(--dark); }
 
         /* Quick Upload Bar */
-        #quick-upload { background: rgba(30, 41, 59, 0.95); padding: 12px 15px; display: flex; align-items: center; justify-content: center; border-bottom: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(10px); }
-        #quick-upload-btn {
-            background: linear-gradient(135deg, #6366f1, #818cf8);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            padding: 15px;
-            font-weight: 700;
-            font-size: 15px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            width: 100%;
-            justify-content: center;
-            box-shadow: 0 4px 15px rgba(99,102,241,0.4);
-            transition: 0.2s;
-        }
+        #quick-upload { background: rgba(30, 41, 59, 0.95); padding: 12px 15px; display: flex; align-items: center; justify-content: center; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        #quick-upload-btn { background: linear-gradient(135deg, #6366f1, #818cf8); color: white; border: none; border-radius: 12px; padding: 15px; font-weight: 700; font-size: 15px; cursor: pointer; display: flex; align-items: center; gap: 12px; width: 100%; justify-content: center; box-shadow: 0 4px 15px rgba(99,102,241,0.4); transition: 0.2s; }
         #quick-upload-btn:active { transform: scale(0.97); box-shadow: 0 2px 8px rgba(99,102,241,0.3); }
 
         /* Sidebar */
-        #sidebar {
-            position: fixed; top: 0; left: 0; height: 100%; width: 350px; max-width: 88%;
-            background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
-            color: white; transform: translateX(-100%); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            z-index: 200; display: flex; flex-direction: column;
-            box-shadow: 4px 0 20px rgba(0,0,0,0.3);
-        }
+        #sidebar { position: fixed; top: 0; left: 0; height: 100%; width: 350px; max-width: 88%; background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%); color: white; transform: translateX(-100%); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); z-index: 200; display: flex; flex-direction: column; box-shadow: 4px 0 20px rgba(0,0,0,0.3); }
         #sidebar.open { transform: translateX(0); }
         
         .side-header { padding: 18px; background: rgba(2, 6, 23, 0.5); display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); }
@@ -99,7 +65,7 @@
 
         .upload-sec { padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); display: none; }
         @media (min-width: 768px) { .upload-sec { display: block; } }
-        .upload-btn { display: block; width: 100%; padding: 15px; background: linear-gradient(135deg, #6366f1, #818cf8); color: white; text-align: center; border-radius: 12px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 10px rgba(99,102,241,0.3); }
+        .upload-btn { display: block; width: 100%; padding: 15px; background: linear-gradient(135deg, #6366f1, #818cf8); color: white; text-align: center; border-radius: 12px; font-weight: bold; cursor: pointer; }
         input[type="file"] { display: none; }
 
         #menu-tree { flex: 1; overflow-y: auto; padding: 15px; -webkit-overflow-scrolling: touch; }
@@ -127,29 +93,31 @@
         #pdf-controls { background: white; padding: 8px; display: none; justify-content: center; align-items: center; gap: 15px; border-bottom: 1px solid #e2e8f0; position: absolute; top: 0; left: 0; right: 0; z-index: 90; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
         #pdf-controls button { padding: 8px 20px; border: none; background: var(--dark); color: white; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 600; }
         #page-num { font-weight: bold; color: var(--text); font-size: 14px; }
+
+        /* Scroll Area & A4 Page */
+        #scroll-area { flex: 1; overflow-y: auto; overflow-x: hidden; padding: 10px; display: flex; flex-direction: column; align-items: center; -webkit-overflow-scrolling: touch; touch-action: pan-x pan-y; }
         
-        #scroll-area { flex: 1; overflow: auto; padding: 10px; padding-top: 55px; display: flex; justify-content: center; -webkit-overflow-scrolling: touch; touch-action: pan-x pan-y; }
-        
-        #a4-page { width: 794px; height: 1123px; background: white; box-shadow: 0 10px 30px rgba(0,0,0,0.15); position: relative; overflow: hidden; flex-shrink: 0; border-radius: 8px; }
-        @media (max-width: 850px) { #a4-page { width: 100%; max-width: 794px; height: auto; aspect-ratio: 210 / 297; } }
+        /* Perfect A4 Fit for ALL devices */
+        .a4-page { width: 794px; height: 1123px; background: white; box-shadow: 0 10px 30px rgba(0,0,0,0.15); position: relative; overflow: hidden; flex-shrink: 0; border-radius: 8px; margin-bottom: 20px; }
+        @media (max-width: 850px) { .a4-page { width: 100%; max-width: 794px; height: auto; aspect-ratio: 210 / 297; } }
 
         #content-layer { width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; }
         #content-layer img, #content-layer canvas { max-width: 100%; max-height: 100%; object-fit: contain; }
 
-        /* Seal Interaction - Bigger handles for mobile */
+        /* Seal Interaction */
         .seal-wrapper { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 10; }
         .move-handle { position: absolute; top: -35px; left: 50%; transform: translateX(-50%); width: 50px; height: 50px; background: linear-gradient(135deg, #6366f1, #818cf8); color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 20px; cursor: grab; z-index: 20; box-shadow: 0 5px 15px rgba(99,102,241,0.5); }
         .resize-handle { position: absolute; bottom: -30px; right: -30px; width: 45px; height: 45px; background: linear-gradient(135deg, #f59e0b, #fbbf24); color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 16px; cursor: nwse-resize; z-index: 20; box-shadow: 0 5px 15px rgba(245,158,11,0.5); }
         .seal-img { width: 100%; height: 100%; object-fit: contain; pointer-events: none; }
 
         /* Toolbar */
-        #toolbar { position: absolute; background: rgba(15, 23, 42, 0.95); color: white; border-radius: 15px; padding: 10px; display: none; align-items: center; gap: 10px; z-index: 100; transform: translate(-50%, -180%); box-shadow: 0 10px 30px rgba(0,0,0,0.5); white-space: nowrap; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); }
+        #toolbar { position: absolute; background: rgba(15, 23, 42, 0.95); color: white; border-radius: 15px; padding: 10px; display: none; align-items: center; gap: 10px; z-index: 100; transform: translate(-50%, -180%); box-shadow: 0 10px 30px rgba(0,0,0,0.5); white-space: nowrap; border: 1px solid rgba(255,255,255,0.1); }
         #toolbar button { background: none; border: none; color: white; font-size: 18px; padding: 12px; border-radius: 10px; cursor: pointer; transition: 0.2s; }
         #toolbar button:active { background: var(--primary); color: white; }
         .tb-sep { width: 1px; height: 25px; background: rgba(255,255,255,0.2); }
         #opacity-slider { width: 60px; accent-color: var(--primary); }
 
-        /* Export Dropdown */
+        /* Export */
         #bottom-actions { position: fixed; bottom: 70px; right: 15px; z-index: 95; }
         #export-btn { background: linear-gradient(135deg, #6366f1, #818cf8); color: white; border: none; border-radius: 15px; font-weight: 800; cursor: pointer; padding: 16px 20px; font-size: 15px; display: flex; align-items: center; gap: 10px; box-shadow: 0 8px 20px rgba(99,102,241,0.4); transition: 0.2s; }
         #export-btn:active { transform: scale(0.95); }
@@ -161,23 +129,22 @@
         #export-options button i { color: var(--primary-light); font-size: 18px; }
 
         /* Footer */
-        #footer { background: linear-gradient(135deg, #0f172a, #1e293b); color: #94a3b8; text-align: center; padding: 15px; font-size: 13px; font-weight: 600; letter-spacing: 0.5px; position: fixed; bottom: 0; left: 0; right: 0; z-index: 96; border-top: 1px solid rgba(255,255,255,0.1); }
+        #footer { background: linear-gradient(135deg, #0f172a, #1e293b); color: #94a3b8; text-align: center; padding: 15px; font-size: 13px; font-weight: 600; position: fixed; bottom: 0; left: 0; right: 0; z-index: 96; border-top: 1px solid rgba(255,255,255,0.1); }
 
-        /* Toast Notification */
-        #toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-100px); background: rgba(15, 23, 42, 0.95); color: white; padding: 15px 25px; border-radius: 15px; font-size: 14px; font-weight: 600; z-index: 1000; display: flex; align-items: center; gap: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(10px); }
+        /* Toast */
+        #toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-100px); background: rgba(15, 23, 42, 0.95); color: white; padding: 15px 25px; border-radius: 15px; font-size: 14px; font-weight: 600; z-index: 1000; display: flex; align-items: center; gap: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); border: 1px solid rgba(255,255,255,0.1); }
         #toast.show { transform: translateX(-50%) translateY(0); }
         #toast.success { border-color: rgba(16, 185, 129, 0.5); }
         #toast.error { border-color: rgba(239, 68, 68, 0.5); }
         #toast i { font-size: 20px; }
 
         /* Loader */
-        #loader { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(15, 23, 42, 0.9); padding: 30px; border-radius: 20px; z-index: 500; color: var(--primary-light); box-shadow: 0 10px 30px rgba(0,0,0,0.5); backdrop-filter: blur(10px); }
+        #loader { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(15, 23, 42, 0.9); padding: 30px; border-radius: 20px; z-index: 500; color: var(--primary-light); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         #loader i { font-size: 40px; animation: spin 1s linear infinite; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
         @media (max-width: 600px) {
             #header h2 { font-size: 15px; }
-            #quick-upload { padding: 10px; }
             #quick-upload-btn { font-size: 14px; padding: 14px; }
             #toolbar { width: 95%; justify-content: space-around; padding: 8px; transform: translate(-50%, -170%); }
             #bottom-actions { bottom: 60px; }
@@ -186,8 +153,8 @@
 
         @media print {
             body * { visibility: hidden; }
-            #a4-page, #a4-page * { visibility: visible; }
-            #a4-page { position: absolute; left: 0; top: 0; width: 100%; box-shadow: none; }
+            .a4-page, .a4-page * { visibility: visible; }
+            .a4-page { position: absolute; left: 0; top: 0; width: 100%; box-shadow: none; }
             #header, #sidebar, #quick-upload, #bottom-actions, #toolbar, #overlay, #pdf-controls, #export-options, #footer, #toast { display: none !important; }
             #scroll-area { padding: 0; }
         }
@@ -204,7 +171,6 @@
         </div>
     </header>
 
-    <!-- Quick Upload (Top) -->
     <div id="quick-upload">
         <label for="file-upload" id="quick-upload-btn">
             <i class="fas fa-cloud-upload-alt"></i> 
@@ -219,11 +185,9 @@
             <h3 id="sidebar-title"><i class="fas fa-folder-tree"></i> <span id="sidebar-text">সিল লাইব্রেরি</span></h3>
             <button id="close-btn" onclick="toggleSidebar(false)"><i class="fas fa-times"></i></button>
         </div>
-        
         <div class="upload-sec">
             <label for="file-upload" class="upload-btn" id="upload-text"><i class="fas fa-file-upload"></i> ডকুমেন্ট আপলোড</label>
         </div>
-
         <div id="menu-tree"></div>
     </div>
     <div id="overlay" onclick="toggleSidebar(false)"></div>
@@ -231,37 +195,24 @@
     <!-- Main Area -->
     <div id="main-area">
         <div id="pdf-controls">
-            <button onclick="prevPage()"><i class="fas fa-chevron-left"></i></button>
-            <span id="page-num">১ / ১</span>
-            <button onclick="nextPage()"><i class="fas fa-chevron-right"></i></button>
+            <button onclick="scrollToTop()"><i class="fas fa-arrow-up"></i></button>
+            <span id="page-count">মোট পেজ: ১</span>
+            <button onclick="scrollToBottom()"><i class="fas fa-arrow-down"></i></button>
         </div>
 
+        <!-- Scrollable Preview Area -->
         <div id="scroll-area">
-            <div id="a4-page">
-                <div id="content-layer">
-                    <div style="text-align: center; color: #94a3b8;">
-                        <i class="fas fa-file-upload fa-5x" style="margin-bottom: 15px; color: #cbd5e1;"></i>
-                        <h3 id="doc-placeholder">ডকুমেন্ট আপলোড করুন</h3>
-                        <p style="margin-top: 8px; font-size: 13px; color: #64748b;" id="doc-instruction">উপরের বাটন থেকে যেকোনো PDF বা ছবি আপলোড করুন</p>
-                    </div>
-                </div>
-                
-                <div id="toolbar">
-                    <button onclick="deleteSeal(this)"><i class="fas fa-trash"></i></button>
-                    <div class="tb-sep"></div>
-                    <button onclick="rotateSeal(this, -15)"><i class="fas fa-undo"></i></button>
-                    <button onclick="rotateSeal(this, 15)"><i class="fas fa-redo"></i></button>
-                    <div class="tb-sep"></div>
-                    <button onclick="resizeSeal(this, -10)"><i class="fas fa-minus"></i></button>
-                    <button onclick="resizeSeal(this, 10)"><i class="fas fa-plus"></i></button>
-                    <div class="tb-sep"></div>
-                    <input type="range" id="opacity-slider" min="10" max="100" value="100" oninput="changeOpacity(this)">
+            <div id="content-layer">
+                <div style="text-align: center; color: #94a3b8; width: 100%;">
+                    <i class="fas fa-file-upload fa-5x" style="margin-bottom: 15px; color: #cbd5e1;"></i>
+                    <h3 id="doc-placeholder">ডকুমেন্ট আপলোড করুন</h3>
+                    <p style="margin-top: 8px; font-size: 13px; color: #64748b;" id="doc-instruction">উপরের বাটন থেকে যেকোনো PDF বা ছবি আপলোড করুন</p>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Export Button & Dropdown -->
+    <!-- Export -->
     <div id="bottom-actions">
         <button id="export-btn" onclick="toggleExportMenu()"><i class="fas fa-file-export"></i> <span id="export-text">Export</span></button>
     </div>
@@ -272,91 +223,44 @@
         <button onclick="printPage()"><i class="fas fa-print"></i> <span id="opt-print">প্রিন্ট</span></button>
     </div>
 
-    <!-- Footer -->
     <div id="footer">
         <span id="footer-text">এটি একটি সিল মারার প্রফেশনাল ওয়েবসাইট</span>
     </div>
 
-    <!-- Toast Notification -->
     <div id="toast">
         <i class="fas fa-check-circle"></i>
         <span id="toast-message">Success!</span>
     </div>
 
-    <!-- Loader -->
     <div id="loader"><i class="fas fa-circle-notch"></i></div>
 
     <script>
-        let currentPDF = null, currentPage = 1, totalPages = 1, activeSeal = null;
+        let currentPDF = null, currentPage = 1, totalPages = 1;
         let currentLang = 'bn';
         let toastTimeout;
+        let allSeals = []; // Track all seal wrappers
 
-        // Translations
         const translations = {
-            bn: {
-                title: "প্রফেশনাল সিল অ্যাপ",
-                sidebar: "সিল লাইব্রেরি",
-                quick_upload: "যেকোনো ডকুমেন্ট আপলোড করুন (PDF / ইমেজ)",
-                upload: "ডকুমেন্ট আপলোড",
-                placeholder: "ডকুমেন্ট আপলোড করুন",
-                instruction: "উপরের বাটন থেকে যেকোনো PDF বা ছবি আপলোড করুন",
-                export: "Export",
-                png: "HD ইমেজ (PNG)",
-                jpeg: "HD ইমেজ (JPEG)",
-                pdf: "PDF ডাউনলোড",
-                print: "প্রিন্ট করুন",
-                footer: "এটি একটি সিল মারার প্রফেশনাল ওয়েবসাইট",
-                toast_upload: "ফাইল সফলভাবে আপলোড হয়েছে!",
-                toast_seal: "সিল পেজে যোগ হয়েছে!",
-                toast_delete: "সিল মুছে ফেলা হয়েছে!",
-                toast_download: "ডাউনলোড সম্পন্ন হয়েছে!",
-                toast_print: "প্রিন্ট ডায়ালগ খোলা হচ্ছে!",
-                toast_error: "কিছু একটা ভুল হয়েছে!"
-            },
-            en: {
-                title: "Professional Seal App",
-                sidebar: "Seal Library",
-                quick_upload: "Upload any document (PDF / Image)",
-                upload: "Upload Document",
-                placeholder: "Upload your document",
-                instruction: "Upload any PDF or Image from the top button",
-                export: "Export",
-                png: "HD Image (PNG)",
-                jpeg: "HD Image (JPEG)",
-                pdf: "Download PDF",
-                print: "Print Document",
-                footer: "This is a professional seal stamping website",
-                toast_upload: "File uploaded successfully!",
-                toast_seal: "Seal added to page!",
-                toast_delete: "Seal deleted!",
-                toast_download: "Download completed!",
-                toast_print: "Opening print dialog!",
-                toast_error: "Something went wrong!"
-            }
+            bn: { title: "প্রফেশনাল সিল অ্যাপ", sidebar: "সিল লাইব্রেরি", quick_upload: "যেকোনো ডকুমেন্ট আপলোড করুন (PDF / ইমেজ)", upload: "ডকুমেন্ট আপলোড", placeholder: "ডকুমেন্ট আপলোড করুন", instruction: "উপরের বাটন থেকে যেকোনো PDF বা ছবি আপলোড করুন", export: "Export", png: "HD ইমেজ (PNG)", jpeg: "HD ইমেজ (JPEG)", pdf: "PDF ডাউনলোড", print: "প্রিন্ট", footer: "এটি একটি সিল মারার প্রফেশনাল ওয়েবসাইট", toast_upload: "ফাইল সফলভাবে আপলোড হয়েছে!", toast_seal: "সিল পেজে যোগ হয়েছে!", toast_delete: "সিল মুছে ফেলা হয়েছে!", toast_download: "ডাউনলোড সম্পন্ন!", toast_print: "প্রিন্ট ডায়ালগ খোলা হচ্ছে!", toast_error: "কিছু একটা ভুল হয়েছে!" },
+            en: { title: "Professional Seal App", sidebar: "Seal Library", quick_upload: "Upload any document (PDF / Image)", upload: "Upload Document", placeholder: "Upload your document", instruction: "Upload any PDF or Image from the top button", export: "Export", png: "HD Image (PNG)", jpeg: "HD Image (JPEG)", pdf: "Download PDF", print: "Print", footer: "This is a professional seal stamping website", toast_upload: "File uploaded successfully!", toast_seal: "Seal added to page!", toast_delete: "Seal deleted!", toast_download: "Download completed!", toast_print: "Opening print dialog!", toast_error: "Something went wrong!" }
         };
 
         function showToast(message, type = 'success') {
             const toast = document.getElementById('toast');
             const msg = document.getElementById('toast-message');
             const icon = toast.querySelector('i');
-
             msg.innerText = message;
-            toast.className = type; // reset
+            toast.className = type;
             toast.classList.add('show');
-            
-            if (type === 'success') { icon.className = 'fas fa-check-circle'; }
-            else if (type === 'error') { icon.className = 'fas fa-exclamation-circle'; }
-
+            if (type === 'success') icon.className = 'fas fa-check-circle';
+            else icon.className = 'fas fa-exclamation-circle';
             clearTimeout(toastTimeout);
-            toastTimeout = setTimeout(() => {
-                toast.classList.remove('show');
-            }, 3000);
+            toastTimeout = setTimeout(() => toast.classList.remove('show'), 3000);
         }
 
         function toggleLanguage() {
             currentLang = currentLang === 'bn' ? 'en' : 'bn';
             const t = translations[currentLang];
-            
             document.getElementById('title-text').innerText = t.title;
             document.getElementById('sidebar-text').innerText = t.sidebar;
             document.getElementById('quick-upload-text').innerText = t.quick_upload;
@@ -370,45 +274,29 @@
             document.getElementById('opt-print').innerText = t.print;
             document.getElementById('footer-text').innerText = t.footer;
             document.getElementById('lang-btn').innerText = currentLang === 'bn' ? 'English' : 'বাংলা';
-            document.documentElement.lang = currentLang;
-            
-            buildMenu(); // Rebuild
+            buildMenu();
         }
 
-        function toggleSidebar(show) { 
-            document.getElementById('sidebar').classList.toggle('open', show); 
-            document.getElementById('overlay').classList.toggle('show', show); 
-        }
-
-        function toggleExportMenu() { 
-            document.getElementById('export-options').classList.toggle('show'); 
-        }
-        
-        document.addEventListener('click', (e) => { 
-            if(!e.target.closest('#export-options') && !e.target.closest('#export-btn')) 
-                document.getElementById('export-options').classList.remove('show'); 
-        });
+        function toggleSidebar(show) { document.getElementById('sidebar').classList.toggle('open', show); document.getElementById('overlay').classList.toggle('show', show); }
+        function toggleExportMenu() { document.getElementById('export-options').classList.toggle('show'); }
+        document.addEventListener('click', (e) => { if(!e.target.closest('#export-options') && !e.target.closest('#export-btn')) document.getElementById('export-options').classList.remove('show'); });
 
         function buildMenu() {
             const tree = document.getElementById('menu-tree'); tree.innerHTML = '';
             sealData.forEach((root, rIdx) => {
-                const div = document.createElement('div'); div.className = 'root-folder';
+                const div = document.createElement('div');
                 const rootName = currentLang === 'bn' ? root.name_bn : root.name_en;
                 div.innerHTML = `<button class="level-btn" onclick="toggleLevel(this)"><span><i class="${root.icon}" style="margin-right:12px;"></i>${rootName}</span><i class="fas fa-chevron-right"></i></button>`;
-                
                 const nested = document.createElement('div');
                 nested.className = 'nested-container'; nested.id = `level-${rIdx}`;
-                
-                if (root.subfolders && root.subfolders.length > 0) {
+                if (root.subfolders) {
                     root.subfolders.forEach((sub, sIdx) => {
                         const subName = currentLang === 'bn' ? sub.name_bn : sub.name_en;
                         const subDiv = document.createElement('div');
                         subDiv.innerHTML = `<button class="level-btn" onclick="toggleLevel(this)"><span style="font-size:13px;"><i class="${sub.icon}" style="margin-right:8px;"></i>${subName}</span><i class="fas fa-chevron-right"></i></button>`;
-                        
                         const subNested = document.createElement('div');
                         subNested.className = 'nested-container'; subNested.id = `nested-${rIdx}-${sIdx}`;
-                        
-                        if (sub.subfolders && sub.subfolders.length > 0) {
+                        if (sub.subfolders) {
                             sub.subfolders.forEach((user, uIdx) => {
                                 const userName = currentLang === 'bn' ? user.name_bn : user.name_en;
                                 const userDiv = document.createElement('div');
@@ -427,8 +315,7 @@
                                 subNested.appendChild(userDiv);
                             });
                         } else if (sub.images) {
-                            const imgContainer = document.createElement('div');
-                            imgContainer.className = 'images-container'; imgContainer.id = `images-${rIdx}-${sIdx}`;
+                            const imgContainer = document.createElement('div'); imgContainer.className = 'images-container'; imgContainer.id = `images-${rIdx}-${sIdx}`;
                             sub.images.forEach(src => {
                                 const item = document.createElement('div'); item.className = 'seal-item';
                                 item.onclick = () => addSeal(src);
@@ -446,18 +333,15 @@
             });
         }
 
-        function toggleLevel(btn) {
-            btn.classList.toggle('active');
-            btn.nextElementSibling.classList.toggle('show');
-        }
+        function toggleLevel(btn) { btn.classList.toggle('active'); btn.nextElementSibling.classList.toggle('show'); }
 
-        // Robust File Upload
+        // HIGHLY FIXED FILE UPLOAD
         function handleFileUpload(event) {
             const file = event.target.files[0];
             if (!file) return;
-            
             const reader = new FileReader();
             document.getElementById('loader').style.display = 'block';
+            document.getElementById('pdf-controls').style.display = 'none';
 
             reader.onload = function(e) {
                 const content = e.target.result;
@@ -466,43 +350,58 @@
 
                 if (file.type === 'application/pdf') {
                     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
-                    
-                    const loadingTask = pdfjsLib.getDocument({ 
-                        data: content,
-                        isEvalSupported: false,
-                        disableWorker: true
-                    });
+                    const loadingTask = pdfjsLib.getDocument({ data: content });
                     
                     loadingTask.promise.then(function(pdf) {
                         currentPDF = pdf;
                         totalPages = pdf.numPages;
-                        currentPage = 1;
                         document.getElementById('pdf-controls').style.display = 'flex';
-                        renderPDFPage(currentPage); 
+                        document.getElementById('page-count').innerText = `মোট পেজ: ${totalPages}`;
+                        
+                        // RENDER ALL PAGES for Scroll View
+                        for (let i = 1; i <= totalPages; i++) {
+                            currentPDF.getPage(i).then(function(page) {
+                                const viewport = page.getViewport({ scale: 1.5 }); // Optimized for mobile
+                                const canvas = document.createElement('canvas');
+                                canvas.classList.add('pdf-canvas');
+                                const ctx = canvas.getContext('2d');
+                                canvas.width = viewport.width;
+                                canvas.height = viewport.height;
+
+                                page.render({ canvasContext: ctx, viewport: viewport }).promise.then(() => {
+                                    const pageDiv = document.createElement('div');
+                                    pageDiv.className = 'a4-page';
+                                    canvas.style.width = '100%';
+                                    canvas.style.height = '100%';
+                                    canvas.style.objectFit = 'contain';
+                                    pageDiv.appendChild(canvas);
+                                    container.appendChild(pageDiv);
+                                });
+                            });
+                        }
+                        document.getElementById('loader').style.display = 'none';
                         showToast(translations[currentLang].toast_upload, 'success');
                     }).catch(function(err) {
-                        console.error("PDF Error:", err);
                         showToast(translations[currentLang].toast_error, 'error');
                         document.getElementById('loader').style.display = 'none';
                     });
                 } 
                 else if (file.type.startsWith('image/')) {
                     currentPDF = null;
-                    document.getElementById('pdf-controls').style.display = 'none';
                     const img = document.createElement('img');
                     img.src = content;
                     img.onload = function() {
+                        const pageDiv = document.createElement('div');
+                        pageDiv.className = 'a4-page';
                         img.style.width = '100%';
                         img.style.height = '100%';
                         img.style.objectFit = 'contain';
-                        container.appendChild(img);
+                        pageDiv.appendChild(img);
+                        container.appendChild(pageDiv);
                         document.getElementById('loader').style.display = 'none';
                         showToast(translations[currentLang].toast_upload, 'success');
                     };
-                    img.onerror = function() {
-                        showToast(translations[currentLang].toast_error, 'error');
-                        document.getElementById('loader').style.display = 'none';
-                    };
+                    img.onerror = function() { showToast(translations[currentLang].toast_error, 'error'); document.getElementById('loader').style.display = 'none'; };
                 } else {
                     showToast(translations[currentLang].toast_error, 'error');
                     document.getElementById('loader').style.display = 'none';
@@ -511,35 +410,24 @@
             reader.readAsDataURL(file);
         }
 
-        function renderPDFPage(num) {
-            const container = document.getElementById('content-layer');
-            currentPDF.getPage(num).then(function(page) {
-                const viewport = page.getViewport({ scale: 2 }); 
-                const canvas = document.createElement('canvas');
-                const ctx = canvas.getContext('2d');
-                canvas.width = viewport.width;
-                canvas.height = viewport.height;
+        function scrollToTop() { document.getElementById('scroll-area').scrollTo({ top: 0, behavior: 'smooth' }); }
+        function scrollToBottom() { const el = document.getElementById('scroll-area'); el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' }); }
 
-                page.render({ canvasContext: ctx, viewport: viewport }).promise.then(() => {
-                    canvas.style.width = '100%';
-                    canvas.style.height = '100%';
-                    canvas.style.objectFit = 'contain';
-                    container.appendChild(canvas);
-                    document.getElementById('page-num').innerText = `${num} / ${totalPages}`;
-                    document.getElementById('loader').style.display = 'none';
-                }).catch(err => {
-                    showToast(translations[currentLang].toast_error, 'error');
-                    document.getElementById('loader').style.display = 'none';
-                });
-            });
-        }
-
-        function nextPage() { if(currentPage < totalPages) { currentPage++; renderPDFPage(currentPage); } }
-        function prevPage() { if(currentPage > 1) { currentPage--; renderPDFPage(currentPage); } }
-
+        // Seal Management (Updated for Multi-Page)
         function addSeal(src) {
             toggleSidebar(false);
-            const page = document.getElementById('a4-page');
+            const container = document.getElementById('content-layer');
+            const currentPageDiv = container.querySelector('.a4-page:last-child'); // Add to last page or currently visible
+            
+            // If no page, create one
+            if (!currentPageDiv) {
+                const newPage = document.createElement('div');
+                newPage.className = 'a4-page';
+                newPage.style.position = 'relative';
+                container.appendChild(newPage);
+                currentPageDiv = newPage;
+            }
+
             const wrap = document.createElement('div'); 
             wrap.className = 'seal-wrapper'; 
             wrap.style.width = '150px'; wrap.style.height = '150px';
@@ -549,19 +437,19 @@
                 <img src="${src}" class="seal-img">
                 <div class="resize-handle" onmousedown="startResize(event, this.parentElement)" ontouchstart="startResize(event, this.parentElement)"><i class="fas fa-expand"></i></div>
             `;
-            page.appendChild(wrap); 
+            currentPageDiv.appendChild(wrap); 
             selectSeal(wrap);
             showToast(translations[currentLang].toast_seal, 'success');
         }
 
         function selectSeal(el) {
-            if(activeSeal) activeSeal.style.outline = 'none';
+            document.querySelectorAll('.seal-wrapper').forEach(w => w.style.outline = 'none');
             activeSeal = el; 
             activeSeal.style.outline = '2px dashed var(--primary)';
             const tb = document.getElementById('toolbar'); 
             tb.style.display = 'flex';
             const r = el.getBoundingClientRect(); 
-            const pr = document.getElementById('a4-page').getBoundingClientRect();
+            const pr = el.parentElement.getBoundingClientRect();
             tb.style.left = (r.left - pr.left + r.width/2)+'px'; 
             tb.style.top = (r.top - pr.top)+'px';
             if(window.innerWidth < 600) { tb.style.left='50%'; tb.style.top='10px'; }
@@ -569,7 +457,7 @@
 
         function startDrag(e, wrap) {
             e.preventDefault(); 
-            const pr = document.getElementById('a4-page').getBoundingClientRect();
+            const pr = wrap.parentElement.getBoundingClientRect();
             const sx = e.clientX || (e.touches && e.touches[0].clientX);
             const sy = e.clientY || (e.touches && e.touches[0].clientY);
             const ol = wrap.offsetLeft, ot = wrap.offsetTop;
@@ -624,36 +512,70 @@
         function resizeSeal(btn, v) { if(!activeSeal) return; const w = activeSeal.offsetWidth+v, h = activeSeal.offsetHeight+v; if(w>50 && h>50) { activeSeal.style.width=w+'px'; activeSeal.style.height=h+'px'; } }
         function changeOpacity(inp) { if(!activeSeal) return; activeSeal.style.opacity = inp.value/100; }
 
-        // Professional Exports
+        // Export (WYSIWYG)
         async function downloadHDImage(format) {
-            document.getElementById('loader').style.display = 'block';
             document.getElementById('toolbar').style.display = 'none';
             document.getElementById('export-options').classList.remove('show');
-            
-            const canvas = await html2canvas(document.getElementById('a4-page'), { scale: 4, useCORS: true });
-            const link = document.createElement('a');
-            const mimeType = format === 'jpeg' ? 'image/jpeg' : 'image/png';
-            link.download = `notary-document.${format}`;
-            link.href = canvas.toDataURL(mimeType, 1.0);
-            link.click();
+            const pages = document.querySelectorAll('.a4-page');
+            const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF('p', 'mm', 'a4');
+            let firstPage = true;
+
+            document.getElementById('loader').style.display = 'block';
+
+            for (let i = 0; i < pages.length; i++) {
+                const canvas = await html2canvas(pages[i], { scale: 3, useCORS: true });
+                const imgData = canvas.toDataURL('image/jpeg', 1.0);
+                const pw = pdf.internal.pageSize.getWidth();
+                const ph = pdf.internal.pageSize.getHeight();
+                
+                if (!firstPage) pdf.addPage();
+                pdf.addImage(imgData, 'JPEG', 0, 0, pw, ph);
+                firstPage = false;
+            }
+
+            if (format === 'jpeg') {
+                // For JPEG, save only first page as image
+                const canvas = await html2canvas(pages[0], { scale: 4, useCORS: true });
+                const link = document.createElement('a');
+                link.download = 'notary-document.jpeg';
+                link.href = canvas.toDataURL('image/jpeg', 1.0);
+                link.click();
+            } else if (format === 'png') {
+                const canvas = await html2canvas(pages[0], { scale: 4, useCORS: true });
+                const link = document.createElement('a');
+                link.download = 'notary-document.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            } else {
+                pdf.save('notary-document.pdf');
+            }
+
             document.getElementById('loader').style.display = 'none';
             showToast(translations[currentLang].toast_download, 'success');
         }
 
         async function downloadPDF() {
-            document.getElementById('loader').style.display = 'block';
             document.getElementById('toolbar').style.display = 'none';
             document.getElementById('export-options').classList.remove('show');
-
+            const pages = document.querySelectorAll('.a4-page');
             const { jsPDF } = window.jspdf;
-            const canvas = await html2canvas(document.getElementById('a4-page'), { scale: 3, useCORS: true });
-            const imgData = canvas.toDataURL('image/jpeg', 1.0);
-            
             const pdf = new jsPDF('p', 'mm', 'a4');
-            const pw = pdf.internal.pageSize.getWidth();
-            const ph = pdf.internal.pageSize.getHeight();
-            
-            pdf.addImage(imgData, 'JPEG', 0, 0, pw, ph);
+            let firstPage = true;
+
+            document.getElementById('loader').style.display = 'block';
+
+            for (let i = 0; i < pages.length; i++) {
+                const canvas = await html2canvas(pages[i], { scale: 3, useCORS: true });
+                const imgData = canvas.toDataURL('image/jpeg', 1.0);
+                const pw = pdf.internal.pageSize.getWidth();
+                const ph = pdf.internal.pageSize.getHeight();
+                
+                if (!firstPage) pdf.addPage();
+                pdf.addImage(imgData, 'JPEG', 0, 0, pw, ph);
+                firstPage = false;
+            }
+
             pdf.save('notary-document.pdf');
             document.getElementById('loader').style.display = 'none';
             showToast(translations[currentLang].toast_download, 'success');
@@ -670,3 +592,4 @@
     </script>
 </body>
 </html>
+    
