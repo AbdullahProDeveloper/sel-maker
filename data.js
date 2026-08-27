@@ -1,4 +1,5 @@
 // এখানে আপনার সব ফোল্ডার ও ইমেজ লিস্ট দিন।
+// name_bn = বাংলা নাম, name_en = ইংরেজি নাম
 const sealData = [
     {
         id: "notary",
@@ -14,10 +15,9 @@ const sealData = [
                 subfolders: [
                     {
                         id: "adv-mukbul",
-                        name_bn: "অ্যাডভোকেট মুকবুল হোসেন",
-                        name_en: "Adv. Mukbul Hossain",
+                        name_bn: "অ্যাডভোকেট মোঃ মুকবুল হোসেন",
+                        name_en: "Adv. Md. Mukbul Hossain",
                         icon: "fa-solid fa-user-tie",
-                        // এখানে সেই ব্যক্তির সিলগুলো থাকবে
                         images: [
                             "images/seal1.png",
                             "images/seal2.png"
