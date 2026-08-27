@@ -34,12 +34,9 @@
         .side-header { padding: 15px; background: rgba(2, 6, 23, 0.5); display: flex; justify-content: space-between; align-items: center; }
         .side-header h3 { color: #818cf8; font-size: 16px; display: flex; align-items: center; gap: 10px; }
         #close-btn { background: none; border: none; color: white; font-size: 22px; cursor: pointer; }
-        
-        /* Sidebar Action Buttons */
         #sidebar-actions { padding: 15px; display: flex; flex-direction: column; gap: 10px; border-bottom: 1px solid #334155; }
-        .side-action-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 12px; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 10px; justify-content: center; transition: 0.2s; }
+        .side-action-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 12px; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 10px; justify-content: center; }
         .side-action-btn:active { background: #6366f1; }
-
         #menu-tree { flex: 1; overflow-y: auto; padding: 15px; }
         
         .level-btn { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; padding: 14px; border-radius: 10px; font-size: 14px; font-weight: 600; display: flex; justify-content: space-between; align-items: center; cursor: pointer; margin-bottom: 10px; }
@@ -57,21 +54,24 @@
 
         /* Main Area */
         #main-area { flex: 1; display: flex; flex-direction: column; position: relative; overflow: hidden; }
+        #scroll-area { flex: 1; overflow-y: auto; padding: 10px; display: flex; flex-direction: column; align-items: center; -webkit-overflow-scrolling: touch; }
         
-        #scroll-area { flex: 1; overflow-y: auto; padding: 10px; display: flex; flex-direction: column; align-items: center; touch-action: pan-y; -webkit-overflow-scrolling: touch; }
-        
-        /* A4 Pages */
+        /* A4 Page: Mobile-Optimized & Full screen touch support */
         .a4-page { width: 794px; height: 1123px; background: white; box-shadow: 0 10px 30px rgba(0,0,0,0.15); position: relative; overflow: hidden; flex-shrink: 0; margin-bottom: 20px; }
         @media (max-width: 850px) { .a4-page { width: 100%; max-width: 794px; height: auto; aspect-ratio: 210/297; } }
 
         #content-layer { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; }
 
-        /* Seal Interaction */
+        /* Seal: Full Page Movement (Corner to Corner) */
         .seal-wrapper { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 10; }
         .seal-wrapper.normal-state { border: none; }
         .seal-wrapper.normal-state .handle { display: none; }
         .seal-wrapper.active-state { outline: 2px dashed #6366f1; }
         .seal-wrapper.active-state .handle { display: flex; }
+
+        /* Prevent long-press & allow pure touch control */
+        .seal-wrapper, .seal-wrapper * { -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
+        .seal-wrapper { touch-action: none; }
 
         .handle { position: absolute; width: 45px; height: 45px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 18px; color: white; z-index: 20; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
         .move-handle { top: -25px; left: 50%; transform: translateX(-50%); background: #6366f1; cursor: grab; }
@@ -139,17 +139,10 @@
             <h3><i class="fas fa-folder-tree"></i> <span id="sidebar-title">সিল লাইব্রেরি</span></h3>
             <button id="close-btn" onclick="toggleSidebar(false)"><i class="fas fa-times"></i></button>
         </div>
-        
-        <!-- Sidebar Actions (Upload & Download) -->
         <div id="sidebar-actions">
-            <button class="side-action-btn" onclick="triggerSidebarUpload()">
-                <i class="fas fa-cloud-upload-alt"></i> <span id="side-upload-text">আপলোড</span>
-            </button>
-            <button class="side-action-btn" onclick="downloadHDImage('png')">
-                <i class="fas fa-download"></i> <span id="side-download-text">ডাউনলোড</span>
-            </button>
+            <button class="side-action-btn" onclick="triggerSidebarUpload()"><i class="fas fa-cloud-upload-alt"></i> <span id="side-upload-text">আপলোড</span></button>
+            <button class="side-action-btn" onclick="downloadHDImage('png')"><i class="fas fa-download"></i> <span id="side-download-text">ডাউনলোড</span></button>
         </div>
-
         <div id="menu-tree"></div>
     </div>
     <div id="overlay" onclick="toggleSidebar(false)"></div>
@@ -179,7 +172,6 @@
         </div>
     </div>
 
-    <!-- Bottom Download Button -->
     <div id="bottom-actions">
         <button id="export-btn" onclick="toggleExportMenu()"><i class="fas fa-download"></i> <span id="export-text">ডাউনলোড</span></button>
     </div>
@@ -201,7 +193,7 @@
             bn: {
                 title: "প্রফেশনাল সিল অ্যাপ", sidebar: "সিল লাইব্রেরি", quick_upload: "যেকোনো ডকুমেন্ট আপলোড করুন",
                 placeholder: "ডকুমেন্ট আপলোড করুন", instruction: "উপরের বাটন থেকে যেকোনো PDF বা ছবি আপলোড করুন",
-                side_upload: "আপলোড করুন", side_download: "ডাউনলোড করুন", export: "ডাউনলোড",
+                side_upload: "আপলোড", side_download: "ডাউনলোড", export: "ডাউনলোড",
                 png: "HD PNG", jpeg: "HD JPEG", pdf: "PDF ডাউনলোড", print: "প্রিন্ট",
                 footer: "এটি একটি সিল মারার প্রফেশনাল ওয়েবসাইট",
                 toast_upload: "ফাইল সফলভাবে আপলোড হয়েছে!", toast_error: "PDF লোড করা যায়নি!",
@@ -252,7 +244,6 @@
         function toggleSidebar(show) { document.getElementById('sidebar').classList.toggle('open', show); document.getElementById('overlay').classList.toggle('show', show); }
         function toggleExportMenu() { document.getElementById('export-options').classList.toggle('show'); }
         
-        // Sidebar Upload trigger
         function triggerSidebarUpload() {
             toggleSidebar(false);
             document.getElementById('file-upload').click();
@@ -359,7 +350,7 @@
             reader.readAsArrayBuffer(file);
         }
 
-        // Seal Management (No Repeat, Anywhere on Page)
+        // Seal Management (Full Page Movement - Corner to Corner)
         function addSeal(src) {
             toggleSidebar(false);
             const container = document.getElementById('content-layer');
@@ -373,6 +364,7 @@
             const wrap = document.createElement('div'); 
             wrap.className = 'seal-wrapper normal-state'; 
             wrap.style.width = '150px'; wrap.style.height = '150px';
+            // Default position is Center (50%, 50%)
             
             wrap.innerHTML = `
                 <img src="${src}" class="seal-img">
@@ -416,6 +408,7 @@
             }
         });
 
+        // Extremely Smooth Drag (Corner to Corner)
         function startDrag(e, wrap) {
             e.preventDefault(); e.stopPropagation();
             const pr = wrap.parentElement.getBoundingClientRect();
@@ -427,10 +420,15 @@
                 const cx = ev.clientX || (ev.touches && ev.touches[0].clientX);
                 const cy = ev.clientY || (ev.touches && ev.touches[0].clientY);
                 let nl = ol + (cx - sx), nt = ot + (cy - sy);
-                if(nl < 0) nl = 0; if(nt < 0) nt = 0;
+                
+                // Bring to the EXACT corners - no restrictions except page borders
+                if(nl < 0) nl = 0; 
+                if(nt < 0) nt = 0;
                 if(nl + wrap.offsetWidth > pr.width) nl = pr.width - wrap.offsetWidth;
                 if(nt + wrap.offsetHeight > pr.height) nt = pr.height - wrap.offsetHeight;
-                wrap.style.left = nl+'px'; wrap.style.top = nt+'px';
+                
+                wrap.style.left = nl+'px'; 
+                wrap.style.top = nt+'px';
             }
             function up() { 
                 document.removeEventListener('mousemove', move); document.removeEventListener('mouseup', up); 
