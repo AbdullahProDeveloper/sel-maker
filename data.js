@@ -19,8 +19,8 @@ const sealData = [
                         name_en: "Adv. Md. Mukbul Hossain",
                         icon: "fa-solid fa-user-tie",
                         images: [
-                            "images/seal1.png",
-                            "images/seal2.png"
+                            "images/Notary-Public/mizen/1000753546-removebg-preview.png",
+                            "images/Notary-Public/mizen/1000753542-removebg-preview.png"
                         ]
                     }
                 ]
