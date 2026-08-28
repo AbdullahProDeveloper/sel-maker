@@ -4,193 +4,936 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Pro Notary Seal Studio - পেশাদার নোটারি সিল স্টুডিও</title>
+    
+    <!-- ফন্ট অ্যাওসাম আইকন -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- PDF.js লাইব্রেরি -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    
+    <!-- HTML2Canvas - স্ক্রিনশট ক্যাপচার -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    
+    <!-- jsPDF - PDF তৈরি -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    
+    <!-- JSZip - ZIP ফাইল তৈরি -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
     <script src="data.js"></script>
+    
+    <!-- ডিফল্ট সিল ডাটা -->
+    <script>
+        var sealData = [
+            { name_bn: 'সরকারি সিল', name_en: 'Govt Seal', icon: 'fas fa-landmark', subfolders: [
+                { name_bn: 'জেলা প্রশাসক', name_en: 'DC Office', icon: 'fas fa-building', subfolders: [
+                    { name_bn: 'নোটারি পাবলিক', name_en: 'Notary Public', icon: 'fas fa-stamp', images: [
+                        'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"%3E%3Ccircle cx="60" cy="60" r="55" fill="%23fef2f2" stroke="%23dc2626" stroke-width="3"/%3E%3Ccircle cx="60" cy="60" r="45" fill="none" stroke="%23dc2626" stroke-width="1.5"/%3E%3Ctext x="60" y="55" font-size="14" text-anchor="middle" fill="%23dc2626" font-family="sans-serif" font-weight="bold"%3Eনোটারি%3C/text%3E%3Ctext x="60" y="70" font-size="12" text-anchor="middle" fill="%23dc2626" font-family="sans-serif"%3Eপাবলিক%3C/text%3E%3C/svg%3E',
+                        'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"%3E%3Ccircle cx="60" cy="60" r="55" fill="%23fef3c7" stroke="%23d97706" stroke-width="3"/%3E%3Ccircle cx="60" cy="60" r="45" fill="none" stroke="%23d97706" stroke-width="1.5"/%3E%3Ctext x="60" y="55" font-size="14" text-anchor="middle" fill="%23b45309" font-family="sans-serif" font-weight="bold"%3Eসরকারি%3C/text%3E%3Ctext x="60" y="70" font-size="12" text-anchor="middle" fill="%23b45309" font-family="sans-serif"%3Eসিল%3C/text%3E%3C/svg%3E'
+                    ]}
+                ]}
+            ]},
+            { name_bn: 'ব্যক্তিগত', name_en: 'Personal', icon: 'fas fa-user', subfolders: [
+                { name_bn: 'অ্যাডভোকেট', name_en: 'Advocate', icon: 'fas fa-gavel', subfolders: [
+                    { name_bn: 'সুপ্রিম কোর্ট', name_en: 'Supreme Court', icon: 'fas fa-university', images: [
+                        'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"%3E%3Ccircle cx="60" cy="60" r="55" fill="%23dcfce7" stroke="%2316a34a" stroke-width="3"/%3E%3Ccircle cx="60" cy="60" r="45" fill="none" stroke="%2316a34a" stroke-width="1.5"/%3E%3Ctext x="60" y="55" font-size="14" text-anchor="middle" fill="%23166534" font-family="sans-serif" font-weight="bold"%3Eঅ্যাডভোকেট%3C/text%3E%3Ctext x="60" y="70" font-size="12" text-anchor="middle" fill="%23166534" font-family="sans-serif"%3Eসুপ্রিম কোর্ট%3C/text%3E%3C/svg%3E'
+                    ]}
+                ]}
+            ]},
+            { name_bn: 'ব্যবসায়িক', name_en: 'Business', icon: 'fas fa-briefcase', subfolders: [
+                { name_bn: 'কোম্পানি', name_en: 'Company', icon: 'fas fa-building', subfolders: [
+                    { name_bn: 'প্রাইভেট লিমিটেড', name_en: 'Private Ltd', icon: 'fas fa-file-contract', images: [
+                        'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"%3E%3Crect x="5" y="5" width="110" height="110" rx="15" fill="%23f0f9ff" stroke="%230284c7" stroke-width="3"/%3E%3Ctext x="60" y="55" font-size="14" text-anchor="middle" fill="%230c4a6e" font-family="sans-serif" font-weight="bold"%3Eকোম্পানি%3C/text%3E%3Ctext x="60" y="70" font-size="12" text-anchor="middle" fill="%230c4a6e" font-family="sans-serif"%3Eসিল%3C/text%3E%3C/svg%3E'
+                    ]}
+                ]}
+            ]}
+        ];
+    </script>
+    
     <style>
-        :root{--primary:#6366f1;--primary-light:#818cf8;--secondary:#10b981;--danger:#ef4444;--dark:#0f172a;--dark2:#1e293b;--light:#f8fafc;--border:#e2e8f0;--text:#1e293b;--text-light:#64748b;--radius-sm:8px;--radius-md:12px;--radius-lg:16px;--radius-xl:20px}
+        /* ===== CSS ভেরিয়েবল ===== */
+        :root{
+            --primary:#6366f1;
+            --primary-light:#818cf8;
+            --primary-dark:#4f46e5;
+            --secondary:#10b981;
+            --danger:#ef4444;
+            --warning:#f59e0b;
+            --dark:#0f172a;
+            --dark2:#1e293b;
+            --light:#f8fafc;
+            --border:#e2e8f0;
+            --text:#1e293b;
+            --radius-sm:8px;
+            --radius-md:12px;
+            --radius-lg:16px;
+            --radius-xl:20px;
+            --shadow-sm:0 2px 8px rgba(0,0,0,0.08);
+            --shadow-md:0 4px 16px rgba(0,0,0,0.12);
+            --shadow-lg:0 8px 32px rgba(0,0,0,0.18);
+            --transition:all 0.3s cubic-bezier(0.4,0,0.2,1);
+        }
+        
+        /* ===== রিসেট স্টাইল ===== */
         *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI','Roboto',sans-serif;-webkit-tap-highlight-color:transparent}
+        
+        /* ===== স্ক্রলবার ===== */
         ::-webkit-scrollbar{width:5px;height:5px}
         ::-webkit-scrollbar-track{background:#f1f5f9}
         ::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:10px}
+        ::-webkit-scrollbar-thumb:hover{background:#94a3b8}
+        
+        /* ===== বডি ===== */
+        body{height:100vh;display:flex;flex-direction:column;overflow:hidden;background:linear-gradient(135deg,#f0f4ff,#e8ecf8);color:var(--text)}
         body.dark-mode{background:#0f172a;color:#e2e8f0}
         body.dark-mode #scroll-area{background:#1e293b}
-        body.dark-mode .page-container{background:#1e293b;box-shadow:0 4px 12px rgba(0,0,0,0.5)}
+        body.dark-mode .page-container{background:#1e293b}
         body.dark-mode .a4-page{background:#1e293b}
         body.dark-mode #controls-bar{background:rgba(15,23,42,0.98);border-color:#334155}
         body.dark-mode #controls-bar button{background:#1e293b;color:#e2e8f0;border-color:#334155}
-        body{height:100vh;display:flex;flex-direction:column;overflow:hidden;background:#f1f5f9;color:var(--text);-webkit-font-smoothing:antialiased}
-        #header{height:56px;background:linear-gradient(135deg,#0f172a,#1e293b);border-bottom:3px solid var(--primary);color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 14px;z-index:100;flex-shrink:0;box-shadow:0 4px 20px rgba(0,0,0,0.15)}
+        
+        /* ===== হেডার ===== */
+        #header{height:56px;background:linear-gradient(135deg,#0f172a,#1e293b);color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 14px;z-index:100;flex-shrink:0;box-shadow:0 4px 20px rgba(0,0,0,0.15)}
         .header-left,.header-right{display:flex;align-items:center;gap:10px}
-        .brand-icon{width:36px;height:36px;background:linear-gradient(135deg,var(--primary),var(--primary-light));border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;font-size:18px}
+        .brand-icon{width:36px;height:36px;background:linear-gradient(135deg,var(--primary),var(--primary-light));border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;font-size:18px;animation:pulse 2s infinite}
+        @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(99,102,241,0.4)}50%{box-shadow:0 0 0 10px rgba(99,102,241,0)}}
         .brand-title{font-size:14px;font-weight:800}
         .brand-subtitle{font-size:8px;color:#94a3b8;text-transform:uppercase;letter-spacing:1px}
-        .header-btn{background:rgba(255,255,255,0.08);border:1.5px solid rgba(255,255,255,0.15);color:#fff;padding:8px 12px;border-radius:20px;font-size:10px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:5px;transition:all 0.2s}
-        .header-btn:hover{background:rgba(99,102,241,0.3)}
-        #quick-upload{background:linear-gradient(135deg,#1e293b,#0f172a);padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.08);flex-shrink:0}
-        .upload-btn{background:linear-gradient(135deg,var(--primary),var(--primary-light));color:#fff;border:none;border-radius:var(--radius-md);padding:12px 18px;font-weight:700;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;width:100%}
+        .header-btn{background:rgba(255,255,255,0.08);border:none;color:#fff;padding:8px 12px;border-radius:20px;font-size:10px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:5px;transition:var(--transition)}
+        .header-btn:hover{background:var(--primary);transform:translateY(-2px);box-shadow:0 4px 12px rgba(99,102,241,0.4)}
+        
+        /* ===== আপলোড বার ===== */
+        #quick-upload{background:linear-gradient(135deg,#1e293b,#0f172a);padding:10px 14px;flex-shrink:0}
+        .upload-btn{background:linear-gradient(135deg,var(--primary),var(--primary-light));color:#fff;border:none;border-radius:var(--radius-md);padding:12px;font-weight:700;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;width:100%;transition:var(--transition);box-shadow:0 4px 15px rgba(99,102,241,0.35)}
+        .upload-btn:hover{transform:translateY(-3px);box-shadow:0 8px 25px rgba(99,102,241,0.5)}
         input[type="file"]{display:none}
-        #sidebar{position:fixed;top:0;left:0;height:100%;width:340px;max-width:90%;background:linear-gradient(180deg,#1e293b,#0f172a);color:#fff;transform:translateX(-100%);transition:transform 0.35s;z-index:200;display:flex;flex-direction:column;box-shadow:4px 0 30px rgba(0,0,0,0.4);border-right:2px solid rgba(99,102,241,0.3)}
+        
+        /* ===== সাইডবার ===== */
+        #sidebar{position:fixed;top:0;left:0;height:100%;width:340px;max-width:90%;background:linear-gradient(180deg,#1e293b,#0f172a);color:#fff;transform:translateX(-100%);transition:transform 0.35s;z-index:200;display:flex;flex-direction:column;box-shadow:4px 0 30px rgba(0,0,0,0.4)}
         #sidebar.open{transform:translateX(0)}
-        .side-header{padding:16px;background:rgba(2,6,23,0.95);display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid rgba(99,102,241,0.3)}
-        .side-header h3{font-size:14px;font-weight:700;color:var(--primary-light);display:flex;align-items:center;gap:8px}
+        .side-header{padding:16px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(255,255,255,0.1)}
+        .side-header h3{font-size:14px;display:flex;align-items:center;gap:8px;color:var(--primary-light)}
         .side-header-actions{display:flex;gap:6px}
-        .dark-mode-btn{background:rgba(255,255,255,0.1);border:none;color:#fff;width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition:all 0.2s}
-        .dark-mode-btn:hover{background:rgba(99,102,241,0.4)}
-        #close-btn{background:rgba(255,255,255,0.1);border:none;color:#fff;width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center}
-        #sidebar-actions{padding:10px;display:flex;gap:6px;border-bottom:1px solid rgba(255,255,255,0.08)}
-        .side-action-btn{background:rgba(99,102,241,0.2);border:1.5px solid rgba(99,102,241,0.4);color:#fff;padding:8px;border-radius:var(--radius-sm);font-size:10px;cursor:pointer;flex:1;display:flex;align-items:center;justify-content:center;gap:4px;font-weight:600}
-        #search-container{padding:12px 10px}
+        .dark-mode-btn,#close-btn{background:rgba(255,255,255,0.1);border:none;color:#fff;width:34px;height:34px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:var(--transition)}
+        .dark-mode-btn:hover,#close-btn:hover{background:var(--primary);transform:rotate(90deg)}
+        #sidebar-actions{padding:10px;display:flex;gap:6px;border-bottom:1px solid rgba(255,255,255,0.1)}
+        .side-action-btn{background:rgba(99,102,241,0.2);border:1px solid rgba(99,102,241,0.4);color:#fff;padding:8px;border-radius:var(--radius-sm);font-size:10px;cursor:pointer;flex:1;display:flex;align-items:center;justify-content:center;gap:4px;transition:var(--transition)}
+        .side-action-btn:hover{background:var(--primary);transform:translateY(-2px)}
+        
+        /* ===== সার্চ ===== */
+        #search-container{padding:12px}
         .search-wrapper{position:relative}
         .search-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:#94a3b8;font-size:12px}
-        #search-input{width:100%;background:rgba(255,255,255,0.07);border:2px solid rgba(99,102,241,0.3);color:#fff;padding:10px 36px 10px 34px;border-radius:var(--radius-sm);font-size:12px;outline:none}
-        #search-clear{position:absolute;right:8px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.1);border:none;color:#94a3b8;width:24px;height:24px;border-radius:50%;cursor:pointer;display:none;align-items:center;justify-content:center;font-size:10px}
-        #search-clear.visible{display:flex}
+        #search-input{width:100%;background:rgba(255,255,255,0.07);border:2px solid rgba(99,102,241,0.3);color:#fff;padding:10px 36px 10px 34px;border-radius:var(--radius-sm);font-size:12px;outline:none;transition:var(--transition)}
+        #search-input:focus{border-color:var(--primary);background:rgba(99,102,241,0.15)}
+        #search-clear{position:absolute;right:8px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.1);border:none;color:#94a3b8;width:24px;height:24px;border-radius:50%;cursor:pointer;display:none}
+        #search-clear.visible{display:block}
+        
+        /* ===== মেনু ট্রি ===== */
         #menu-tree{flex:1;overflow-y:auto;padding:10px}
-        .level-btn{width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:#fff;padding:10px 12px;border-radius:var(--radius-sm);font-size:11px;font-weight:600;display:flex;justify-content:space-between;align-items:center;cursor:pointer;margin-bottom:5px;text-align:left}
-        .level-btn:hover{background:rgba(99,102,241,0.15)}
-        .level-btn i{color:var(--primary-light);font-size:9px;transition:transform 0.3s}
+        .level-btn{width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:#fff;padding:10px 12px;border-radius:var(--radius-sm);font-size:11px;font-weight:600;display:flex;justify-content:space-between;align-items:center;cursor:pointer;margin-bottom:5px;text-align:left;transition:var(--transition)}
+        .level-btn:hover{background:rgba(99,102,241,0.2);transform:translateX(5px)}
+        .level-btn i{font-size:9px;transition:transform 0.3s}
         .level-btn.active i{transform:rotate(90deg)}
         .nested-container{display:none;padding-left:12px;border-left:2px solid rgba(99,102,241,0.25);margin-left:10px}
-        .nested-container.show{display:block}
-        .images-container{display:none;grid-template-columns:repeat(3,1fr);gap:7px;padding:10px;background:rgba(2,6,23,0.85);border-radius:var(--radius-sm);margin-top:5px;border:1px solid rgba(99,102,241,0.2)}
+        .nested-container.show{display:block;animation:slideDown 0.3s}
+        @keyframes slideDown{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
+        .images-container{display:none;grid-template-columns:repeat(3,1fr);gap:7px;padding:10px;background:rgba(2,6,23,0.8);border-radius:var(--radius-sm);margin-top:5px}
         .images-container.show{display:grid}
-        .seal-item{background:rgba(255,255,255,0.06);border-radius:var(--radius-sm);padding:6px;display:flex;justify-content:center;align-items:center;cursor:pointer;aspect-ratio:1;border:2px solid transparent;transition:all 0.2s}
-        .seal-item:hover{border-color:var(--primary);background:rgba(99,102,241,0.2)}
+        .seal-item{background:rgba(255,255,255,0.06);border-radius:var(--radius-sm);padding:6px;display:flex;justify-content:center;align-items:center;cursor:pointer;aspect-ratio:1;border:2px solid transparent;transition:var(--transition)}
+        .seal-item:hover{border-color:var(--primary);background:rgba(99,102,241,0.2);transform:scale(1.1)}
         .seal-item img{max-width:90%;max-height:90%;object-fit:contain}
+        
+        /* ===== ওভারলে ===== */
         #overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:150;display:none;backdrop-filter:blur(3px)}
         #overlay.show{display:block}
+        
+        /* ===== মূল এরিয়া ===== */
         #main-area{flex:1;display:flex;flex-direction:column;position:relative;overflow:hidden}
-        #controls-bar{background:rgba(255,255,255,0.98);padding:6px 10px;display:flex;justify-content:center;align-items:center;gap:5px;border-bottom:2px solid var(--border);position:absolute;top:0;left:0;right:0;z-index:90;box-shadow:0 2px 8px rgba(0,0,0,0.06);flex-wrap:wrap}
-        #controls-bar button{padding:5px 8px;border:1.5px solid var(--border);background:#fff;color:var(--text);border-radius:6px;font-size:9px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:3px}
-        #controls-bar button:hover{background:var(--light);border-color:var(--primary-light);color:var(--primary)}
-        #controls-bar input{width:35px;text-align:center;border:1.5px solid var(--border);border-radius:6px;padding:3px;font-size:9px;font-weight:bold}
-        #download-current-btn{background:linear-gradient(135deg,var(--primary),var(--primary-light))!important;border-color:var(--primary)!important;color:#fff!important}
-        #scroll-area{flex:1;overflow:auto;padding:10px;padding-top:50px;display:flex;flex-direction:column;align-items:center;-webkit-overflow-scrolling:touch}
-        .page-container{position:relative;width:100%;max-width:794px;margin-bottom:20px;background:#fff;box-shadow:0 4px 12px rgba(0,0,0,0.1);border-radius:4px;overflow:hidden}
-        .a4-page{width:100%;aspect-ratio:210/297;background:#fff;position:relative;overflow:hidden;flex-shrink:0}
+        #controls-bar{background:rgba(255,255,255,0.98);padding:6px 10px;display:flex;justify-content:center;align-items:center;gap:5px;border-bottom:1px solid var(--border);position:absolute;top:0;left:0;right:0;z-index:90;flex-wrap:wrap;backdrop-filter:blur(10px)}
+        #controls-bar button{padding:5px 8px;border:1px solid var(--border);background:#fff;color:var(--text);border-radius:6px;font-size:9px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:3px;transition:var(--transition)}
+        #controls-bar button:hover{background:var(--primary);color:#fff;border-color:var(--primary);transform:translateY(-1px)}
+        #controls-bar input{width:35px;text-align:center;border:1px solid var(--border);border-radius:6px;padding:3px;font-size:9px}
+        #download-current-btn{background:linear-gradient(135deg,var(--primary),var(--primary-light))!important;color:#fff!important;border-color:var(--primary)!important}
+        
+        /* ===== স্ক্রল এরিয়া ===== */
+        #scroll-area{flex:1;overflow:auto;padding:10px;padding-top:50px;display:flex;flex-direction:column;align-items:center}
+        .page-container{position:relative;width:100%;max-width:794px;margin-bottom:20px;background:#fff;box-shadow:var(--shadow-md);border-radius:4px;overflow:hidden;transition:var(--transition)}
+        .page-container:hover{box-shadow:var(--shadow-lg)}
+        .a4-page{width:100%;aspect-ratio:210/297;background:#fff;position:relative;overflow:hidden}
         .a4-page canvas,.a4-page img{width:100%!important;height:100%!important;object-fit:contain!important;display:block}
         .a4-page.current-page{box-shadow:inset 0 0 0 2px var(--primary)}
+        
+        /* ===== সিল ===== */
         .seal-wrapper{position:absolute;z-index:10;user-select:none;cursor:move;touch-action:none;overflow:visible}
-        .seal-wrapper.active-state{outline:2px solid var(--primary);outline-offset:2px;border-radius:4px}
-        .seal-img{width:100%;height:100%;object-fit:contain;pointer-events:none;display:block;overflow:visible}
-        .seal-edit-icon{position:absolute;top:-12px;right:-12px;width:28px;height:28px;background:var(--primary);border-radius:50%;border:2px solid #fff;display:none;align-items:center;justify-content:center;color:#fff;font-size:11px;z-index:20;cursor:pointer;pointer-events:auto}
+        .seal-wrapper.active-state{outline:2px solid var(--primary);outline-offset:2px;animation:glow 1.5s infinite}
+        @keyframes glow{0%,100%{outline-color:var(--primary)}50%{outline-color:var(--secondary)}}
+        .seal-img{width:100%;height:100%;object-fit:contain;pointer-events:none;display:block}
+        .seal-edit-icon{position:absolute;top:-12px;right:-12px;width:28px;height:28px;background:var(--primary);border-radius:50%;border:2px solid #fff;display:none;align-items:center;justify-content:center;color:#fff;font-size:11px;z-index:20;cursor:pointer;transition:var(--transition)}
+        .seal-edit-icon:hover{transform:scale(1.2);background:var(--secondary)}
         .seal-wrapper.active-state .seal-edit-icon{display:flex}
-        #seal-editor{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#1e293b,#0f172a);border-radius:var(--radius-xl);padding:12px 16px;z-index:500;display:none;flex-direction:row;flex-wrap:wrap;gap:6px;max-width:95%;box-shadow:0 20px 60px rgba(0,0,0,0.5);border:2px solid rgba(99,102,241,0.4);align-items:center;cursor:grab}
-        #seal-editor.show{display:flex}
-        .editor-handle{width:100%;text-align:center;color:#94a3b8;font-size:8px;letter-spacing:2px;cursor:grab;padding:2px 0}
-        .editor-btn{background:rgba(255,255,255,0.1);border:1.5px solid rgba(255,255,255,0.2);color:#fff;width:38px;height:38px;border-radius:var(--radius-md);cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;transition:all 0.2s}
-        .editor-btn:hover{background:var(--primary);border-color:var(--primary)}
+        
+        /* ===== এডিটর ===== */
+        #seal-editor{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#1e293b,#0f172a);border-radius:var(--radius-xl);padding:12px;z-index:500;display:none;flex-direction:row;flex-wrap:wrap;gap:6px;max-width:95%;box-shadow:0 20px 60px rgba(0,0,0,0.5);border:2px solid rgba(99,102,241,0.4);align-items:center;cursor:grab}
+        #seal-editor.show{display:flex;animation:editorIn 0.3s}
+        @keyframes editorIn{from{opacity:0;transform:translateX(-50%) translateY(50px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+        .editor-handle{width:100%;text-align:center;color:#94a3b8;font-size:8px;letter-spacing:2px;cursor:grab}
+        .editor-btn{background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:#fff;width:38px;height:38px;border-radius:var(--radius-md);cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;transition:var(--transition)}
+        .editor-btn:hover{background:var(--primary);transform:scale(1.15)}
         .editor-section{display:flex;align-items:center;gap:4px;background:rgba(255,255,255,0.05);padding:4px 8px;border-radius:var(--radius-md)}
-        .editor-label{color:#94a3b8;font-size:8px;white-space:nowrap;font-weight:600}
+        .editor-label{color:#94a3b8;font-size:8px;white-space:nowrap}
         input[type="range"].editor-input{width:55px;height:4px;accent-color:var(--primary);cursor:pointer}
         .editor-preview-mini{width:38px;height:38px;border-radius:50%;overflow:hidden;border:2px solid var(--primary);background:rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center}
+        .editor-preview-mini img{width:100%;height:100%;object-fit:contain}
+        
+        /* ===== দ্রুত বাটন ===== */
         #quick-seal-buttons{position:fixed;bottom:20px;left:15px;z-index:95;display:flex;flex-direction:column;gap:8px}
-        .quick-btn{width:44px;height:44px;border-radius:var(--radius-lg);background:linear-gradient(135deg,var(--primary),var(--primary-light));border:none;color:#fff;font-size:16px;cursor:pointer;box-shadow:0 6px 18px rgba(99,102,241,0.4);display:flex;align-items:center;justify-content:center}
+        .quick-btn{width:44px;height:44px;border-radius:var(--radius-lg);background:linear-gradient(135deg,var(--primary),var(--primary-light));border:none;color:#fff;font-size:16px;cursor:pointer;box-shadow:0 6px 18px rgba(99,102,241,0.4);display:flex;align-items:center;justify-content:center;transition:var(--transition)}
+        .quick-btn:hover{transform:translateY(-5px) scale(1.1);box-shadow:0 10px 30px rgba(99,102,241,0.6)}
+        
+        /* ===== ডাউনলোড ===== */
         #bottom-actions{position:fixed;bottom:20px;right:15px;z-index:95;display:flex;flex-direction:column;gap:8px}
-        #export-btn{background:linear-gradient(135deg,var(--primary),var(--primary-light));color:#fff;border:none;border-radius:var(--radius-lg);padding:12px 20px;font-size:12px;font-weight:bold;cursor:pointer;box-shadow:0 6px 20px rgba(99,102,241,0.5);display:flex;align-items:center;gap:8px}
-        #export-options{position:fixed;bottom:80px;right:15px;background:linear-gradient(135deg,#1e293b,#0f172a);border-radius:var(--radius-xl);padding:8px;display:none;flex-direction:column;gap:4px;z-index:300;min-width:180px;box-shadow:0 16px 48px rgba(0,0,0,0.4);border:1px solid rgba(255,255,255,0.12)}
-        #export-options.show{display:flex}
-        #export-options button{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:#fff;text-align:left;padding:10px 14px;border-radius:var(--radius-sm);cursor:pointer;display:flex;align-items:center;gap:10px;font-size:11px;font-weight:600}
+        #export-btn{background:linear-gradient(135deg,var(--primary),var(--primary-light));color:#fff;border:none;border-radius:var(--radius-lg);padding:12px 20px;font-size:12px;font-weight:bold;cursor:pointer;box-shadow:0 6px 20px rgba(99,102,241,0.5);display:flex;align-items:center;gap:8px;transition:var(--transition)}
+        #export-btn:hover{transform:translateY(-5px);box-shadow:0 12px 30px rgba(99,102,241,0.7)}
+        #export-options{position:fixed;bottom:80px;right:15px;background:linear-gradient(135deg,#1e293b,#0f172a);border-radius:var(--radius-xl);padding:8px;display:none;flex-direction:column;gap:4px;z-index:300;min-width:180px;box-shadow:0 16px 48px rgba(0,0,0,0.4)}
+        #export-options.show{display:flex;animation:editorIn 0.3s}
+        #export-options button{background:rgba(255,255,255,0.06);border:none;color:#fff;text-align:left;padding:10px 14px;border-radius:var(--radius-sm);cursor:pointer;display:flex;align-items:center;gap:10px;font-size:11px;transition:var(--transition)}
+        #export-options button:hover{background:var(--primary);transform:translateX(5px)}
+        
+        /* ===== টোস্ট ===== */
         #toast{position:fixed;top:20px;left:50%;transform:translateX(-50%) translateY(-120px);background:linear-gradient(135deg,#1e293b,#0f172a);color:#fff;padding:14px 24px;border-radius:var(--radius-md);font-size:13px;font-weight:600;z-index:1000;display:flex;align-items:center;gap:10px;transition:transform 0.4s;box-shadow:0 12px 40px rgba(0,0,0,0.4);max-width:90%}
         #toast.show{transform:translateX(-50%) translateY(0)}
         #toast.success{border-left:4px solid var(--secondary)}
         #toast.error{border-left:4px solid var(--danger)}
+        
+        /* ===== লোডার ===== */
         #loader{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(15,23,42,0.95);padding:30px;border-radius:50%;z-index:500;color:var(--primary-light)}
         #loader i{font-size:40px;animation:spin 1.2s linear infinite}
         @keyframes spin{100%{transform:rotate(360deg)}}
-        @media(max-width:768px){#header{height:50px;padding:0 10px}.brand-icon{width:32px;height:32px;font-size:16px}.brand-title{font-size:12px}.brand-subtitle{display:none}.header-btn{padding:6px 9px;font-size:8px}.header-btn span{display:none}#controls-bar{padding:4px 5px;gap:3px}#controls-bar button{padding:3px 6px;font-size:7px}#scroll-area{padding:6px;padding-top:42px}#seal-editor{padding:8px 10px;gap:4px}.editor-btn{width:32px;height:32px;font-size:13px}#quick-seal-buttons{left:8px;bottom:10px}.quick-btn{width:38px;height:38px;font-size:14px}#bottom-actions{right:8px;bottom:10px}}
+        
+        /* ===== মোবাইল রেসপন্সিভ ===== */
+        @media(max-width:768px){
+            #header{height:50px;padding:0 10px}
+            .brand-icon{width:32px;height:32px;font-size:16px}
+            .brand-title{font-size:12px}
+            .brand-subtitle{display:none}
+            .header-btn{padding:6px 9px;font-size:8px}
+            .header-btn span{display:none}
+            #controls-bar{padding:4px 5px;gap:3px}
+            #controls-bar button{padding:3px 6px;font-size:7px}
+            #scroll-area{padding:6px;padding-top:42px}
+            #seal-editor{padding:8px 10px;gap:4px}
+            .editor-btn{width:32px;height:32px;font-size:13px}
+            #quick-seal-buttons{left:8px;bottom:10px}
+            .quick-btn{width:38px;height:38px;font-size:14px}
+            #bottom-actions{right:8px;bottom:10px}
+            #export-btn{padding:10px 14px;font-size:10px}
+        }
     </style>
 </head>
 <body>
+    <!-- হেডার -->
     <header id="header">
-        <div class="header-left"><button class="header-btn" onclick="toggleSidebar(true)"><i class="fas fa-bars"></i></button><div class="brand-icon"><i class="fas fa-stamp"></i></div><div><div class="brand-title" id="title-text">নোটারি সিল স্টুডিও</div><div class="brand-subtitle">Professional Edition</div></div></div>
-        <div class="header-right"><button class="header-btn" onclick="toggleLanguage()"><i class="fas fa-globe"></i> <span id="lang-text">EN</span></button><button class="header-btn" onclick="showHelp()"><i class="fas fa-question-circle"></i></button></div>
+        <div class="header-left">
+            <button class="header-btn" onclick="toggleSidebar(true)"><i class="fas fa-bars"></i></button>
+            <div class="brand-icon"><i class="fas fa-stamp"></i></div>
+            <div><div class="brand-title" id="title-text">নোটারি সিল স্টুডিও</div><div class="brand-subtitle">Professional Edition</div></div>
+        </div>
+        <div class="header-right">
+            <button class="header-btn" onclick="toggleLanguage()"><i class="fas fa-globe"></i> <span id="lang-text">EN</span></button>
+            <button class="header-btn" onclick="showHelp()"><i class="fas fa-question-circle"></i> <span>সাহায্য</span></button>
+        </div>
     </header>
-    <div id="quick-upload"><label for="file-upload" class="upload-btn"><i class="fas fa-cloud-upload-alt"></i> <span id="quick-upload-text">ডকুমেন্ট আপলোড করুন</span></label><input id="file-upload" type="file" accept="application/pdf,image/*" onchange="handleFileUpload(event)"></div>
+    
+    <!-- আপলোড বার -->
+    <div id="quick-upload">
+        <label for="file-upload" class="upload-btn"><i class="fas fa-cloud-upload-alt"></i> <span id="quick-upload-text">ডকুমেন্ট আপলোড করুন</span></label>
+        <input id="file-upload" type="file" accept="application/pdf,image/*" onchange="handleFileUpload(event)">
+    </div>
+    
+    <!-- সাইডবার -->
     <div id="sidebar">
-        <div class="side-header"><h3><i class="fas fa-folder-tree"></i> <span id="sidebar-title">সিল লাইব্রেরি</span></h3><div class="side-header-actions"><button class="dark-mode-btn" onclick="toggleDarkMode()" title="ডার্ক মোড"><i class="fas fa-moon"></i></button><button id="close-btn" onclick="toggleSidebar(false)"><i class="fas fa-times"></i></button></div></div>
-        <div id="sidebar-actions"><button class="side-action-btn" onclick="triggerSidebarUpload()"><i class="fas fa-cloud-upload-alt"></i> আপলোড</button><button class="side-action-btn" onclick="downloadAllPages()"><i class="fas fa-download"></i> ডাউনলোড</button><button class="side-action-btn" onclick="location.reload()"><i class="fas fa-sync-alt"></i> রিফ্রেশ</button></div>
-        <div id="search-container"><div class="search-wrapper"><i class="fas fa-search search-icon"></i><input type="text" id="search-input" placeholder="সিল খুঁজুন..." oninput="advancedSearch()"><button id="search-clear" onclick="clearSearch()"><i class="fas fa-times"></i></button></div><span id="search-status"></span></div>
+        <div class="side-header">
+            <h3><i class="fas fa-folder-tree"></i> <span id="sidebar-title">সিল লাইব্রেরি</span></h3>
+            <div class="side-header-actions">
+                <button class="dark-mode-btn" onclick="toggleDarkMode()" title="ডার্ক মোড"><i class="fas fa-moon"></i></button>
+                <button id="close-btn" onclick="toggleSidebar(false)"><i class="fas fa-times"></i></button>
+            </div>
+        </div>
+        <div id="sidebar-actions">
+            <button class="side-action-btn" onclick="triggerSidebarUpload()"><i class="fas fa-cloud-upload-alt"></i> <span>আপলোড</span></button>
+            <button class="side-action-btn" onclick="downloadAllPages()"><i class="fas fa-download"></i> <span>ডাউনলোড</span></button>
+            <button class="side-action-btn" onclick="location.reload()"><i class="fas fa-sync-alt"></i> <span>রিফ্রেশ</span></button>
+        </div>
+        <div id="search-container">
+            <div class="search-wrapper">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" id="search-input" placeholder="সিল খুঁজুন..." oninput="advancedSearch()">
+                <button id="search-clear" onclick="clearSearch()"><i class="fas fa-times"></i></button>
+            </div>
+        </div>
         <div id="menu-tree"></div>
     </div>
     <div id="overlay" onclick="toggleSidebar(false)"></div>
+    
+    <!-- মূল এরিয়া -->
     <div id="main-area">
         <div id="controls-bar" style="display:none;">
-            <button id="prev-btn" onclick="prevPage()"><i class="fas fa-chevron-left"></i></button><input type="number" id="page-jump" min="1" value="1" onchange="jumpToPage()"><span id="page-count-display" style="font-size:10px;font-weight:bold;">/ 1</span><button id="next-btn" onclick="nextPage()"><i class="fas fa-chevron-right"></i></button><span style="width:1px;height:20px;background:var(--border);margin:0 4px;"></span><button onclick="changeZoom(-0.1)"><i class="fas fa-minus"></i></button><span id="zoom-value" style="font-size:9px;font-weight:bold;">100%</span><button onclick="changeZoom(0.1)"><i class="fas fa-plus"></i></button><span style="width:1px;height:20px;background:var(--border);margin:0 4px;"></span><button id="download-current-btn" onclick="downloadCurrentPage()"><i class="fas fa-download"></i> এই পেজ ডাউনলোড</button><button onclick="printAllPages()" style="background:var(--secondary);color:#fff;border-color:var(--secondary);"><i class="fas fa-print"></i> সকল পেজ প্রিন্ট</button>
+            <button onclick="prevPage()"><i class="fas fa-chevron-left"></i></button>
+            <input type="number" id="page-jump" min="1" value="1" onchange="jumpToPage()">
+            <span id="page-count-display" style="font-size:10px">/ 1</span>
+            <button onclick="nextPage()"><i class="fas fa-chevron-right"></i></button>
+            <span style="width:1px;height:20px;background:#ddd;margin:0 4px"></span>
+            <button onclick="changeZoom(-0.1)"><i class="fas fa-minus"></i></button>
+            <span id="zoom-value" style="font-size:9px">100%</span>
+            <button onclick="changeZoom(0.1)"><i class="fas fa-plus"></i></button>
+            <span style="width:1px;height:20px;background:#ddd;margin:0 4px"></span>
+            <button id="download-current-btn" onclick="downloadCurrentPage()"><i class="fas fa-download"></i> <span>এই পেজ</span></button>
+            <button onclick="printAllPages()" style="background:linear-gradient(135deg,#10b981,#059669);color:#fff;border-color:#10b981"><i class="fas fa-print"></i> <span>প্রিন্ট</span></button>
         </div>
-        <div id="scroll-area"><div id="content-layer"><div class="empty-state"><i class="fas fa-file-upload"></i><h3 id="doc-placeholder">ডকুমেন্ট আপলোড করুন</h3><p id="doc-instruction">উপরের বাটনে ক্লিক করে PDF বা ছবি আপলোড করুন</p></div></div></div>
+        <div id="scroll-area">
+            <div id="content-layer">
+                <div style="text-align:center;padding:60px 20px;color:#94a3b8;background:#fff;border-radius:20px;margin:20px;max-width:420px">
+                    <i class="fas fa-file-upload" style="font-size:60px;margin-bottom:20px"></i>
+                    <h3 id="doc-placeholder" style="font-size:18px;margin-bottom:8px">ডকুমেন্ট আপলোড করুন</h3>
+                    <p id="doc-instruction" style="font-size:13px">উপরের বাটনে ক্লিক করে PDF বা ছবি আপলোড করুন</p>
+                </div>
+            </div>
+        </div>
     </div>
+    
+    <!-- সিল এডিটর -->
     <div id="seal-editor">
         <div class="editor-handle">⋮⋮ DRAG ⋮⋮</div>
         <div class="editor-preview-mini"><img id="mini-preview" src="" alt=""></div>
-        <button class="editor-btn" onclick="moveSeal(0,-20)"><i class="fas fa-arrow-up"></i></button>
-        <button class="editor-btn" onclick="moveSeal(-20,0)"><i class="fas fa-arrow-left"></i></button>
-        <button class="editor-btn" onclick="centerSeal()"><i class="fas fa-crosshairs"></i></button>
-        <button class="editor-btn" onclick="moveSeal(20,0)"><i class="fas fa-arrow-right"></i></button>
-        <button class="editor-btn" onclick="moveSeal(0,20)"><i class="fas fa-arrow-down"></i></button>
+        <button class="editor-btn" onclick="moveSeal(0,-20)" title="উপরে"><i class="fas fa-arrow-up"></i></button>
+        <button class="editor-btn" onclick="moveSeal(-20,0)" title="বামে"><i class="fas fa-arrow-left"></i></button>
+        <button class="editor-btn" onclick="centerSeal()" title="কেন্দ্র"><i class="fas fa-crosshairs"></i></button>
+        <button class="editor-btn" onclick="moveSeal(20,0)" title="ডানে"><i class="fas fa-arrow-right"></i></button>
+        <button class="editor-btn" onclick="moveSeal(0,20)" title="নিচে"><i class="fas fa-arrow-down"></i></button>
         <div class="editor-section"><span class="editor-label">ছোট</span><input type="range" class="editor-input" id="editor-size" min="30" max="300" value="120" oninput="editorSizeChange(this.value)"><span class="editor-label">বড়</span></div>
-        <button class="editor-btn" onclick="rotateSeal(-15)"><i class="fas fa-undo"></i></button>
-        <button class="editor-btn" onclick="resetRotation()"><i class="fas fa-undo-alt"></i></button>
-        <button class="editor-btn" onclick="rotateSeal(15)"><i class="fas fa-redo"></i></button>
+        <button class="editor-btn" onclick="rotateSeal(-15)" title="বামে ঘুরান"><i class="fas fa-undo"></i></button>
+        <button class="editor-btn" onclick="resetRotation()" title="রিসেট"><i class="fas fa-undo-alt"></i></button>
+        <button class="editor-btn" onclick="rotateSeal(15)" title="ডানে ঘুরান"><i class="fas fa-redo"></i></button>
         <div class="editor-section"><span class="editor-label">১০%</span><input type="range" class="editor-input" id="editor-opacity" min="10" max="100" value="100" oninput="editorOpacityChange(this.value)"><span class="editor-label">১০০%</span></div>
-        <button class="editor-btn" onclick="duplicateSeal()"><i class="fas fa-copy"></i></button>
-        <button class="editor-btn danger" onclick="deleteSeal()"><i class="fas fa-trash"></i></button>
-        <button class="editor-btn success" onclick="closeSealEditor()"><i class="fas fa-check"></i></button>
+        <button class="editor-btn" onclick="duplicateSeal()" title="কপি"><i class="fas fa-copy"></i></button>
+        <button class="editor-btn" style="background:rgba(239,68,68,0.3)" onclick="deleteSeal()" title="মুছুন"><i class="fas fa-trash"></i></button>
+        <button class="editor-btn" style="background:rgba(16,185,129,0.3)" onclick="closeSealEditor()" title="বন্ধ"><i class="fas fa-check"></i></button>
     </div>
-    <div id="quick-seal-buttons"><button class="quick-btn" onclick="showRecentSeals()"><i class="fas fa-clock"></i></button><button class="quick-btn" onclick="toggleSidebar(true)"><i class="fas fa-th"></i></button></div>
-    <div id="bottom-actions"><button id="export-btn" onclick="toggleExportMenu()"><i class="fas fa-download"></i> <span id="export-text">ডাউনলোড</span></button></div>
-    <div id="export-options"><button onclick="downloadAllPages()"><i class="fas fa-file-export"></i> সকল পেজ (সিলসহ)</button><button onclick="downloadPDF()"><i class="fas fa-file-pdf"></i> PDF ডাউনলোড</button><button onclick="printAllPages()"><i class="fas fa-print"></i> প্রিন্ট</button></div>
-    <div id="help-modal" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:linear-gradient(135deg,#1e293b,#0f172a);border-radius:20px;padding:20px;z-index:600;max-width:90%;width:400px;box-shadow:0 20px 60px rgba(0,0,0,0.5);border:2px solid rgba(99,102,241,0.4)"><h3 style="color:#818cf8;margin-bottom:15px"><i class="fas fa-question-circle"></i> <span id="help-title">ব্যবহার টিপস</span></h3><p id="help-content" style="color:#cbd5e1;font-size:12px;line-height:1.6">১. ডকুমেন্ট আপলোড করুন<br>২. বাম মেনু থেকে সিল বাছুন<br>৩. সিলে চাপ দিয়ে ধরে রাখুন এডিটর খুলতে<br>৪. সিল টেনে সরান<br>৫. ডান বাটন থেকে ডাউনলোড করুন</p><button onclick="closeHelp()" style="background:#6366f1;border:none;color:#fff;padding:8px 20px;border-radius:8px;cursor:pointer;font-size:12px;margin-top:10px;width:100%">বন্ধ করুন</button></div>
+    
+    <!-- দ্রুত বাটন -->
+    <div id="quick-seal-buttons">
+        <button class="quick-btn" onclick="showRecentSeals()" title="সম্প্রতি"><i class="fas fa-clock"></i></button>
+        <button class="quick-btn" onclick="toggleSidebar(true)" title="লাইব্রেরি"><i class="fas fa-th"></i></button>
+    </div>
+    
+    <!-- ডাউনলোড বাটন -->
+    <div id="bottom-actions">
+        <button id="export-btn" onclick="toggleExportMenu()"><i class="fas fa-download"></i> <span id="export-text">ডাউনলোড</span></button>
+    </div>
+    
+    <!-- এক্সপোর্ট অপশন -->
+    <div id="export-options">
+        <button onclick="downloadAllPages()"><i class="fas fa-file-export"></i> <span>সকল পেজ (সিলসহ)</span></button>
+        <button onclick="downloadPDF()"><i class="fas fa-file-pdf"></i> <span>PDF ডাউনলোড</span></button>
+        <button onclick="printAllPages()"><i class="fas fa-print"></i> <span>প্রিন্ট</span></button>
+    </div>
+    
+    <!-- হেল্প মডাল -->
+    <div id="help-modal" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:linear-gradient(135deg,#1e293b,#0f172a);border-radius:20px;padding:20px;z-index:600;max-width:90%;width:400px;box-shadow:0 20px 60px rgba(0,0,0,0.5);border:2px solid rgba(99,102,241,0.4)">
+        <h3 style="color:#818cf8;margin-bottom:15px"><i class="fas fa-question-circle"></i> <span id="help-title">ব্যবহার টিপস</span></h3>
+        <p id="help-content" style="color:#cbd5e1;font-size:12px;line-height:1.6">১. ডকুমেন্ট আপলোড করুন<br>২. বাম মেনু থেকে সিল বাছুন<br>৩. সিলে চাপ দিয়ে ধরে রাখুন এডিটর খুলতে<br>৪. সিল টেনে সরান<br>৫. ডান বাটন থেকে ডাউনলোড করুন</p>
+        <button onclick="closeHelp()" style="background:#6366f1;border:none;color:#fff;padding:8px 20px;border-radius:8px;cursor:pointer;font-size:12px;margin-top:10px;width:100%"><span>বন্ধ করুন</span></button>
+    </div>
+    
+    <!-- টোস্ট -->
     <div id="toast"><i class="fas fa-check-circle"></i> <span id="toast-message"></span></div>
+    
+    <!-- লোডার -->
     <div id="loader"><i class="fas fa-circle-notch"></i></div>
+    
     <script>
-        let currentPDF=null,currentLang='bn',toastTimeout,currentZoom=1.0,currentPageNumber=1,totalPages=1,currentPageElement=null,recentSeals=[],activeSeal=null,currentSealSrc=null,allPages=[],longPressTimer=null,editorDrag=false,editorOffsetX=0,editorOffsetY=0,isDarkMode=false;
-        const translations={bn:{title:"নোটারি সিল স্টুডিও",sidebar:"সিল লাইব্রেরি",quick_upload:"ডকুমেন্ট আপলোড করুন",placeholder:"ডকুমেন্ট আপলোড করুন",instruction:"উপরের বাটনে ক্লিক করে PDF বা ছবি আপলোড করুন",export:"ডাউনলোড",toast_upload:"✓ ফাইল সফলভাবে আপলোড হয়েছে!",toast_error:"✗ PDF লোড করতে ব্যর্থ হয়েছে!",toast_seal:"✓ সিল যোগ করা হয়েছে!",toast_delete:"✓ সিল মুছে ফেলা হয়েছে!",toast_download:"✓ ডাউনলোড সম্পন্ন হয়েছে!",toast_print:"✓ প্রিন্ট করা হচ্ছে...",no_seal_error:"আগে সিল দিন তারপর ডাউনলোড করুন!",help_title:"ব্যবহার টিপস",help_content:"১. ডকুমেন্ট আপলোড করুন<br>২. বাম মেনু থেকে সিল বাছুন<br>৩. সিলে চাপ দিয়ে ধরে রাখুন এডিটর খুলতে<br>৪. সিল টেনে সরান<br>৫. ডান বাটন থেকে ডাউনলোড করুন"},en:{title:"Notary Seal Studio",sidebar:"Seal Library",quick_upload:"Upload Document",placeholder:"Upload your document",instruction:"Click above to upload PDF or image",export:"Download",toast_upload:"✓ File uploaded!",toast_error:"✗ Failed to load PDF!",toast_seal:"✓ Seal added!",toast_delete:"✓ Seal deleted!",toast_download:"✓ Download completed!",toast_print:"✓ Printing...",no_seal_error:"Add a seal first then download!",help_title:"How to Use",help_content:"1. Upload document<br>2. Pick a seal from left menu<br>3. Long press seal to open editor<br>4. Drag seal to move<br>5. Download from right button"}};
-        function showToast(msg,type='success'){const t=document.getElementById('toast');document.getElementById('toast-message').innerText=msg;t.className=type;t.classList.add('show');clearTimeout(toastTimeout);toastTimeout=setTimeout(()=>t.classList.remove('show'),2500)}
-        function toggleDarkMode(){isDarkMode=!isDarkMode;document.body.classList.toggle('dark-mode',isDarkMode);const icon=document.querySelector('.dark-mode-btn i');if(icon){icon.className=isDarkMode?'fas fa-sun':'fas fa-moon'}}
-        function showHelp(){document.getElementById('help-modal').style.display='block'}
-        function closeHelp(){document.getElementById('help-modal').style.display='none'}
-        function toggleLanguage(){currentLang=currentLang==='bn'?'en':'bn';const tr=translations[currentLang];document.getElementById('title-text').innerText=tr.title;document.getElementById('sidebar-title').innerText=tr.sidebar;document.getElementById('quick-upload-text').innerText=tr.quick_upload;document.getElementById('doc-placeholder').innerText=tr.placeholder;document.getElementById('doc-instruction').innerText=tr.instruction;document.getElementById('export-text').innerText=tr.export;document.getElementById('lang-text').innerText=currentLang==='bn'?'EN':'বাং';buildMenu()}
-        function toggleSidebar(show){document.getElementById('sidebar').classList.toggle('open',show);document.getElementById('overlay').classList.toggle('show',show)}
-        function toggleExportMenu(){document.getElementById('export-options').classList.toggle('show')}
-        function triggerSidebarUpload(){toggleSidebar(false);document.getElementById('file-upload').click()}
-        function showRecentSeals(){if(recentSeals.length===0)showToast('কোন সাম্প্রতিক সিল নেই','info');else{toggleSidebar(true)}}
-        function advancedSearch(){const q=document.getElementById('search-input').value.toLowerCase().trim();document.getElementById('search-clear').classList.toggle('visible',!!q);const items=document.querySelectorAll('.seal-item');let count=0;items.forEach(item=>{const match=!q||item.querySelector('img')?.src?.toLowerCase().includes(q);item.style.display=match?'flex':'none';if(match&&q)count++});if(q){document.querySelectorAll('.nested-container').forEach(n=>n.classList.add('show'));document.querySelectorAll('.images-container').forEach(c=>c.classList.add('show'))}}
-        function clearSearch(){document.getElementById('search-input').value='';document.getElementById('search-clear').classList.remove('visible');document.querySelectorAll('.seal-item').forEach(i=>i.style.display='flex')}
-        function buildMenu(){const tree=document.getElementById('menu-tree');tree.innerHTML='';sealData.forEach(root=>{const div=document.createElement('div');div.innerHTML=`<button class="level-btn" onclick="toggleLevel(this)"><span><i class="${root.icon}"></i> ${currentLang==='bn'?root.name_bn:root.name_en}</span><i class="fas fa-chevron-right"></i></button>`;const nested=document.createElement('div');nested.className='nested-container';root.subfolders?.forEach(sub=>{const subDiv=document.createElement('div');subDiv.innerHTML=`<button class="level-btn" onclick="toggleLevel(this)"><span><i class="${sub.icon}"></i> ${currentLang==='bn'?sub.name_bn:sub.name_en}</span><i class="fas fa-chevron-right"></i></button>`;const subNested=document.createElement('div');subNested.className='nested-container';sub.subfolders?.forEach(subSub=>{const ssDiv=document.createElement('div');ssDiv.innerHTML=`<button class="level-btn" onclick="toggleLevel(this)"><span><i class="${subSub.icon}"></i> ${currentLang==='bn'?subSub.name_bn:subSub.name_en}</span><i class="fas fa-chevron-right"></i></button>`;const imgC=document.createElement('div');imgC.className='images-container';subSub.images?.forEach(src=>{const item=document.createElement('div');item.className='seal-item';item.onclick=()=>addSeal(src);item.innerHTML=`<img src="${src}" alt="seal" loading="lazy">`;imgC.appendChild(item)});ssDiv.appendChild(imgC);subNested.appendChild(ssDiv)});subDiv.appendChild(subNested);nested.appendChild(subDiv)});div.appendChild(nested);tree.appendChild(div)})}
-        function toggleLevel(btn){btn.classList.toggle('active');btn.nextElementSibling.classList.toggle('show')}
-        function handleFileUpload(event){const file=event.target.files[0];if(!file)return;const reader=new FileReader();document.getElementById('loader').style.display='block';reader.onload=function(e){const arrayBuffer=e.target.result;const container=document.getElementById('content-layer');container.innerHTML='';if(file.type==='application/pdf'){pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';pdfjsLib.getDocument({data:arrayBuffer}).promise.then(pdf=>{currentPDF=pdf;totalPages=pdf.numPages;currentPageNumber=1;document.getElementById('controls-bar').style.display='flex';document.getElementById('page-count-display').innerText=`/ ${totalPages}`;document.getElementById('page-jump').max=totalPages;document.getElementById('page-jump').value=1;allPages=[];for(let i=1;i<=totalPages;i++){pdf.getPage(i).then(page=>{const viewport=page.getViewport({scale:2});const canvas=document.createElement('canvas');const ctx=canvas.getContext('2d');canvas.width=viewport.width;canvas.height=viewport.height;page.render({canvasContext:ctx,viewport:viewport}).promise.then(()=>{const pc=document.createElement('div');pc.className='page-container';pc.dataset.pageNum=i;const pd=document.createElement('div');pd.className='a4-page';if(i===1){pd.classList.add('current-page');currentPageElement=pd}pd.style.display=(i===1)?'block':'none';canvas.style.width='100%';canvas.style.height='100%';canvas.style.objectFit='contain';pd.appendChild(canvas);pc.appendChild(pd);container.appendChild(pc);allPages.push(pd);if(allPages.length===totalPages){document.getElementById('loader').style.display='none';showToast(translations[currentLang].toast_upload)}})})}}).catch(()=>{document.getElementById('loader').style.display='none';showToast(translations[currentLang].toast_error,'error')})}else if(file.type.startsWith('image/')){currentPDF=null;document.getElementById('controls-bar').style.display='none';const img=document.createElement('img');img.src=URL.createObjectURL(file);img.onload=function(){const pc=document.createElement('div');pc.className='page-container';const pd=document.createElement('div');pd.className='a4-page current-page';currentPageElement=pd;img.style.width='100%';img.style.height='100%';img.style.objectFit='contain';pd.appendChild(img);pc.appendChild(pd);container.appendChild(pc);allPages=[pd];document.getElementById('loader').style.display='none';showToast(translations[currentLang].toast_upload)}}};reader.readAsArrayBuffer(file)}
-        function nextPage(){if(currentPageNumber<totalPages){const pages=document.querySelectorAll('.a4-page');pages.forEach(p=>p.classList.remove('current-page'));pages[currentPageNumber].classList.add('current-page');currentPageElement=pages[currentPageNumber];pages[currentPageNumber-1].style.display='none';pages[currentPageNumber].style.display='block';currentPageNumber++;document.getElementById('page-jump').value=currentPageNumber;document.getElementById('prev-btn').disabled=false;document.getElementById('next-btn').disabled=(currentPageNumber===totalPages);closeSealEditor()}}
-        function prevPage(){if(currentPageNumber>1){const pages=document.querySelectorAll('.a4-page');pages.forEach(p=>p.classList.remove('current-page'));pages[currentPageNumber-2].classList.add('current-page');currentPageElement=pages[currentPageNumber-2];pages[currentPageNumber-1].style.display='none';pages[currentPageNumber-2].style.display='block';currentPageNumber--;document.getElementById('page-jump').value=currentPageNumber;document.getElementById('next-btn').disabled=false;document.getElementById('prev-btn').disabled=(currentPageNumber===1);closeSealEditor()}}
-        function jumpToPage(){let v=parseInt(document.getElementById('page-jump').value)||1;if(v>totalPages)v=totalPages;if(v<1)v=1;const pages=document.querySelectorAll('.a4-page');pages.forEach((p,i)=>{p.classList.remove('current-page');p.style.display=(i===v-1)?'block':'none';if(i===v-1){p.classList.add('current-page');currentPageElement=p}});currentPageNumber=v;document.getElementById('prev-btn').disabled=(v===1);document.getElementById('next-btn').disabled=(v===totalPages);closeSealEditor()}
-        function changeZoom(d){currentZoom=Math.max(0.5,Math.min(2.5,currentZoom+d));document.getElementById('zoom-value').innerText=Math.round(currentZoom*100)+'%';document.querySelectorAll('.page-container').forEach(p=>p.style.maxWidth=(794*currentZoom)+'px')}
-        function addSeal(src){if(!currentPageElement){showToast('প্রথমে ডকুমেন্ট আপলোড করুন','error');return}toggleSidebar(false);const wrap=document.createElement('div');wrap.className='seal-wrapper';wrap.style.width='120px';wrap.style.height='120px';wrap.style.left='50%';wrap.style.top='50%';wrap.style.transform='translate(-50%,-50%)';wrap.innerHTML=`<img src="${src}" class="seal-img" alt="seal" style="width:100%;height:100%;object-fit:contain;display:block;"><span class="seal-edit-icon" onclick="event.stopPropagation();activateSeal(this.parentElement);openSealEditor()"><i class="fas fa-edit"></i></span>`;wrap.addEventListener('touchstart',(e)=>{e.stopPropagation();activateSeal(wrap);startTouchDrag(e,wrap);startLongPress(wrap)},{passive:false});wrap.addEventListener('touchend',cancelLongPress);wrap.addEventListener('touchmove',cancelLongPress);wrap.addEventListener('dblclick',(e)=>{e.stopPropagation();activateSeal(wrap);openSealEditor()});currentPageElement.appendChild(wrap);if(!recentSeals.includes(src)){recentSeals.unshift(src);if(recentSeals.length>5)recentSeals.pop()}showToast(translations[currentLang].toast_seal)}
-        function startLongPress(wrap){cancelLongPress();longPressTimer=setTimeout(()=>{activateSeal(wrap);openSealEditor()},500)}
-        function cancelLongPress(){if(longPressTimer){clearTimeout(longPressTimer);longPressTimer=null}}
-        function startTouchDrag(e,wrap){e.preventDefault();const touch=e.touches[0];const rect=wrap.parentElement.getBoundingClientRect();const pr=wrap.parentElement;let startX=touch.clientX-rect.left,startY=touch.clientY-rect.top;let startLeft=wrap.offsetLeft,startTop=wrap.offsetTop;function move(ev){ev.preventDefault();cancelLongPress();const t=ev.touches[0];let x=t.clientX-rect.left,y=t.clientY-rect.top;let nl=startLeft+(x-startX),nt=startTop+(y-startY);nl=Math.max(0,Math.min(nl,pr.offsetWidth-wrap.offsetWidth));nt=Math.max(0,Math.min(nt,pr.offsetHeight-wrap.offsetHeight));wrap.style.left=nl+'px';wrap.style.top=nt+'px'}function up(){document.removeEventListener('touchmove',move);document.removeEventListener('touchend',up)}document.addEventListener('touchmove',move,{passive:false});document.addEventListener('touchend',up)}
-        function activateSeal(el){document.querySelectorAll('.seal-wrapper').forEach(w=>{w.classList.remove('active-state');const icon=w.querySelector('.seal-edit-icon');if(icon)icon.style.display='none'});el.classList.add('active-state');const icon=el.querySelector('.seal-edit-icon');if(icon)icon.style.display='flex';activeSeal=el;currentSealSrc=el.querySelector('.seal-img').src}
-        function openSealEditor(){const editor=document.getElementById('seal-editor');editor.classList.add('show');if(activeSeal){const size=parseInt(activeSeal.style.width)||120;document.getElementById('editor-size').value=size;const op=parseFloat(activeSeal.style.opacity||1)*100;document.getElementById('editor-opacity').value=op}document.getElementById('export-options').classList.remove('show')}
-        function closeSealEditor(){document.getElementById('seal-editor').classList.remove('show');if(activeSeal){activeSeal.classList.remove('active-state');const icon=activeSeal.querySelector('.seal-edit-icon');if(icon)icon.style.display='none';activeSeal=null}}
-        function editorSizeChange(v){if(activeSeal){activeSeal.style.width=v+'px';activeSeal.style.height=v+'px'}}
-        function editorOpacityChange(v){if(activeSeal){activeSeal.style.opacity=v/100}}
-        function centerSeal(){if(activeSeal&&currentPageElement){activeSeal.style.left='50%';activeSeal.style.top='50%';activeSeal.style.transform='translate(-50%,-50%)'}}
-        function moveSeal(dx,dy){if(activeSeal){activeSeal.style.left=(parseFloat(activeSeal.style.left)||0)+dx+'px';activeSeal.style.top=(parseFloat(activeSeal.style.top)||0)+dy+'px'}}
-        function duplicateSeal(){if(!activeSeal)return;const newS=activeSeal.cloneNode(true);newS.style.left=(parseFloat(activeSeal.style.left)+20)+'px';newS.style.top=(parseFloat(activeSeal.style.top)+20)+'px';newS.classList.remove('active-state');const icon=newS.querySelector('.seal-edit-icon');if(icon)icon.style.display='none';newS.addEventListener('touchstart',(e)=>{e.stopPropagation();activateSeal(newS);startTouchDrag(e,newS);startLongPress(newS)},{passive:false});currentPageElement.appendChild(newS)}
-        function resetRotation(){if(activeSeal){const img=activeSeal.querySelector('.seal-img');img.style.transform='rotate(0deg)';img.dataset.rotation=0}}
-        function rotateSeal(angle){if(activeSeal){const img=activeSeal.querySelector('.seal-img');const cur=parseFloat(img.dataset.rotation||0);const nr=cur+angle;img.style.transform=`rotate(${nr}deg)`;img.dataset.rotation=nr}}
-        function deleteSeal(){if(activeSeal){activeSeal.remove();closeSealEditor();showToast(translations[currentLang].toast_delete)}}
-        function getPagesWithSeals(){return Array.from(document.querySelectorAll('.page-container')).filter(pc=>pc.querySelectorAll('.seal-wrapper').length>0)}
-        async function downloadCurrentPage(){const pages=getPagesWithSeals();if(pages.length===0){showToast(translations[currentLang].no_seal_error,'error');return}const pc=currentPageElement?.closest('.page-container');if(!pc||!pc.querySelector('.seal-wrapper')){showToast('এই পেজে কোন সিল নেই!','error');return}closeSealEditor();document.getElementById('loader').style.display='block';try{const canvas=await html2canvas(pc,{scale:3,useCORS:true,backgroundColor:'#ffffff'});const imgData=canvas.toDataURL('image/png');const link=document.createElement('a');link.download=`page-${currentPageNumber}.png`;link.href=imgData;link.click();document.getElementById('loader').style.display='none';showToast('এই পেজ ডাউনলোড হয়েছে!')}catch(e){document.getElementById('loader').style.display='none';showToast('✗ '+e.message,'error')}}
-        async function downloadAllPages(){const pages=getPagesWithSeals();if(pages.length===0){showToast(translations[currentLang].no_seal_error,'error');return}closeSealEditor();document.getElementById('loader').style.display='block';try{const zip=new JSZip();const folder=zip.folder('sealed_pages');for(let i=0;i<pages.length;i++){const canvas=await html2canvas(pages[i],{scale:3,useCORS:true,backgroundColor:'#ffffff'});const imgData=canvas.toDataURL('image/png');folder.file(`page-${i+1}.png`,imgData.split(',')[1],{base64:true});await new Promise(r=>setTimeout(r,200))}const blob=await zip.generateAsync({type:'blob'});const a=document.createElement('a');a.download='sealed_pages.zip';a.href=URL.createObjectURL(blob);a.click();document.getElementById('loader').style.display='none';showToast('সকল সিল পেজ ডাউনলোড হয়েছে!')}catch(e){document.getElementById('loader').style.display='none';showToast('✗ '+e.message,'error')}}
-        async function downloadPDF(){const pages=getPagesWithSeals();if(pages.length===0){showToast(translations[currentLang].no_seal_error,'error');return}closeSealEditor();document.getElementById('loader').style.display='block';try{const{jsPDF}=window.jspdf;const pdf=new jsPDF('p','mm','a4');for(let i=0;i<pages.length;i++){const canvas=await html2canvas(pages[i],{scale:2,useCORS:true,backgroundColor:'#ffffff'});const imgData=canvas.toDataURL('image/jpeg',0.95);if(i>0)pdf.addPage();pdf.addImage(imgData,'JPEG',0,0,210,297);await new Promise(r=>setTimeout(r,100))}pdf.save('sealed_document.pdf');document.getElementById('loader').style.display='none';showToast('PDF ডাউনলোড হয়েছে!')}catch(e){document.getElementById('loader').style.display='none';showToast('✗ '+e.message,'error')}}
-        function printAllPages(){const pages=getPagesWithSeals();if(pages.length===0){showToast(translations[currentLang].no_seal_error,'error');return}closeSealEditor();const printWindow=window.open('','_blank');if(!printWindow){showToast('পপ-আপ ব্লক করা আছে!','error');return}printWindow.document.write('<html><head><title>Print Sealed Pages</title><style>@page{size:A4;margin:0}body{margin:0}.page-container{width:210mm;height:297mm;margin:0 auto;page-break-after:always;position:relative;overflow:hidden;background:#fff}.a4-page{width:100%;height:100%;position:relative}.a4-page canvas,.a4-page img{width:100%!important;height:100%!important;object-fit:contain!important}.seal-wrapper{position:absolute}.seal-img{width:100%;height:100%;object-fit:contain}.seal-edit-icon{display:none!important}</style></head><body>');pages.forEach(pc=>{const clone=pc.cloneNode(true);clone.querySelectorAll('.seal-edit-icon').forEach(icon=>icon.remove());clone.querySelectorAll('.seal-wrapper').forEach(w=>{w.classList.remove('active-state');w.style.outline='none'});printWindow.document.body.appendChild(clone)});printWindow.document.write('</body></html>');printWindow.document.close();showToast('প্রিন্ট করা হচ্ছে...');setTimeout(()=>{printWindow.print();setTimeout(()=>printWindow.close(),1000)},500)}
-        const editorEl=document.getElementById('seal-editor');editorEl.addEventListener('mousedown',function(e){if(e.target.closest('.editor-btn')||e.target.closest('.editor-section')||e.target.closest('input'))return;editorDrag=true;const rect=editorEl.getBoundingClientRect();editorOffsetX=e.clientX-rect.left;editorOffsetY=e.clientY-rect.top;e.preventDefault()});document.addEventListener('mousemove',function(e){if(!editorDrag)return;editorEl.style.left=e.clientX-editorOffsetX+'px';editorEl.style.top=e.clientY-editorOffsetY+'px';editorEl.style.bottom='auto';editorEl.style.transform='none'});document.addEventListener('mouseup',function(){editorDrag=false});editorEl.addEventListener('touchstart',function(e){if(e.target.closest('.editor-btn')||e.target.closest('.editor-section')||e.target.closest('input'))return;const touch=e.touches[0];editorDrag=true;const rect=editorEl.getBoundingClientRect();editorOffsetX=touch.clientX-rect.left;editorOffsetY=touch.clientY-rect.top},{passive:true});document.addEventListener('touchmove',function(e){if(!editorDrag)return;const touch=e.touches[0];editorEl.style.left=touch.clientX-editorOffsetX+'px';editorEl.style.top=touch.clientY-editorOffsetY+'px';editorEl.style.bottom='auto';editorEl.style.transform='none'},{passive:true});document.addEventListener('touchend',function(){editorDrag=false});
-        document.addEventListener('click',(e)=>{if(!e.target.closest('#export-options')&&!e.target.closest('#export-btn')&&!e.target.closest('#seal-editor')&&!e.target.closest('.seal-wrapper')&&!e.target.closest('#help-modal')&&!e.target.closest('.header-btn')){document.getElementById('export-options').classList.remove('show');closeSealEditor();closeHelp()}});
-        window.addEventListener('DOMContentLoaded',()=>{if(typeof sealData==='undefined'){sealData=[]}buildMenu()});
+        /* ===== গ্লোবাল ভেরিয়েবল ===== */
+        let currentPDF = null;
+        let currentLang = 'bn';
+        let toastTimeout;
+        let currentZoom = 1.0;
+        let currentPageNumber = 1;
+        let totalPages = 1;
+        let currentPageElement = null;
+        let recentSeals = [];
+        let activeSeal = null;
+        let currentSealSrc = null;
+        let allPages = [];
+        let longPressTimer = null;
+        let editorDrag = false;
+        let editorOffsetX = 0;
+        let editorOffsetY = 0;
+        let isDarkMode = false;
+        
+        /* ===== অনুবাদ ===== */
+        const translations = {
+            bn: {
+                title: "নোটারি সিল স্টুডিও",
+                sidebar: "সিল লাইব্রেরি",
+                quick_upload: "ডকুমেন্ট আপলোড করুন",
+                placeholder: "ডকুমেন্ট আপলোড করুন",
+                instruction: "উপরের বাটনে ক্লিক করে PDF বা ছবি আপলোড করুন",
+                export: "ডাউনলোড",
+                toast_upload: "✓ ফাইল সফলভাবে আপলোড হয়েছে!",
+                toast_error: "✗ PDF লোড করতে ব্যর্থ হয়েছে!",
+                toast_seal: "✓ সিল যোগ করা হয়েছে!",
+                toast_delete: "✓ সিল মুছে ফেলা হয়েছে!",
+                toast_download: "✓ ডাউনলোড সম্পন্ন হয়েছে!",
+                toast_print: "✓ প্রিন্ট করা হচ্ছে...",
+                no_seal_error: "আগে সিল দিন তারপর ডাউনলোড করুন!",
+                help_title: "ব্যবহার টিপস",
+                help_content: "১. ডকুমেন্ট আপলোড করুন<br>২. বাম মেনু থেকে সিল বাছুন<br>৩. সিলে চাপ দিয়ে ধরে রাখুন এডিটর খুলতে<br>৪. সিল টেনে সরান<br>৫. ডান বাটন থেকে ডাউনলোড করুন"
+            },
+            en: {
+                title: "Notary Seal Studio",
+                sidebar: "Seal Library",
+                quick_upload: "Upload Document",
+                placeholder: "Upload your document",
+                instruction: "Click above to upload PDF or image",
+                export: "Download",
+                toast_upload: "✓ File uploaded!",
+                toast_error: "✗ Failed to load PDF!",
+                toast_seal: "✓ Seal added!",
+                toast_delete: "✓ Seal deleted!",
+                toast_download: "✓ Download completed!",
+                toast_print: "✓ Printing...",
+                no_seal_error: "Add a seal first then download!",
+                help_title: "How to Use",
+                help_content: "1. Upload document<br>2. Pick a seal from left menu<br>3. Long press seal to open editor<br>4. Drag seal to move<br>5. Download from right button"
+            }
+        };
+        
+        /* ===== টোস্ট নোটিফিকেশন ===== */
+        function showToast(msg, type = 'success') {
+            const t = document.getElementById('toast');
+            document.getElementById('toast-message').innerText = msg;
+            t.className = type;
+            t.classList.add('show');
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => t.classList.remove('show'), 2500);
+        }
+        
+        /* ===== ডার্ক মোড ===== */
+        function toggleDarkMode() {
+            isDarkMode = !isDarkMode;
+            document.body.classList.toggle('dark-mode', isDarkMode);
+            const icon = document.querySelector('.dark-mode-btn i');
+            if (icon) icon.className = isDarkMode ? 'fas fa-sun' : 'fas fa-moon';
+        }
+        
+        /* ===== হেল্প ===== */
+        function showHelp() { document.getElementById('help-modal').style.display = 'block'; }
+        function closeHelp() { document.getElementById('help-modal').style.display = 'none'; }
+        
+        /* ===== ভাষা পরিবর্তন ===== */
+        function toggleLanguage() {
+            currentLang = currentLang === 'bn' ? 'en' : 'bn';
+            const tr = translations[currentLang];
+            document.getElementById('title-text').innerText = tr.title;
+            document.getElementById('sidebar-title').innerText = tr.sidebar;
+            document.getElementById('quick-upload-text').innerText = tr.quick_upload;
+            document.getElementById('doc-placeholder').innerText = tr.placeholder;
+            document.getElementById('doc-instruction').innerText = tr.instruction;
+            document.getElementById('export-text').innerText = tr.export;
+            document.getElementById('lang-text').innerText = currentLang === 'bn' ? 'EN' : 'বাং';
+            buildMenu();
+        }
+        
+        /* ===== সাইডবার টগল ===== */
+        function toggleSidebar(show) {
+            document.getElementById('sidebar').classList.toggle('open', show);
+            document.getElementById('overlay').classList.toggle('show', show);
+        }
+        
+        /* ===== এক্সপোর্ট মেনু ===== */
+        function toggleExportMenu() { document.getElementById('export-options').classList.toggle('show'); }
+        
+        /* ===== আপলোড ===== */
+        function triggerSidebarUpload() { toggleSidebar(false); document.getElementById('file-upload').click(); }
+        
+        /* ===== সাম্প্রতিক সিল ===== */
+        function showRecentSeals() {
+            if (recentSeals.length === 0) showToast('কোন সাম্প্রতিক সিল নেই', 'info');
+            else toggleSidebar(true);
+        }
+        
+        /* ===== সার্চ ===== */
+        function advancedSearch() {
+            const q = document.getElementById('search-input').value.toLowerCase().trim();
+            document.getElementById('search-clear').classList.toggle('visible', !!q);
+            const items = document.querySelectorAll('.seal-item');
+            items.forEach(item => {
+                const match = !q || item.querySelector('img')?.src?.toLowerCase().includes(q);
+                item.style.display = match ? 'flex' : 'none';
+            });
+            if (q) {
+                document.querySelectorAll('.nested-container').forEach(n => n.classList.add('show'));
+                document.querySelectorAll('.images-container').forEach(c => c.classList.add('show'));
+            }
+        }
+        
+        function clearSearch() {
+            document.getElementById('search-input').value = '';
+            document.getElementById('search-clear').classList.remove('visible');
+            document.querySelectorAll('.seal-item').forEach(i => i.style.display = 'flex');
+        }
+        
+        /* ===== মেনু তৈরি ===== */
+        function buildMenu() {
+            const tree = document.getElementById('menu-tree');
+            tree.innerHTML = '';
+            sealData.forEach(root => {
+                const div = document.createElement('div');
+                div.innerHTML = `<button class="level-btn" onclick="toggleLevel(this)"><span><i class="${root.icon}"></i> ${currentLang==='bn'?root.name_bn:root.name_en}</span><i class="fas fa-chevron-right"></i></button>`;
+                const nested = document.createElement('div');
+                nested.className = 'nested-container';
+                root.subfolders?.forEach(sub => {
+                    const subDiv = document.createElement('div');
+                    subDiv.innerHTML = `<button class="level-btn" onclick="toggleLevel(this)"><span><i class="${sub.icon}"></i> ${currentLang==='bn'?sub.name_bn:sub.name_en}</span><i class="fas fa-chevron-right"></i></button>`;
+                    const subNested = document.createElement('div');
+                    subNested.className = 'nested-container';
+                    sub.subfolders?.forEach(subSub => {
+                        const ssDiv = document.createElement('div');
+                        ssDiv.innerHTML = `<button class="level-btn" onclick="toggleLevel(this)"><span><i class="${subSub.icon}"></i> ${currentLang==='bn'?subSub.name_bn:subSub.name_en}</span><i class="fas fa-chevron-right"></i></button>`;
+                        const imgC = document.createElement('div');
+                        imgC.className = 'images-container';
+                        subSub.images?.forEach(src => {
+                            const item = document.createElement('div');
+                            item.className = 'seal-item';
+                            item.onclick = () => addSeal(src);
+                            item.innerHTML = `<img src="${src}" alt="seal" loading="lazy">`;
+                            imgC.appendChild(item);
+                        });
+                        ssDiv.appendChild(imgC);
+                        subNested.appendChild(ssDiv);
+                    });
+                    subDiv.appendChild(subNested);
+                    nested.appendChild(subDiv);
+                });
+                div.appendChild(nested);
+                tree.appendChild(div);
+            });
+        }
+        
+        function toggleLevel(btn) {
+            btn.classList.toggle('active');
+            btn.nextElementSibling.classList.toggle('show');
+        }
+        
+        /* ===== ফাইল আপলোড ===== */
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            document.getElementById('loader').style.display = 'block';
+            reader.onload = function(e) {
+                const arrayBuffer = e.target.result;
+                const container = document.getElementById('content-layer');
+                container.innerHTML = '';
+                if (file.type === 'application/pdf') {
+                    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+                    pdfjsLib.getDocument({data: arrayBuffer}).promise.then(pdf => {
+                        currentPDF = pdf;
+                        totalPages = pdf.numPages;
+                        currentPageNumber = 1;
+                        document.getElementById('controls-bar').style.display = 'flex';
+                        document.getElementById('page-count-display').innerText = `/ ${totalPages}`;
+                        document.getElementById('page-jump').max = totalPages;
+                        document.getElementById('page-jump').value = 1;
+                        allPages = [];
+                        for (let i = 1; i <= totalPages; i++) {
+                            pdf.getPage(i).then(page => {
+                                const viewport = page.getViewport({scale: 2});
+                                const canvas = document.createElement('canvas');
+                                const ctx = canvas.getContext('2d');
+                                canvas.width = viewport.width;
+                                canvas.height = viewport.height;
+                                page.render({canvasContext: ctx, viewport: viewport}).promise.then(() => {
+                                    const pc = document.createElement('div');
+                                    pc.className = 'page-container';
+                                    pc.dataset.pageNum = i;
+                                    const pd = document.createElement('div');
+                                    pd.className = 'a4-page';
+                                    if (i === 1) { pd.classList.add('current-page'); currentPageElement = pd; }
+                                    pd.style.display = (i === 1) ? 'block' : 'none';
+                                    canvas.style.width = '100%';
+                                    canvas.style.height = '100%';
+                                    canvas.style.objectFit = 'contain';
+                                    pd.appendChild(canvas);
+                                    pc.appendChild(pd);
+                                    container.appendChild(pc);
+                                    allPages.push(pd);
+                                    if (allPages.length === totalPages) {
+                                        document.getElementById('loader').style.display = 'none';
+                                        showToast(translations[currentLang].toast_upload);
+                                    }
+                                });
+                            });
+                        }
+                    }).catch(() => {
+                        document.getElementById('loader').style.display = 'none';
+                        showToast(translations[currentLang].toast_error, 'error');
+                    });
+                } else if (file.type.startsWith('image/')) {
+                    currentPDF = null;
+                    document.getElementById('controls-bar').style.display = 'none';
+                    const img = document.createElement('img');
+                    img.src = URL.createObjectURL(file);
+                    img.onload = function() {
+                        const pc = document.createElement('div');
+                        pc.className = 'page-container';
+                        const pd = document.createElement('div');
+                        pd.className = 'a4-page current-page';
+                        currentPageElement = pd;
+                        img.style.width = '100%';
+                        img.style.height = '100%';
+                        img.style.objectFit = 'contain';
+                        pd.appendChild(img);
+                        pc.appendChild(pd);
+                        container.appendChild(pc);
+                        allPages = [pd];
+                        document.getElementById('loader').style.display = 'none';
+                        showToast(translations[currentLang].toast_upload);
+                    };
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        }
+        
+        /* ===== পেজিনেশন ===== */
+        function nextPage() {
+            if (currentPageNumber < totalPages) {
+                const pages = document.querySelectorAll('.a4-page');
+                pages.forEach(p => p.classList.remove('current-page'));
+                pages[currentPageNumber].classList.add('current-page');
+                currentPageElement = pages[currentPageNumber];
+                pages[currentPageNumber-1].style.display = 'none';
+                pages[currentPageNumber].style.display = 'block';
+                currentPageNumber++;
+                document.getElementById('page-jump').value = currentPageNumber;
+                document.getElementById('prev-btn').disabled = false;
+                document.getElementById('next-btn').disabled = (currentPageNumber === totalPages);
+                closeSealEditor();
+            }
+        }
+        
+        function prevPage() {
+            if (currentPageNumber > 1) {
+                const pages = document.querySelectorAll('.a4-page');
+                pages.forEach(p => p.classList.remove('current-page'));
+                pages[currentPageNumber-2].classList.add('current-page');
+                currentPageElement = pages[currentPageNumber-2];
+                pages[currentPageNumber-1].style.display = 'none';
+                pages[currentPageNumber-2].style.display = 'block';
+                currentPageNumber--;
+                document.getElementById('page-jump').value = currentPageNumber;
+                document.getElementById('next-btn').disabled = false;
+                document.getElementById('prev-btn').disabled = (currentPageNumber === 1);
+                closeSealEditor();
+            }
+        }
+        
+        function jumpToPage() {
+            let v = parseInt(document.getElementById('page-jump').value) || 1;
+            if (v > totalPages) v = totalPages;
+            if (v < 1) v = 1;
+            const pages = document.querySelectorAll('.a4-page');
+            pages.forEach((p, i) => {
+                p.classList.remove('current-page');
+                p.style.display = (i === v-1) ? 'block' : 'none';
+                if (i === v-1) { p.classList.add('current-page'); currentPageElement = p; }
+            });
+            currentPageNumber = v;
+            document.getElementById('prev-btn').disabled = (v === 1);
+            document.getElementById('next-btn').disabled = (v === totalPages);
+            closeSealEditor();
+        }
+        
+        /* ===== জুম ===== */
+        function changeZoom(d) {
+            currentZoom = Math.max(0.5, Math.min(2.5, currentZoom + d));
+            document.getElementById('zoom-value').innerText = Math.round(currentZoom * 100) + '%';
+            document.querySelectorAll('.page-container').forEach(p => p.style.maxWidth = (794 * currentZoom) + 'px');
+        }
+        
+        /* ===== সিল যোগ ===== */
+        function addSeal(src) {
+            if (!currentPageElement) { showToast('প্রথমে ডকুমেন্ট আপলোড করুন', 'error'); return; }
+            toggleSidebar(false);
+            const wrap = document.createElement('div');
+            wrap.className = 'seal-wrapper';
+            wrap.style.width = '120px';
+            wrap.style.height = '120px';
+            wrap.style.left = '50%';
+            wrap.style.top = '50%';
+            wrap.style.transform = 'translate(-50%,-50%)';
+            wrap.innerHTML = `<img src="${src}" class="seal-img" alt="seal"><span class="seal-edit-icon" onclick="event.stopPropagation();activateSeal(this.parentElement);openSealEditor()"><i class="fas fa-edit"></i></span>`;
+            wrap.addEventListener('touchstart', (e) => { e.stopPropagation(); activateSeal(wrap); startTouchDrag(e, wrap); startLongPress(wrap); }, {passive: false});
+            wrap.addEventListener('touchend', cancelLongPress);
+            wrap.addEventListener('touchmove', cancelLongPress);
+            wrap.addEventListener('dblclick', (e) => { e.stopPropagation(); activateSeal(wrap); openSealEditor(); });
+            currentPageElement.appendChild(wrap);
+            if (!recentSeals.includes(src)) { recentSeals.unshift(src); if (recentSeals.length > 5) recentSeals.pop(); }
+            showToast(translations[currentLang].toast_seal);
+        }
+        
+        /* ===== লং প্রেস ===== */
+        function startLongPress(wrap) {
+            cancelLongPress();
+            longPressTimer = setTimeout(() => { activateSeal(wrap); openSealEditor(); }, 500);
+        }
+        function cancelLongPress() { if (longPressTimer) { clearTimeout(longPressTimer); longPressTimer = null; } }
+        
+        /* ===== টাচ ড্র্যাগ ===== */
+        function startTouchDrag(e, wrap) {
+            e.preventDefault();
+            const touch = e.touches[0];
+            const rect = wrap.parentElement.getBoundingClientRect();
+            const pr = wrap.parentElement;
+            let startX = touch.clientX - rect.left;
+            let startY = touch.clientY - rect.top;
+            let startLeft = wrap.offsetLeft;
+            let startTop = wrap.offsetTop;
+            function move(ev) {
+                ev.preventDefault();
+                cancelLongPress();
+                const t = ev.touches[0];
+                let x = t.clientX - rect.left;
+                let y = t.clientY - rect.top;
+                let nl = startLeft + (x - startX);
+                let nt = startTop + (y - startY);
+                nl = Math.max(0, Math.min(nl, pr.offsetWidth - wrap.offsetWidth));
+                nt = Math.max(0, Math.min(nt, pr.offsetHeight - wrap.offsetHeight));
+                wrap.style.left = nl + 'px';
+                wrap.style.top = nt + 'px';
+            }
+            function up() {
+                document.removeEventListener('touchmove', move);
+                document.removeEventListener('touchend', up);
+            }
+            document.addEventListener('touchmove', move, {passive: false});
+            document.addEventListener('touchend', up);
+        }
+        
+        /* ===== সিল অ্যাক্টিভেশন ===== */
+        function activateSeal(el) {
+            document.querySelectorAll('.seal-wrapper').forEach(w => {
+                w.classList.remove('active-state');
+                const icon = w.querySelector('.seal-edit-icon');
+                if (icon) icon.style.display = 'none';
+            });
+            el.classList.add('active-state');
+            const icon = el.querySelector('.seal-edit-icon');
+            if (icon) icon.style.display = 'flex';
+            activeSeal = el;
+            currentSealSrc = el.querySelector('.seal-img').src;
+        }
+        
+        /* ===== এডিটর ===== */
+        function openSealEditor() {
+            const editor = document.getElementById('seal-editor');
+            editor.classList.add('show');
+            if (activeSeal) {
+                const size = parseInt(activeSeal.style.width) || 120;
+                document.getElementById('editor-size').value = size;
+                const op = parseFloat(activeSeal.style.opacity || 1) * 100;
+                document.getElementById('editor-opacity').value = op;
+            }
+            document.getElementById('export-options').classList.remove('show');
+        }
+        
+        function closeSealEditor() {
+            document.getElementById('seal-editor').classList.remove('show');
+            if (activeSeal) {
+                activeSeal.classList.remove('active-state');
+                const icon = activeSeal.querySelector('.seal-edit-icon');
+                if (icon) icon.style.display = 'none';
+                activeSeal = null;
+            }
+        }
+        
+        /* ===== এডিটর ফাংশন ===== */
+        function editorSizeChange(v) { if (activeSeal) { activeSeal.style.width = v + 'px'; activeSeal.style.height = v + 'px'; } }
+        function editorOpacityChange(v) { if (activeSeal) { activeSeal.style.opacity = v / 100; } }
+        function centerSeal() { if (activeSeal && currentPageElement) { activeSeal.style.left = '50%'; activeSeal.style.top = '50%'; activeSeal.style.transform = 'translate(-50%,-50%)'; } }
+        function moveSeal(dx, dy) { if (activeSeal) { activeSeal.style.left = (parseFloat(activeSeal.style.left) || 0) + dx + 'px'; activeSeal.style.top = (parseFloat(activeSeal.style.top) || 0) + dy + 'px'; } }
+        function duplicateSeal() {
+            if (!activeSeal) return;
+            const newS = activeSeal.cloneNode(true);
+            newS.style.left = (parseFloat(activeSeal.style.left) + 20) + 'px';
+            newS.style.top = (parseFloat(activeSeal.style.top) + 20) + 'px';
+            newS.classList.remove('active-state');
+            const icon = newS.querySelector('.seal-edit-icon');
+            if (icon) icon.style.display = 'none';
+            newS.addEventListener('touchstart', (e) => { e.stopPropagation(); activateSeal(newS); startTouchDrag(e, newS); startLongPress(newS); }, {passive: false});
+            currentPageElement.appendChild(newS);
+        }
+        function resetRotation() { if (activeSeal) { const img = activeSeal.querySelector('.seal-img'); img.style.transform = 'rotate(0deg)'; img.dataset.rotation = 0; } }
+        function rotateSeal(angle) {
+            if (activeSeal) {
+                const img = activeSeal.querySelector('.seal-img');
+                const cur = parseFloat(img.dataset.rotation || 0);
+                const nr = cur + angle;
+                img.style.transform = `rotate(${nr}deg)`;
+                img.dataset.rotation = nr;
+            }
+        }
+        function deleteSeal() { if (activeSeal) { activeSeal.remove(); closeSealEditor(); showToast(translations[currentLang].toast_delete); } }
+        
+        /* ===== পেজ ফিল্টার ===== */
+        function getPagesWithSeals() { return Array.from(document.querySelectorAll('.page-container')).filter(pc => pc.querySelectorAll('.seal-wrapper').length > 0); }
+        
+        /* ===== ডাউনলোড ফাংশন ===== */
+        async function downloadCurrentPage() {
+            const pc = currentPageElement?.closest('.page-container');
+            if (!pc || !pc.querySelector('.seal-wrapper')) { showToast('এই পেজে কোন সিল নেই!', 'error'); return; }
+            closeSealEditor();
+            document.getElementById('loader').style.display = 'block';
+            try {
+                const canvas = await html2canvas(pc, {scale: 3, useCORS: true, backgroundColor: '#ffffff'});
+                const imgData = canvas.toDataURL('image/png');
+                const link = document.createElement('a');
+                link.download = `page-${currentPageNumber}.png`;
+                link.href = imgData;
+                link.click();
+                document.getElementById('loader').style.display = 'none';
+                showToast('এই পেজ ডাউনলোড হয়েছে!');
+            } catch(e) {
+                document.getElementById('loader').style.display = 'none';
+                showToast('✗ ' + e.message, 'error');
+            }
+        }
+        
+        async function downloadAllPages() {
+            const pages = getPagesWithSeals();
+            if (pages.length === 0) { showToast(translations[currentLang].no_seal_error, 'error'); return; }
+            closeSealEditor();
+            document.getElementById('loader').style.display = 'block';
+            try {
+                const zip = new JSZip();
+                const folder = zip.folder('sealed_pages');
+                for (let i = 0; i < pages.length; i++) {
+                    const canvas = await html2canvas(pages[i], {scale: 3, useCORS: true, backgroundColor: '#ffffff'});
+                    const imgData = canvas.toDataURL('image/png');
+                    folder.file(`page-${i+1}.png`, imgData.split(',')[1], {base64: true});
+                    await new Promise(r => setTimeout(r, 200));
+                }
+                const blob = await zip.generateAsync({type: 'blob'});
+                const a = document.createElement('a');
+                a.download = 'sealed_pages.zip';
+                a.href = URL.createObjectURL(blob);
+                a.click();
+                document.getElementById('loader').style.display = 'none';
+                showToast('সকল সিল পেজ ডাউনলোড হয়েছে!');
+            } catch(e) {
+                document.getElementById('loader').style.display = 'none';
+                showToast('✗ ' + e.message, 'error');
+            }
+        }
+        
+        async function downloadPDF() {
+            const pages = getPagesWithSeals();
+            if (pages.length === 0) { showToast(translations[currentLang].no_seal_error, 'error'); return; }
+            closeSealEditor();
+            document.getElementById('loader').style.display = 'block';
+            try {
+                const { jsPDF } = window.jspdf;
+                const pdf = new jsPDF('p', 'mm', 'a4');
+                for (let i = 0; i < pages.length; i++) {
+                    const canvas = await html2canvas(pages[i], {scale: 2, useCORS: true, backgroundColor: '#ffffff'});
+                    const imgData = canvas.toDataURL('image/jpeg', 0.95);
+                    if (i > 0) pdf.addPage();
+                    pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297);
+                    await new Promise(r => setTimeout(r, 100));
+                }
+                pdf.save('sealed_document.pdf');
+                document.getElementById('loader').style.display = 'none';
+                showToast('PDF ডাউনলোড হয়েছে!');
+            } catch(e) {
+                document.getElementById('loader').style.display = 'none';
+                showToast('✗ ' + e.message, 'error');
+            }
+        }
+        
+        /* ===== প্রিন্ট ===== */
+        function printAllPages() {
+            const pages = getPagesWithSeals();
+            if (pages.length === 0) { showToast(translations[currentLang].no_seal_error, 'error'); return; }
+            closeSealEditor();
+            const printWindow = window.open('', '_blank');
+            if (!printWindow) { showToast('পপ-আপ ব্লক করা আছে!', 'error'); return; }
+            printWindow.document.write('<html><head><title>Print Sealed Pages</title><style>@page{size:A4;margin:0}body{margin:0}.page-container{width:210mm;height:297mm;margin:0 auto;page-break-after:always;position:relative;overflow:hidden;background:#fff}.a4-page{width:100%;height:100%;position:relative}.a4-page canvas,.a4-page img{width:100%!important;height:100%!important;object-fit:contain!important}.seal-wrapper{position:absolute}.seal-img{width:100%;height:100%;object-fit:contain}.seal-edit-icon{display:none!important}</style></head><body>');
+            pages.forEach(pc => {
+                const clone = pc.cloneNode(true);
+                clone.querySelectorAll('.seal-edit-icon').forEach(icon => icon.remove());
+                clone.querySelectorAll('.seal-wrapper').forEach(w => { w.classList.remove('active-state'); w.style.outline = 'none'; });
+                printWindow.document.body.appendChild(clone);
+            });
+            printWindow.document.write('</body></html>');
+            printWindow.document.close();
+            showToast('প্রিন্ট করা হচ্ছে...');
+            setTimeout(() => { printWindow.print(); setTimeout(() => printWindow.close(), 1000); }, 500);
+        }
+        
+        /* ===== এডিটর ড্র্যাগ ===== */
+        const editorEl = document.getElementById('seal-editor');
+        editorEl.addEventListener('mousedown', function(e) {
+            if (e.target.closest('.editor-btn') || e.target.closest('.editor-section') || e.target.closest('input')) return;
+            editorDrag = true;
+            const rect = editorEl.getBoundingClientRect();
+            editorOffsetX = e.clientX - rect.left;
+            editorOffsetY = e.clientY - rect.top;
+            e.preventDefault();
+        });
+        document.addEventListener('mousemove', function(e) {
+            if (!editorDrag) return;
+            editorEl.style.left = e.clientX - editorOffsetX + 'px';
+            editorEl.style.top = e.clientY - editorOffsetY + 'px';
+            editorEl.style.bottom = 'auto';
+            editorEl.style.transform = 'none';
+        });
+        document.addEventListener('mouseup', function() { editorDrag = false; });
+        editorEl.addEventListener('touchstart', function(e) {
+            if (e.target.closest('.editor-btn') || e.target.closest('.editor-section') || e.target.closest('input')) return;
+            const touch = e.touches[0];
+            editorDrag = true;
+            const rect = editorEl.getBoundingClientRect();
+            editorOffsetX = touch.clientX - rect.left;
+            editorOffsetY = touch.clientY - rect.top;
+        }, {passive: true});
+        document.addEventListener('touchmove', function(e) {
+            if (!editorDrag) return;
+            const touch = e.touches[0];
+            editorEl.style.left = touch.clientX - editorOffsetX + 'px';
+            editorEl.style.top = touch.clientY - editorOffsetY + 'px';
+            editorEl.style.bottom = 'auto';
+            editorEl.style.transform = 'none';
+        }, {passive: true});
+        document.addEventListener('touchend', function() { editorDrag = false; });
+        
+        /* ===== গ্লোবাল ক্লিক ===== */
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('#export-options') && !e.target.closest('#export-btn') && !e.target.closest('#seal-editor') && !e.target.closest('.seal-wrapper') && !e.target.closest('#help-modal') && !e.target.closest('.header-btn')) {
+                document.getElementById('export-options').classList.remove('show');
+                closeSealEditor();
+                closeHelp();
+            }
+        });
+        
+        /* ===== কীবোর্ড ===== */
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Delete' && activeSeal) deleteSeal();
+            if (e.key === 'Escape') { toggleSidebar(false); document.getElementById('export-options').classList.remove('show'); closeSealEditor(); closeHelp(); }
+        });
+        
+        /* ===== ইনিশিয়ালাইজেশন ===== */
+        window.addEventListener('DOMContentLoaded', () => { buildMenu(); });
     </script>
 </body>
-</html>
+        </html>
