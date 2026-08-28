@@ -10,26 +10,46 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-    <script src="data.js"></script>
     
+    <script>
+        var sealData = [
+            { name_bn: 'সরকারি সিল', name_en: 'Govt Seal', icon: 'fas fa-landmark', subfolders: [
+                { name_bn: 'জেলা প্রশাসক', name_en: 'DC Office', icon: 'fas fa-building', subfolders: [
+                    { name_bn: 'নোটারি পাবলিক', name_en: 'Notary Public', icon: 'fas fa-stamp', images: [
+                        'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"%3E%3Ccircle cx="60" cy="60" r="55" fill="%23f8fafc" stroke="%234f46e5" stroke-width="3"/%3E%3Ccircle cx="60" cy="60" r="45" fill="none" stroke="%234f46e5" stroke-width="1.5"/%3E%3Ctext x="60" y="55" font-size="14" text-anchor="middle" fill="%234f46e5" font-family="sans-serif" font-weight="bold"%3Eনোটারি%3C/text%3E%3Ctext x="60" y="70" font-size="12" text-anchor="middle" fill="%234f46e5" font-family="sans-serif"%3Eপাবলিক%3C/text%3E%3C/svg%3E',
+                        'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"%3E%3Ccircle cx="60" cy="60" r="55" fill="%23fef3c7" stroke="%23f59e0b" stroke-width="3"/%3E%3Ccircle cx="60" cy="60" r="45" fill="none" stroke="%23f59e0b" stroke-width="1.5"/%3E%3Ctext x="60" y="55" font-size="14" text-anchor="middle" fill="%23b45309" font-family="sans-serif" font-weight="bold"%3Eসরকারি%3C/text%3E%3Ctext x="60" y="70" font-size="12" text-anchor="middle" fill="%23b45309" font-family="sans-serif"%3Eসিল%3C/text%3E%3C/svg%3E'
+                    ]}
+                ]}
+            ]},
+            { name_bn: 'ব্যক্তিগত', name_en: 'Personal', icon: 'fas fa-user', subfolders: [
+                { name_bn: 'অ্যাডভোকেট', name_en: 'Advocate', icon: 'fas fa-gavel', subfolders: [
+                    { name_bn: 'সুপ্রিম কোর্ট', name_en: 'Supreme Court', icon: 'fas fa-university', images: [
+                        'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"%3E%3Ccircle cx="60" cy="60" r="55" fill="%23dcfce7" stroke="%2310b981" stroke-width="3"/%3E%3Ccircle cx="60" cy="60" r="45" fill="none" stroke="%2310b981" stroke-width="1.5"/%3E%3Ctext x="60" y="55" font-size="14" text-anchor="middle" fill="%23065f46" font-family="sans-serif" font-weight="bold"%3Eঅ্যাডভোকেট%3C/text%3E%3Ctext x="60" y="70" font-size="12" text-anchor="middle" fill="%23065f46" font-family="sans-serif"%3Eসুপ্রিম কোর্ট%3C/text%3E%3C/svg%3E'
+                    ]}
+                ]}
+            ]},
+            { name_bn: 'ব্যবসায়িক', name_en: 'Business', icon: 'fas fa-briefcase', subfolders: [
+                { name_bn: 'কোম্পানি', name_en: 'Company', icon: 'fas fa-building', subfolders: [
+                    { name_bn: 'প্রাইভেট লিমিটেড', name_en: 'Private Ltd', icon: 'fas fa-file-contract', images: [
+                        'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"%3E%3Crect x="5" y="5" width="110" height="110" rx="15" fill="%23f0f9ff" stroke="%230ea5e9" stroke-width="3"/%3E%3Ctext x="60" y="55" font-size="14" text-anchor="middle" fill="%230c4a6e" font-family="sans-serif" font-weight="bold"%3Eকোম্পানি%3C/text%3E%3Ctext x="60" y="70" font-size="12" text-anchor="middle" fill="%230c4a6e" font-family="sans-serif"%3Eসিল%3C/text%3E%3C/svg%3E'
+                    ]}
+                ]}
+            ]}
+        ];
+    </script>
+
     <style>
         :root {
             --primary: #4f46e5;
             --primary-light: #818cf8;
-            --primary-dark: #3730a3;
             --secondary: #10b981;
             --danger: #ef4444;
-            --warning: #f59e0b;
             --dark: #0f172a;
             --dark2: #1e293b;
-            --dark3: #334155;
             --light: #f8fafc;
             --border: #e2e8f0;
             --text: #1e293b;
             --text-light: #64748b;
-            --shadow-sm: 0 2px 8px rgba(0,0,0,0.08);
-            --shadow-md: 0 4px 16px rgba(0,0,0,0.12);
-            --shadow-lg: 0 8px 32px rgba(0,0,0,0.18);
             --radius-sm: 8px;
             --radius-md: 12px;
             --radius-lg: 16px;
@@ -37,7 +57,6 @@
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', 'Roboto', sans-serif; -webkit-tap-highlight-color: transparent; }
-
         ::-webkit-scrollbar { width: 4px; height: 4px; }
         ::-webkit-scrollbar-track { background: #f1f5f9; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 2px; }
@@ -306,7 +325,7 @@
         .editor-section { display: flex; align-items: center; gap: 3px; background: rgba(255,255,255,0.05); padding: 3px 7px; border-radius: var(--radius-sm); }
         .editor-label { color: #94a3b8; font-size: 7px; white-space: nowrap; font-weight: 600; }
         input[type="range"].editor-input {
-            width: 50px; height: 3px; accent-color: var(--primary);
+            width: 60px; height: 4px; accent-color: var(--primary);
             cursor: pointer; border-radius: 5px;
         }
         .editor-preview-mini {
@@ -314,6 +333,7 @@
             overflow: hidden; border: 2px solid var(--primary);
             background: rgba(255,255,255,0.1);
             display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
         }
         .editor-preview-mini img { width: 100%; height: 100%; object-fit: contain; }
 
@@ -421,7 +441,7 @@
             .editor-btn { width: 30px; height: 30px; font-size: 12px; border-radius: 6px; }
             .editor-section { padding: 2px 4px; }
             .editor-label { font-size: 6px; }
-            input[type="range"].editor-input { width: 35px; }
+            input[type="range"].editor-input { width: 40px; }
             .editor-preview-mini { width: 26px; height: 26px; }
             #quick-seal-buttons { left: 8px; bottom: 8px; }
             .quick-btn { width: 38px; height: 38px; font-size: 14px; }
@@ -433,7 +453,7 @@
             .brand-title { font-size: 10px; }
             .header-btn { padding: 5px 7px; }
             .editor-btn { width: 26px; height: 26px; font-size: 10px; }
-            input[type="range"].editor-input { width: 28px; }
+            input[type="range"].editor-input { width: 30px; }
         }
     </style>
 </head>
@@ -515,7 +535,7 @@
         <button class="editor-btn" onclick="moveSeal(0,20)" title="নিচে"><i class="fas fa-arrow-down"></i><span class="tooltip">নিচে</span></button>
         <div class="editor-section">
             <span class="editor-label">ছোট</span>
-            <input type="range" class="editor-input" id="editor-size" min="50" max="200" value="120" oninput="editorSizeChange(this.value)">
+            <input type="range" class="editor-input" id="editor-size" min="30" max="300" value="120" oninput="editorSizeChange(this.value)">
             <span class="editor-label">বড়</span>
         </div>
         <button class="editor-btn" onclick="rotateSeal(-15)" title="বামে ঘুরান"><i class="fas fa-undo"></i><span class="tooltip">বামে ঘুরান</span></button>
@@ -600,11 +620,11 @@
 
         function hasSealOnCurrentPage(){ return currentPageElement?.querySelectorAll('.seal-wrapper').length>0; }
 
-        async function downloadCurrentPage(){ if(!hasSealOnCurrentPage()){showToast(translations[currentLang].no_seal_error,'error');return;} closeSealEditor(); document.getElementById('export-options').classList.remove('show'); const pc=currentPageElement?.closest('.page-container'); if(!pc)return; document.getElementById('loader').style.display='block'; try{ const canvas=await html2canvas(pc,{scale:3,useCORS:true}); const imgData=canvas.toDataURL('image/png'); const link=document.createElement('a'); link.download=`page-${currentPageNumber}.png`; link.href=imgData; link.click(); document.getElementById('loader').style.display='none'; showToast(translations[currentLang].toast_download); }catch(e){ document.getElementById('loader').style.display='none'; showToast('✗ '+e.message,'error'); } }
+        async function downloadCurrentPage(){ if(!hasSealOnCurrentPage()){showToast(translations[currentLang].no_seal_error,'error');return;} closeSealEditor(); document.getElementById('export-options').classList.remove('show'); const pc=currentPageElement?.closest('.page-container'); if(!pc)return; document.getElementById('loader').style.display='block'; try{ const canvas=await html2canvas(pc,{scale:3,useCORS:true,backgroundColor:'#ffffff'}); const imgData=canvas.toDataURL('image/png'); const link=document.createElement('a'); link.download=`page-${currentPageNumber}.png`; link.href=imgData; link.click(); document.getElementById('loader').style.display='none'; showToast(translations[currentLang].toast_download); }catch(e){ document.getElementById('loader').style.display='none'; showToast('✗ '+e.message,'error'); } }
 
-        async function downloadHDImage(format){ if(!document.querySelector('.seal-wrapper')){showToast(translations[currentLang].no_seal_error,'error');return;} closeSealEditor(); document.getElementById('export-options').classList.remove('show'); document.querySelectorAll('.seal-wrapper').forEach(w=>w.classList.remove('active-state')); const pcs=document.querySelectorAll('.page-container'); if(!pcs.length)return; document.getElementById('loader').style.display='block'; try{ const zip=new JSZip(); const folder=zip.folder('pages'); for(let i=0;i<pcs.length;i++){ const canvas=await html2canvas(pcs[i],{scale:3,useCORS:true}); const imgData=canvas.toDataURL(format==='jpeg'?'image/jpeg':'image/png'); if(pcs.length===1){const a=document.createElement('a'); a.download=`document.${format}`; a.href=imgData; a.click();} else folder.file(`page-${i+1}.${format}`,imgData.split(',')[1],{base64:true}); await new Promise(r=>setTimeout(r,200)); } if(pcs.length>1){const blob=await zip.generateAsync({type:'blob'}); const a=document.createElement('a'); a.download='document.zip'; a.href=URL.createObjectURL(blob); a.click();} document.getElementById('loader').style.display='none'; showToast(translations[currentLang].toast_download); }catch(e){ document.getElementById('loader').style.display='none'; showToast('✗ '+e.message,'error'); } }
+        async function downloadHDImage(format){ if(!document.querySelector('.seal-wrapper')){showToast(translations[currentLang].no_seal_error,'error');return;} closeSealEditor(); document.getElementById('export-options').classList.remove('show'); document.querySelectorAll('.seal-wrapper').forEach(w=>w.classList.remove('active-state')); const pcs=document.querySelectorAll('.page-container'); if(!pcs.length)return; document.getElementById('loader').style.display='block'; try{ const zip=new JSZip(); const folder=zip.folder('pages'); for(let i=0;i<pcs.length;i++){ const canvas=await html2canvas(pcs[i],{scale:3,useCORS:true,backgroundColor:'#ffffff'}); const imgData=canvas.toDataURL(format==='jpeg'?'image/jpeg':'image/png'); if(pcs.length===1){const a=document.createElement('a'); a.download=`document.${format}`; a.href=imgData; a.click();} else folder.file(`page-${i+1}.${format}`,imgData.split(',')[1],{base64:true}); await new Promise(r=>setTimeout(r,200)); } if(pcs.length>1){const blob=await zip.generateAsync({type:'blob'}); const a=document.createElement('a'); a.download='document.zip'; a.href=URL.createObjectURL(blob); a.click();} document.getElementById('loader').style.display='none'; showToast(translations[currentLang].toast_download); }catch(e){ document.getElementById('loader').style.display='none'; showToast('✗ '+e.message,'error'); } }
 
-        async function downloadPDF(){ if(!document.querySelector('.seal-wrapper')){showToast(translations[currentLang].no_seal_error,'error');return;} closeSealEditor(); document.getElementById('export-options').classList.remove('show'); const pcs=document.querySelectorAll('.page-container'); if(!pcs.length)return; document.getElementById('loader').style.display='block'; try{ const {jsPDF}=window.jspdf; const pdf=new jsPDF('p','mm','a4'); for(let i=0;i<pcs.length;i++){ const canvas=await html2canvas(pcs[i],{scale:2,useCORS:true}); const imgData=canvas.toDataURL('image/jpeg',1.0); if(i>0)pdf.addPage(); pdf.addImage(imgData,'JPEG',0,0,210,297); await new Promise(r=>setTimeout(r,200)); } pdf.save('document.pdf'); document.getElementById('loader').style.display='none'; showToast(translations[currentLang].toast_download); }catch(e){ document.getElementById('loader').style.display='none'; showToast('✗ '+e.message,'error'); } }
+        async function downloadPDF(){ if(!document.querySelector('.seal-wrapper')){showToast(translations[currentLang].no_seal_error,'error');return;} closeSealEditor(); document.getElementById('export-options').classList.remove('show'); const pcs=document.querySelectorAll('.page-container'); if(!pcs.length)return; document.getElementById('loader').style.display='block'; try{ const {jsPDF}=window.jspdf; const pdf=new jsPDF('p','mm','a4'); for(let i=0;i<pcs.length;i++){ const canvas=await html2canvas(pcs[i],{scale:2,useCORS:true,backgroundColor:'#ffffff'}); const imgData=canvas.toDataURL('image/jpeg',1.0); if(i>0)pdf.addPage(); pdf.addImage(imgData,'JPEG',0,0,210,297); await new Promise(r=>setTimeout(r,200)); } pdf.save('document.pdf'); document.getElementById('loader').style.display='none'; showToast(translations[currentLang].toast_download); }catch(e){ document.getElementById('loader').style.display='none'; showToast('✗ '+e.message,'error'); } }
 
         function printPage(){ if(!document.querySelector('.seal-wrapper')){showToast(translations[currentLang].no_seal_error,'error');return;} closeSealEditor(); document.getElementById('export-options').classList.remove('show'); document.querySelectorAll('.seal-wrapper').forEach(w=>w.classList.remove('active-state')); showToast(translations[currentLang].toast_print); setTimeout(()=>window.print(),300); }
 
@@ -614,4 +634,4 @@
         window.addEventListener('DOMContentLoaded',()=>{ buildMenu(); });
     </script>
 </body>
-    </html>
+</html>
