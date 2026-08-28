@@ -11,32 +11,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     
-    <script>
-        var sealData = [
-            { name_bn: 'সরকারি সিল', name_en: 'Govt Seal', icon: 'fas fa-landmark', subfolders: [
-                { name_bn: 'জেলা প্রশাসক', name_en: 'DC Office', icon: 'fas fa-building', subfolders: [
-                    { name_bn: 'নোটারি পাবলিক', name_en: 'Notary Public', icon: 'fas fa-stamp', images: [
-                        'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"%3E%3Ccircle cx="60" cy="60" r="55" fill="%23f8fafc" stroke="%234f46e5" stroke-width="3"/%3E%3Ccircle cx="60" cy="60" r="45" fill="none" stroke="%234f46e5" stroke-width="1.5"/%3E%3Ctext x="60" y="55" font-size="14" text-anchor="middle" fill="%234f46e5" font-family="sans-serif" font-weight="bold"%3Eনোটারি%3C/text%3E%3Ctext x="60" y="70" font-size="12" text-anchor="middle" fill="%234f46e5" font-family="sans-serif"%3Eপাবলিক%3C/text%3E%3C/svg%3E',
-                        'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"%3E%3Ccircle cx="60" cy="60" r="55" fill="%23fef3c7" stroke="%23f59e0b" stroke-width="3"/%3E%3Ccircle cx="60" cy="60" r="45" fill="none" stroke="%23f59e0b" stroke-width="1.5"/%3E%3Ctext x="60" y="55" font-size="14" text-anchor="middle" fill="%23b45309" font-family="sans-serif" font-weight="bold"%3Eসরকারি%3C/text%3E%3Ctext x="60" y="70" font-size="12" text-anchor="middle" fill="%23b45309" font-family="sans-serif"%3Eসিল%3C/text%3E%3C/svg%3E'
-                    ]}
-                ]}
-            ]},
-            { name_bn: 'ব্যক্তিগত', name_en: 'Personal', icon: 'fas fa-user', subfolders: [
-                { name_bn: 'অ্যাডভোকেট', name_en: 'Advocate', icon: 'fas fa-gavel', subfolders: [
-                    { name_bn: 'সুপ্রিম কোর্ট', name_en: 'Supreme Court', icon: 'fas fa-university', images: [
-                        'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"%3E%3Ccircle cx="60" cy="60" r="55" fill="%23dcfce7" stroke="%2310b981" stroke-width="3"/%3E%3Ccircle cx="60" cy="60" r="45" fill="none" stroke="%2310b981" stroke-width="1.5"/%3E%3Ctext x="60" y="55" font-size="14" text-anchor="middle" fill="%23065f46" font-family="sans-serif" font-weight="bold"%3Eঅ্যাডভোকেট%3C/text%3E%3Ctext x="60" y="70" font-size="12" text-anchor="middle" fill="%23065f46" font-family="sans-serif"%3Eসুপ্রিম কোর্ট%3C/text%3E%3C/svg%3E'
-                    ]}
-                ]}
-            ]},
-            { name_bn: 'ব্যবসায়িক', name_en: 'Business', icon: 'fas fa-briefcase', subfolders: [
-                { name_bn: 'কোম্পানি', name_en: 'Company', icon: 'fas fa-building', subfolders: [
-                    { name_bn: 'প্রাইভেট লিমিটেড', name_en: 'Private Ltd', icon: 'fas fa-file-contract', images: [
-                        'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"%3E%3Crect x="5" y="5" width="110" height="110" rx="15" fill="%23f0f9ff" stroke="%230ea5e9" stroke-width="3"/%3E%3Ctext x="60" y="55" font-size="14" text-anchor="middle" fill="%230c4a6e" font-family="sans-serif" font-weight="bold"%3Eকোম্পানি%3C/text%3E%3Ctext x="60" y="70" font-size="12" text-anchor="middle" fill="%230c4a6e" font-family="sans-serif"%3Eসিল%3C/text%3E%3C/svg%3E'
-                    ]}
-                ]}
-            ]}
-        ];
-    </script>
+    <!-- ডাটা ফাইল -->
+    <script src="data.js"></script>
 
     <style>
         :root {
@@ -71,7 +47,6 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* ===== HEADER ===== */
         #header {
             height: 56px;
             background: linear-gradient(135deg, #0f172a, #1e293b);
@@ -111,7 +86,6 @@
         .header-btn:hover { background: rgba(79,70,229,0.3); }
         .header-btn i { font-size: 12px; }
 
-        /* ===== UPLOAD BAR ===== */
         #quick-upload {
             background: var(--dark2);
             padding: 10px 14px;
@@ -135,7 +109,6 @@
         .upload-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(79,70,229,0.5); }
         input[type="file"] { display: none; }
 
-        /* ===== SIDEBAR ===== */
         #sidebar {
             position: fixed; top: 0; left: 0; height: 100%; width: 340px; max-width: 90%;
             background: linear-gradient(180deg, #1e293b, #0f172a);
@@ -222,7 +195,6 @@
         #overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 150; display: none; backdrop-filter: blur(2px); }
         #overlay.show { display: block; }
 
-        /* ===== MAIN AREA ===== */
         #main-area { flex: 1; display: flex; flex-direction: column; position: relative; overflow: hidden; }
         #controls-bar {
             background: rgba(255,255,255,0.95);
@@ -278,7 +250,6 @@
         .empty-state h3 { font-size: 16px; margin-bottom: 6px; }
         .empty-state p { font-size: 12px; }
 
-        /* ===== SEAL WRAPPER ===== */
         .seal-wrapper {
             position: absolute; z-index: 10;
             user-select: none; cursor: move; touch-action: none;
@@ -290,7 +261,6 @@
         }
         .seal-img { width: 100%; height: 100%; object-fit: contain; pointer-events: none; }
 
-        /* ===== COMPACT EDITOR ===== */
         #seal-editor {
             position: fixed; bottom: 15px; left: 50%;
             transform: translateX(-50%) scale(0.9);
@@ -337,7 +307,6 @@
         }
         .editor-preview-mini img { width: 100%; height: 100%; object-fit: contain; }
 
-        /* ===== QUICK BUTTONS ===== */
         #quick-seal-buttons {
             position: fixed; bottom: 15px; left: 12px; z-index: 95;
             display: flex; flex-direction: column; gap: 6px;
@@ -359,7 +328,6 @@
         }
         .quick-btn:hover .quick-btn-label { opacity: 1; }
 
-        /* ===== DOWNLOAD ===== */
         #bottom-actions {
             position: fixed; bottom: 15px; right: 12px; z-index: 95;
             display: flex; flex-direction: column; gap: 6px;
@@ -395,7 +363,6 @@
         #export-options button:hover { background: rgba(79,70,229,0.3); border-color: var(--primary); transform: translateX(4px); }
         #export-options button i { font-size: 14px; width: 18px; text-align: center; }
 
-        /* ===== TOAST & LOADER ===== */
         #toast {
             position: fixed; top: 15px; left: 50%;
             transform: translateX(-50%) translateY(-120px);
@@ -422,7 +389,15 @@
         #loader i { font-size: 32px; animation: spin 1s linear infinite; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
-        /* ===== RESPONSIVE ===== */
+        @media print {
+            body * { visibility: hidden !important; }
+            #print-area, #print-area * { visibility: visible !important; }
+            #print-area { position: absolute; left: 0; top: 0; width: 100%; }
+            .page-container { box-shadow: none !important; margin: 0 !important; page-break-after: always !important; }
+            .a4-page { box-shadow: none !important; }
+            #header, #quick-upload, #sidebar, #controls-bar, #seal-editor, #quick-seal-buttons, #bottom-actions, #export-options, #toast, #loader, #overlay { display: none !important; }
+        }
+
         @media (max-width: 768px) {
             #header { height: 50px; padding: 0 10px; }
             .brand-icon { width: 32px; height: 32px; font-size: 16px; }
@@ -448,12 +423,6 @@
             #bottom-actions { right: 8px; bottom: 8px; }
             #export-btn { padding: 10px 14px; font-size: 10px; }
             #export-options { bottom: 60px; right: 8px; min-width: 160px; }
-        }
-        @media (max-width: 400px) {
-            .brand-title { font-size: 10px; }
-            .header-btn { padding: 5px 7px; }
-            .editor-btn { width: 26px; height: 26px; font-size: 10px; }
-            input[type="range"].editor-input { width: 30px; }
         }
     </style>
 </head>
@@ -525,7 +494,6 @@
         </div>
     </div>
 
-    <!-- COMPACT EDITOR -->
     <div id="seal-editor">
         <div class="editor-preview-mini"><img id="mini-preview" src="" alt=""></div>
         <button class="editor-btn" onclick="moveSeal(0,-20)" title="উপরে"><i class="fas fa-arrow-up"></i><span class="tooltip">উপরে</span></button>
@@ -631,7 +599,7 @@
         document.addEventListener('click',(e)=>{ if(!e.target.closest('#export-options')&&!e.target.closest('#export-btn')&&!e.target.closest('#seal-editor')&&!e.target.closest('.seal-wrapper')){document.getElementById('export-options').classList.remove('show'); closeSealEditor();} });
         document.addEventListener('keydown',(e)=>{ if(e.key==='Delete'&&activeSeal)deleteSeal(); if(e.key==='Escape'){toggleSidebar(false); document.getElementById('export-options').classList.remove('show'); closeSealEditor();} });
 
-        window.addEventListener('DOMContentLoaded',()=>{ buildMenu(); });
+        window.addEventListener('DOMContentLoaded',()=>{ if(typeof sealData === 'undefined') { sealData = []; } buildMenu(); });
     </script>
 </body>
 </html>
