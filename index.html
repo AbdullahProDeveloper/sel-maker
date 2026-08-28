@@ -5,15 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
     <title>Pro Notary Seal - পেশাদার নোটারি সিল অ্যাপ</title>
     
+    <!-- ফন্ট অ্যাওসাম আইকন লাইব্রেরি -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
     
+    <!-- PDF.js লাইব্রেরি -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    
+    <!-- HTML থেকে ক্যানভাস কনভার্টার -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    
+    <!-- jsPDF লাইব্রেরি -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    
+    <!-- JSZip লাইব্রেরি (ZIP ফাইল তৈরি করার জন্য) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    
+    <!-- ডাটা ফাইল -->
     <script src="data.js"></script>
 
     <style>
+        /* ===== রিসেট স্টাইল ===== */
         * { 
             margin: 0; 
             padding: 0; 
@@ -22,6 +33,7 @@
             -webkit-tap-highlight-color: transparent;
         }
 
+        /* ===== CSS ভেরিয়েবল ===== */
         :root {
             --primary-color: #4f46e5;
             --primary-light: #818cf8;
@@ -35,13 +47,25 @@
             --border-color: #e2e8f0;
             --text-color: #1e293b;
             --text-light: #64748b;
+            --success-bg: #ecfdf5;
+            --success-border: #10b981;
+            --error-bg: #fef2f2;
+            --error-border: #ef4444;
+            --gradient-primary: linear-gradient(135deg, #4f46e5, #818cf8);
+            --gradient-dark: linear-gradient(135deg, #1e293b, #0f172a);
+            --shadow-sm: 0 2px 8px rgba(0,0,0,0.1);
+            --shadow-md: 0 4px 20px rgba(0,0,0,0.15);
+            --shadow-lg: 0 8px 40px rgba(0,0,0,0.2);
+            --shadow-primary: 0 4px 20px rgba(79,70,229,0.3);
         }
 
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        /* ===== স্ক্রলবার স্টাইল ===== */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
         ::-webkit-scrollbar-track { background: #f1f5f9; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
-        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        ::-webkit-scrollbar-thumb { background: linear-gradient(135deg, #4f46e5, #818cf8); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #3730a3; }
 
+        /* ===== মূল বডি স্টাইল ===== */
         body { 
             height: 100vh; 
             display: flex; 
@@ -52,16 +76,16 @@
             touch-action: manipulation;
         }
 
-        /* ===== PROFESSIONAL HEADER ===== */
+        /* ===== প্রফেশনাল হেডার ===== */
         #header { 
-            height: 65px; 
+            height: 75px; 
             background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
-            border-bottom: 2px solid var(--primary-color);
+            border-bottom: 3px solid var(--primary-color);
             color: white; 
             display: flex; 
             align-items: center; 
             justify-content: space-between; 
-            padding: 0 20px; 
+            padding: 0 30px; 
             z-index: 100; 
             box-shadow: 0 4px 20px rgba(0,0,0,0.3);
             flex-shrink: 0;
@@ -71,35 +95,53 @@
         #header::after {
             content: '';
             position: absolute;
-            bottom: 0;
+            bottom: -1px;
             left: 0;
             right: 0;
-            height: 1px;
+            height: 2px;
             background: linear-gradient(90deg, transparent, var(--primary-light), transparent);
         }
 
         .header-left {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 20px;
         }
 
         .header-brand {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 15px;
         }
 
         .brand-icon {
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
-            border-radius: 10px;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #4f46e5, #818cf8);
+            border-radius: 14px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 20px;
-            box-shadow: 0 4px 12px rgba(79,70,229,0.4);
+            font-size: 24px;
+            box-shadow: 0 4px 15px rgba(79,70,229,0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .brand-icon::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+            animation: shine 3s ease-in-out infinite;
+        }
+
+        @keyframes shine {
+            0%, 100% { transform: translateX(-100%); }
+            50% { transform: translateX(100%); }
         }
 
         .brand-text {
@@ -108,53 +150,68 @@
         }
 
         .brand-title {
-            font-size: 16px;
+            font-size: 20px;
             font-weight: 800;
             letter-spacing: 0.5px;
             line-height: 1.2;
+            color: white;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
         }
 
         .brand-subtitle {
-            font-size: 10px;
+            font-size: 11px;
             color: #94a3b8;
             font-weight: 500;
             text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .header-divider {
-            width: 1px;
-            height: 30px;
-            background: rgba(255,255,255,0.2);
+            letter-spacing: 1.5px;
+            margin-top: 2px;
         }
 
         .header-right {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 12px;
         }
 
         .header-btn { 
             background: rgba(255,255,255,0.1); 
             border: 1px solid rgba(255,255,255,0.2); 
             color: white; 
-            padding: 8px 14px; 
-            border-radius: 20px; 
-            font-size: 12px; 
+            padding: 10px 18px; 
+            border-radius: 25px; 
+            font-size: 13px; 
             font-weight: 600; 
             cursor: pointer; 
             transition: all 0.3s ease;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
             white-space: nowrap;
             backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .header-btn:hover::before {
+            left: 100%;
         }
 
         .header-btn:hover { 
             background: rgba(79,70,229,0.3);
             border-color: var(--primary-light);
-            transform: translateY(-1px);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(79,70,229,0.3);
         }
 
         .header-btn:active {
@@ -162,40 +219,41 @@
         }
 
         .header-btn i {
-            font-size: 14px;
+            font-size: 15px;
         }
 
-        .header-btn.active {
-            background: var(--primary-color);
-            border-color: var(--primary-color);
+        .header-btn.lang-btn {
+            background: linear-gradient(135deg, rgba(79,70,229,0.3), rgba(79,70,229,0.1));
+            border-color: rgba(79,70,229,0.4);
         }
 
-        /* ===== QUICK UPLOAD BAR ===== */
+        /* ===== আপলোড বার ===== */
         #quick-upload { 
             background: linear-gradient(135deg, #1e293b, #0f172a); 
-            padding: 10px 20px; 
+            padding: 15px 30px; 
             border-bottom: 1px solid rgba(255,255,255,0.1);
             flex-shrink: 0;
         }
 
         .upload-btn { 
-            background: linear-gradient(135deg, var(--primary-color), var(--primary-light)); 
+            background: linear-gradient(135deg, #4f46e5, #818cf8); 
             color: white; 
             border: none; 
-            border-radius: 10px; 
-            padding: 12px 24px; 
+            border-radius: 14px; 
+            padding: 16px 32px; 
             font-weight: 700; 
-            font-size: 14px; 
+            font-size: 16px; 
             cursor: pointer; 
             display: flex; 
             align-items: center; 
-            gap: 10px; 
+            gap: 12px; 
             width: 100%; 
             justify-content: center;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(79,70,229,0.3);
+            box-shadow: 0 4px 20px rgba(79,70,229,0.3);
             position: relative;
             overflow: hidden;
+            letter-spacing: 0.5px;
         }
 
         .upload-btn::before {
@@ -214,23 +272,27 @@
         }
 
         .upload-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(79,70,229,0.4);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(79,70,229,0.4);
+        }
+
+        .upload-btn:active {
+            transform: scale(0.98);
         }
 
         .upload-btn i {
-            font-size: 18px;
+            font-size: 22px;
         }
 
         input[type="file"] { display: none; }
 
-        /* ===== SIDEBAR ===== */
+        /* ===== সাইডবার ===== */
         #sidebar { 
             position: fixed; 
             top: 0; 
             left: 0; 
             height: 100%; 
-            width: 360px; 
+            width: 400px; 
             max-width: 90%; 
             background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
             color: white; 
@@ -239,7 +301,7 @@
             z-index: 200; 
             display: flex; 
             flex-direction: column;
-            box-shadow: 8px 0 32px rgba(0,0,0,0.3);
+            box-shadow: 8px 0 40px rgba(0,0,0,0.4);
         }
 
         #sidebar.open { 
@@ -248,7 +310,7 @@
 
         .side-header { 
             padding: 20px; 
-            background: rgba(2, 6, 23, 0.9); 
+            background: rgba(2, 6, 23, 0.95); 
             display: flex; 
             justify-content: space-between; 
             align-items: center;
@@ -257,21 +319,25 @@
 
         .side-header h3 { 
             color: var(--primary-light); 
-            font-size: 16px; 
+            font-size: 18px; 
             display: flex; 
             align-items: center; 
-            gap: 10px; 
+            gap: 12px; 
             font-weight: 700;
+        }
+
+        .side-header h3 i {
+            font-size: 22px;
         }
 
         #close-btn { 
             background: rgba(255,255,255,0.1); 
             border: none; 
             color: white; 
-            font-size: 20px; 
+            font-size: 24px; 
             cursor: pointer;
-            width: 38px;
-            height: 38px;
+            width: 42px;
+            height: 42px;
             border-radius: 10px;
             display: flex;
             align-items: center;
@@ -282,13 +348,14 @@
         #close-btn:hover {
             background: rgba(239,68,68,0.3);
             color: #f87171;
+            transform: rotate(90deg);
         }
 
         #sidebar-actions { 
-            padding: 12px; 
+            padding: 15px; 
             border-bottom: 1px solid rgba(255,255,255,0.1); 
             display: flex; 
-            gap: 8px; 
+            gap: 10px; 
             justify-content: space-between;
         }
 
@@ -296,14 +363,14 @@
             background: linear-gradient(135deg, rgba(79,70,229,0.2), rgba(79,70,229,0.1));
             border: 1px solid rgba(79,70,229,0.3); 
             color: white; 
-            padding: 10px 12px; 
+            padding: 12px 15px; 
             border-radius: 10px; 
-            font-size: 12px; 
+            font-size: 13px; 
             font-weight: 600; 
             cursor: pointer; 
             display: flex; 
             align-items: center; 
-            gap: 6px; 
+            gap: 8px; 
             justify-content: center; 
             flex: 1;
             transition: all 0.2s;
@@ -311,53 +378,110 @@
 
         .side-action-btn:hover {
             background: linear-gradient(135deg, rgba(79,70,229,0.3), rgba(79,70,229,0.2));
-            transform: translateY(-1px);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(79,70,229,0.3);
+        }
+
+        .side-action-btn:active {
+            transform: scale(0.95);
         }
 
         .side-action-btn i { 
-            font-size: 14px; 
+            font-size: 15px; 
         }
 
+        /* ===== উন্নত সার্চ ===== */
         #search-container { 
-            padding: 12px; 
+            padding: 15px; 
             border-bottom: 1px solid rgba(255,255,255,0.1); 
             background: rgba(2, 6, 23, 0.5);
+        }
+
+        .search-wrapper {
+            position: relative;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            font-size: 18px;
+            pointer-events: none;
+            z-index: 2;
         }
 
         #search-input { 
             width: 100%; 
             background: rgba(255,255,255,0.08); 
-            border: 1px solid rgba(79,70,229,0.3); 
+            border: 2px solid rgba(79,70,229,0.3); 
             color: white; 
-            padding: 12px 14px; 
-            border-radius: 10px; 
-            font-size: 14px; 
+            padding: 16px 50px 16px 50px; 
+            border-radius: 14px; 
+            font-size: 16px; 
             outline: none; 
             transition: all 0.3s;
+            font-weight: 500;
+            letter-spacing: 0.3px;
         }
 
         #search-input::placeholder { 
             color: #94a3b8; 
+            font-weight: 400;
         }
 
         #search-input:focus { 
             border-color: var(--primary-color); 
             background: rgba(79,70,229,0.15);
-            box-shadow: 0 0 15px rgba(79,70,229,0.2);
+            box-shadow: 0 0 25px rgba(79,70,229,0.2);
+        }
+
+        #search-clear {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: #94a3b8;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            transition: all 0.2s;
+            z-index: 2;
+        }
+
+        #search-clear:hover {
+            background: rgba(239,68,68,0.3);
+            color: #f87171;
+            transform: translateY(-50%) rotate(90deg);
+        }
+
+        #search-clear.visible {
+            display: flex;
         }
 
         #search-status { 
             color: #94a3b8; 
-            font-size: 12px; 
-            margin-top: 6px; 
+            font-size: 13px; 
+            margin-top: 10px; 
             display: block; 
             text-align: center; 
+            font-weight: 500;
+            letter-spacing: 0.3px;
         }
 
+        /* ===== উন্নত মেনু ট্রি ===== */
         #menu-tree { 
             flex: 1; 
             overflow-y: auto; 
-            padding: 12px; 
+            padding: 15px; 
         }
 
         .level-btn { 
@@ -365,21 +489,50 @@
             background: rgba(255,255,255,0.05); 
             border: 1px solid rgba(255,255,255,0.1); 
             color: white; 
-            padding: 12px 14px; 
-            border-radius: 10px; 
-            font-size: 13px; 
+            padding: 15px 18px; 
+            border-radius: 12px; 
+            font-size: 14px; 
             font-weight: 600; 
             display: flex; 
             justify-content: space-between; 
             align-items: center; 
             cursor: pointer; 
-            margin-bottom: 8px;
-            transition: all 0.2s;
+            margin-bottom: 10px;
+            transition: all 0.3s;
+            text-align: left;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .level-btn::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: var(--primary-color);
+            opacity: 0;
+            transition: opacity 0.3s;
         }
 
         .level-btn:hover {
-            background: rgba(79,70,229,0.2);
+            background: rgba(79,70,229,0.15);
             border-color: rgba(79,70,229,0.3);
+            transform: translateX(5px);
+        }
+
+        .level-btn:hover::before {
+            opacity: 1;
+        }
+
+        .level-btn.active {
+            background: rgba(79,70,229,0.2);
+            border-color: rgba(79,70,229,0.4);
+        }
+
+        .level-btn.active::before {
+            opacity: 1;
         }
 
         .level-btn i { 
@@ -392,48 +545,110 @@
             transform: rotate(90deg); 
         }
 
+        .level-btn .level-name {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1;
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .level-btn .level-name i {
+            font-size: 18px;
+            color: var(--primary-light);
+            flex-shrink: 0;
+            width: 20px;
+            text-align: center;
+        }
+
         .nested-container { 
             display: none; 
-            padding-left: 12px; 
+            padding-left: 15px; 
             border-left: 2px solid rgba(79,70,229,0.3); 
+            margin-left: 12px;
         }
 
         .nested-container.show { 
             display: block; 
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .images-container { 
             display: none; 
             grid-template-columns: repeat(3, 1fr); 
-            gap: 8px; 
-            padding: 8px; 
-            background: rgba(2, 6, 23, 0.7); 
-            border-radius: 10px;
-            margin-top: 6px;
+            gap: 12px; 
+            padding: 15px; 
+            background: rgba(2, 6, 23, 0.8); 
+            border-radius: 12px;
+            margin-top: 10px;
+            border: 1px solid rgba(79,70,229,0.2);
         }
 
         .images-container.show { 
             display: grid; 
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .seal-item { 
             background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
-            border-radius: 10px; 
-            padding: 8px; 
+            border-radius: 12px; 
+            padding: 10px; 
             display: flex; 
             justify-content: center; 
             align-items: center; 
             cursor: pointer; 
             aspect-ratio: 1; 
             border: 2px solid transparent;
-            transition: all 0.2s;
+            transition: all 0.3s;
             overflow: hidden;
+            position: relative;
+        }
+
+        .seal-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .seal-item:hover::before {
+            left: 100%;
         }
 
         .seal-item:hover {
             background: linear-gradient(135deg, rgba(79,70,229,0.2), rgba(79,70,229,0.1));
             border-color: var(--primary-color);
-            transform: scale(1.03);
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(79,70,229,0.3);
         }
 
         .seal-item:active { 
@@ -444,14 +659,64 @@
             max-width: 90%; 
             max-height: 90%; 
             object-fit: contain; 
+            border-radius: 50%;
+            transition: transform 0.3s;
+        }
+
+        .seal-item:hover img {
+            transform: scale(1.1);
+        }
+
+        .seal-item.search-highlight {
+            border-color: var(--secondary-color);
+            background: rgba(16,185,129,0.2);
+            animation: pulse 1s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
         }
 
         mark { 
-            background: var(--primary-color); 
+            background: var(--warning-color); 
             color: white; 
-            padding: 2px 4px; 
-            border-radius: 3px; 
+            padding: 2px 5px; 
+            border-radius: 4px; 
             font-weight: bold; 
+        }
+
+        .search-match {
+            background: rgba(79,70,229,0.3) !important;
+            border-color: var(--primary-color) !important;
+        }
+
+        .search-result-badge {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+            color: white;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 600;
+            box-shadow: 0 8px 30px rgba(79,70,229,0.4);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: transform 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .search-result-badge.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .search-result-badge i {
+            font-size: 18px;
         }
 
         #overlay { 
@@ -467,7 +732,7 @@
             display: block; 
         }
 
-        /* ===== MAIN AREA ===== */
+        /* ===== মূল এরিয়া ===== */
         #main-area { 
             flex: 1; 
             display: flex; 
@@ -478,7 +743,7 @@
 
         #controls-bar { 
             background: rgba(255,255,255,0.95); 
-            padding: 8px 15px; 
+            padding: 10px 15px; 
             display: flex; 
             justify-content: center; 
             align-items: center; 
@@ -495,56 +760,64 @@
         }
 
         #controls-bar button { 
-            padding: 6px 12px; 
+            padding: 8px 14px; 
             border: 1px solid var(--border-color);
             background: white;
             color: var(--text-color); 
             border-radius: 8px; 
-            font-size: 11px; 
+            font-size: 12px; 
             font-weight: 600; 
             cursor: pointer;
             transition: all 0.2s;
             display: flex;
             align-items: center;
-            gap: 4px;
+            gap: 6px;
         }
 
         #controls-bar button:hover {
             background: var(--light-bg);
             border-color: var(--primary-light);
             color: var(--primary-color);
+            box-shadow: 0 2px 8px rgba(79,70,229,0.1);
         }
 
         #controls-bar button:disabled { 
             background: #f1f5f9; 
             color: #cbd5e1; 
             cursor: not-allowed;
+            box-shadow: none;
         }
 
         #controls-bar input { 
-            width: 50px; 
+            width: 55px; 
             text-align: center; 
             border: 1px solid var(--border-color); 
             border-radius: 8px; 
-            padding: 6px; 
-            font-size: 12px; 
+            padding: 8px; 
+            font-size: 13px; 
             font-weight: bold;
             color: var(--text-color);
+            background: white;
+        }
+
+        #controls-bar input:focus {
+            outline: none;
+            border-color: var(--primary-color);
         }
 
         #page-count-display { 
-            font-size: 12px; 
+            font-size: 13px; 
             font-weight: bold; 
             color: var(--text-color);
-            min-width: 40px;
+            min-width: 50px;
             text-align: center;
         }
 
         #scroll-area { 
             flex: 1; 
             overflow: auto; 
-            padding: 15px; 
-            padding-top: 65px; 
+            padding: 20px; 
+            padding-top: 70px; 
             display: flex; 
             flex-direction: column; 
             align-items: center; 
@@ -557,10 +830,10 @@
             position: relative;
             width: 100%;
             max-width: 794px;
-            margin-bottom: 25px;
+            margin-bottom: 30px;
             background: white;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-            border-radius: 4px;
+            box-shadow: 0 4px 25px rgba(0,0,0,0.1);
+            border-radius: 8px;
             overflow: hidden;
         }
 
@@ -572,7 +845,7 @@
             overflow: hidden; 
             flex-shrink: 0; 
             transform-origin: top center;
-            border-radius: 4px;
+            border-radius: 8px;
         }
 
         .a4-page canvas,
@@ -589,28 +862,35 @@
 
         .empty-state {
             text-align: center;
-            padding: 60px 20px;
+            padding: 100px 20px;
             color: #94a3b8;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.05);
+            margin: 40px 20px;
+            max-width: 500px;
         }
 
         .empty-state i {
-            font-size: 60px;
-            margin-bottom: 20px;
+            font-size: 80px;
+            margin-bottom: 30px;
             color: #cbd5e1;
         }
 
         .empty-state h3 {
-            font-size: 18px;
+            font-size: 24px;
             color: #64748b;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
+            font-weight: 700;
         }
 
         .empty-state p {
-            font-size: 14px;
+            font-size: 16px;
             color: #94a3b8;
+            line-height: 1.6;
         }
 
-        /* ===== SEAL INTERACTION ===== */
+        /* ===== সিল ইন্টারঅ্যাকশন ===== */
         .seal-wrapper { 
             position: absolute; 
             z-index: 10;
@@ -628,7 +908,7 @@
         }
 
         .seal-wrapper.active-state { 
-            box-shadow: 0 0 0 3px rgba(79,70,229,0.5), 0 8px 24px rgba(0,0,0,0.2);
+            box-shadow: 0 0 0 3px rgba(79,70,229,0.5), 0 8px 30px rgba(0,0,0,0.2);
             border-radius: 50%;
         }
 
@@ -637,27 +917,30 @@
             height: 100%; 
             object-fit: contain; 
             pointer-events: none; 
+            border-radius: 50%;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
         }
 
-        /* ===== SEAL EDITOR BOX ===== */
+        /* ===== সিল এডিটর বক্স ===== */
         #seal-editor {
             position: fixed;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%) scale(0.8);
             background: linear-gradient(135deg, #1e293b, #0f172a);
-            border-radius: 16px;
-            padding: 20px;
+            border-radius: 24px;
+            padding: 30px;
             z-index: 500;
             display: none;
             flex-direction: column;
-            gap: 15px;
-            width: 320px;
+            gap: 20px;
+            width: 380px;
             max-width: 90%;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+            box-shadow: 0 25px 80px rgba(0,0,0,0.5);
             border: 1px solid rgba(255,255,255,0.1);
             opacity: 0;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(20px);
         }
 
         #seal-editor.show {
@@ -670,58 +953,71 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding-bottom: 10px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 15px;
+            border-bottom: 2px solid rgba(255,255,255,0.1);
         }
 
         .editor-header h3 {
             color: white;
-            font-size: 16px;
+            font-size: 20px;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 12px;
+            font-weight: 700;
         }
 
         .editor-header h3 i {
             color: var(--primary-light);
+            font-size: 24px;
         }
 
         .editor-close {
             background: rgba(255,255,255,0.1);
             border: none;
             color: white;
-            width: 30px;
-            height: 30px;
-            border-radius: 8px;
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             transition: all 0.2s;
+            font-size: 18px;
         }
 
         .editor-close:hover {
             background: rgba(239,68,68,0.3);
+            transform: rotate(90deg);
+            color: #f87171;
         }
 
         .editor-section {
             background: rgba(255,255,255,0.05);
-            border-radius: 10px;
-            padding: 10px;
+            border-radius: 14px;
+            padding: 18px;
+            border: 1px solid rgba(255,255,255,0.05);
         }
 
         .editor-section-title {
             color: #94a3b8;
-            font-size: 11px;
+            font-size: 12px;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 10px;
+            letter-spacing: 1.5px;
+            margin-bottom: 15px;
             font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .editor-section-title i {
+            color: var(--primary-light);
         }
 
         .editor-row {
             display: flex;
-            gap: 8px;
+            gap: 10px;
             align-items: center;
             justify-content: space-between;
         }
@@ -730,21 +1026,23 @@
             background: rgba(255,255,255,0.1);
             border: 1px solid rgba(255,255,255,0.2);
             color: white;
-            padding: 8px;
-            border-radius: 8px;
+            padding: 12px;
+            border-radius: 12px;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 18px;
             display: flex;
             align-items: center;
             justify-content: center;
             transition: all 0.2s;
             flex: 1;
+            height: 50px;
         }
 
         .editor-btn:hover {
             background: var(--primary-color);
             border-color: var(--primary-color);
             transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(79,70,229,0.3);
         }
 
         .editor-btn:active {
@@ -773,16 +1071,17 @@
 
         .editor-label {
             color: #94a3b8;
-            font-size: 12px;
+            font-size: 13px;
             min-width: 70px;
+            font-weight: 500;
         }
 
         .editor-input {
             flex: 1;
             background: rgba(255,255,255,0.1);
             border: 1px solid rgba(255,255,255,0.2);
-            border-radius: 8px;
-            padding: 8px;
+            border-radius: 10px;
+            padding: 12px;
             color: white;
             font-size: 14px;
             width: 100%;
@@ -795,19 +1094,19 @@
         }
 
         input[type="range"].editor-input {
-            height: 6px;
+            height: 8px;
             cursor: pointer;
         }
 
         .editor-actions {
             display: flex;
-            gap: 8px;
+            gap: 10px;
             justify-content: flex-end;
-            padding-top: 10px;
+            padding-top: 15px;
             border-top: 1px solid rgba(255,255,255,0.1);
         }
 
-        /* ===== QUICK BUTTONS ===== */
+        /* ===== দ্রুত বাটন ===== */
         #quick-seal-buttons {
             position: fixed;
             bottom: 20px;
@@ -815,29 +1114,45 @@
             z-index: 95;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 12px;
         }
 
         .quick-btn {
-            width: 50px;
-            height: 50px;
-            border-radius: 12px;
-            background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+            width: 60px;
+            height: 60px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, #4f46e5, #818cf8);
             border: none;
             color: white;
-            font-size: 18px;
+            font-size: 22px;
             cursor: pointer;
-            box-shadow: 0 4px 12px rgba(79,70,229,0.3);
+            box-shadow: 0 4px 15px rgba(79,70,229,0.3);
             display: flex;
             align-items: center;
             justify-content: center;
             transition: all 0.3s;
             position: relative;
+            overflow: hidden;
+        }
+
+        .quick-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .quick-btn:hover::before {
+            left: 100%;
         }
 
         .quick-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(79,70,229,0.4);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(79,70,229,0.4);
         }
 
         .quick-btn:active {
@@ -846,24 +1161,27 @@
 
         .quick-btn-label {
             position: absolute;
-            right: 65px;
+            right: 75px;
             background: rgba(15,23,42,0.95);
             color: white;
-            padding: 6px 10px;
-            border-radius: 8px;
-            font-size: 11px;
+            padding: 8px 12px;
+            border-radius: 10px;
+            font-size: 13px;
             white-space: nowrap;
             opacity: 0;
             pointer-events: none;
-            transition: opacity 0.3s;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            backdrop-filter: blur(10px);
+            transform: translateX(10px);
         }
 
         .quick-btn:hover .quick-btn-label {
             opacity: 1;
+            transform: translateX(0);
         }
 
-        /* ===== BOTTOM ACTIONS ===== */
+        /* ===== নিচের অ্যাকশন ===== */
         #bottom-actions { 
             position: fixed; 
             bottom: 20px; 
@@ -871,25 +1189,26 @@
             z-index: 95;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 12px;
         }
 
         #export-btn { 
-            background: linear-gradient(135deg, var(--primary-color), var(--primary-light)); 
+            background: linear-gradient(135deg, #4f46e5, #818cf8); 
             color: white; 
             border: none; 
-            border-radius: 12px; 
-            padding: 14px 24px; 
-            font-size: 14px; 
+            border-radius: 16px; 
+            padding: 16px 30px; 
+            font-size: 15px; 
             font-weight: bold; 
             cursor: pointer; 
-            box-shadow: 0 6px 16px rgba(79,70,229,0.4);
+            box-shadow: 0 6px 20px rgba(79,70,229,0.4);
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
             transition: all 0.3s;
             position: relative;
             overflow: hidden;
+            letter-spacing: 0.5px;
         }
 
         #export-btn::before {
@@ -908,27 +1227,32 @@
         }
 
         #export-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(79,70,229,0.5);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(79,70,229,0.5);
+        }
+
+        #export-btn:active {
+            transform: scale(0.98);
         }
 
         #export-options { 
             position: fixed; 
-            bottom: 80px; 
+            bottom: 90px; 
             right: 15px; 
             background: linear-gradient(135deg, #1e293b, #0f172a);
-            border-radius: 16px; 
-            padding: 10px; 
+            border-radius: 20px; 
+            padding: 15px; 
             display: none; 
             flex-direction: column; 
-            gap: 8px; 
+            gap: 10px; 
             z-index: 300; 
-            min-width: 220px;
-            box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+            min-width: 280px;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.4);
             border: 1px solid rgba(255,255,255,0.1);
             opacity: 0;
             transform: translateY(10px);
             transition: all 0.3s;
+            backdrop-filter: blur(15px);
         }
 
         #export-options.show { 
@@ -942,30 +1266,31 @@
             border: 1px solid rgba(255,255,255,0.1);
             color: white; 
             text-align: left; 
-            padding: 12px 16px; 
-            border-radius: 10px; 
+            padding: 15px 20px; 
+            border-radius: 14px; 
             cursor: pointer; 
             display: flex; 
             align-items: center; 
-            gap: 12px;
+            gap: 14px;
             transition: all 0.2s;
-            font-size: 14px;
-            font-weight: 500;
+            font-size: 15px;
+            font-weight: 600;
         }
 
         #export-options button:hover {
             background: rgba(79,70,229,0.2);
             border-color: var(--primary-color);
-            transform: translateX(4px);
+            transform: translateX(5px);
+            box-shadow: 0 4px 15px rgba(79,70,229,0.2);
         }
 
         #export-options button i {
-            font-size: 16px;
-            width: 20px;
+            font-size: 20px;
+            width: 25px;
             text-align: center;
         }
 
-        /* ===== TOAST ===== */
+        /* ===== টোস্ট নোটিফিকেশন ===== */
         #toast { 
             position: fixed; 
             top: 20px; 
@@ -973,19 +1298,19 @@
             transform: translateX(-50%) translateY(-100px); 
             background: linear-gradient(135deg, #1e293b, #0f172a);
             color: white; 
-            padding: 14px 24px; 
-            border-radius: 12px; 
-            font-size: 14px; 
+            padding: 18px 30px; 
+            border-radius: 16px; 
+            font-size: 15px; 
             font-weight: 600; 
             z-index: 1000; 
             display: flex; 
             align-items: center; 
-            gap: 12px; 
+            gap: 14px; 
             transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            box-shadow: 0 8px 40px rgba(0,0,0,0.3);
             border: 1px solid rgba(255,255,255,0.1);
             max-width: 90%;
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(15px);
         }
 
         #toast.show { 
@@ -1004,7 +1329,11 @@
             border-left: 4px solid var(--primary-color); 
         }
 
-        /* ===== LOADER ===== */
+        #toast i {
+            font-size: 22px;
+        }
+
+        /* ===== লোডার ===== */
         #loader { 
             display: none; 
             position: fixed; 
@@ -1012,15 +1341,16 @@
             left: 50%; 
             transform: translate(-50%, -50%); 
             background: rgba(15, 23, 42, 0.95); 
-            padding: 30px; 
+            padding: 40px; 
             border-radius: 50%; 
             z-index: 500; 
             color: var(--primary-light);
-            box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+            box-shadow: 0 15px 50px rgba(0,0,0,0.4);
+            backdrop-filter: blur(15px);
         }
 
         #loader i { 
-            font-size: 48px; 
+            font-size: 50px; 
             animation: spin 1.5s linear infinite; 
         }
 
@@ -1028,21 +1358,21 @@
             100% { transform: rotate(360deg); } 
         }
 
-        /* ===== MOBILE RESPONSIVE ===== */
+        /* ===== মোবাইল রেসপন্সিভ ===== */
         @media (max-width: 768px) {
             #header {
-                height: 55px;
-                padding: 0 10px;
+                height: 60px;
+                padding: 0 12px;
             }
             
             .brand-icon {
-                width: 34px;
-                height: 34px;
-                font-size: 16px;
+                width: 40px;
+                height: 40px;
+                font-size: 20px;
             }
             
             .brand-title {
-                font-size: 14px;
+                font-size: 16px;
             }
             
             .brand-subtitle {
@@ -1050,36 +1380,32 @@
             }
             
             .header-btn {
+                padding: 8px 12px;
+                font-size: 12px;
+            }
+            
+            #quick-upload {
+                padding: 12px 12px;
+            }
+            
+            .upload-btn {
+                padding: 14px 20px;
+                font-size: 14px;
+            }
+            
+            #controls-bar {
+                padding: 8px 10px;
+                gap: 8px;
+            }
+            
+            #controls-bar button {
                 padding: 6px 10px;
                 font-size: 11px;
             }
             
-            .header-divider {
-                display: none;
-            }
-            
-            #quick-upload {
-                padding: 8px 10px;
-            }
-            
-            .upload-btn {
-                padding: 10px 20px;
-                font-size: 13px;
-            }
-            
-            #controls-bar {
-                padding: 6px 8px;
-                gap: 6px;
-            }
-            
-            #controls-bar button {
-                padding: 5px 8px;
-                font-size: 10px;
-            }
-            
             #scroll-area {
-                padding: 10px;
-                padding-top: 60px;
+                padding: 15px;
+                padding-top: 65px;
             }
             
             #quick-seal-buttons {
@@ -1089,14 +1415,14 @@
             }
             
             .quick-btn {
-                width: 45px;
-                height: 45px;
-                font-size: 16px;
+                width: 50px;
+                height: 50px;
+                font-size: 18px;
             }
             
             .quick-btn-label {
-                right: 55px;
-                font-size: 10px;
+                right: 60px;
+                font-size: 11px;
             }
             
             #bottom-actions {
@@ -1106,19 +1432,19 @@
             }
             
             #export-btn {
-                padding: 12px 18px;
-                font-size: 13px;
+                padding: 13px 20px;
+                font-size: 14px;
             }
             
             #export-options {
-                bottom: 70px;
+                bottom: 75px;
                 right: 10px;
-                min-width: 200px;
+                min-width: 230px;
             }
             
             #seal-editor {
-                width: 300px;
-                padding: 15px;
+                width: 320px;
+                padding: 20px;
             }
         }
 
@@ -1132,11 +1458,11 @@
             }
             
             .header-btn {
-                padding: 8px;
+                padding: 10px;
             }
             
             .header-btn i {
-                font-size: 16px;
+                font-size: 18px;
             }
             
             .quick-btn-label {
@@ -1144,7 +1470,7 @@
             }
         }
 
-        /* ===== PRINT STYLES ===== */
+        /* ===== প্রিন্ট স্টাইল ===== */
         @media print { 
             body * { visibility: hidden !important; } 
             #scroll-area { padding: 0 !important; }
@@ -1173,7 +1499,7 @@
                 height: 100% !important;
                 object-fit: contain !important;
             }
-            #header, #bottom-actions, #toolbar, #sidebar, #quick-upload, #overlay, #controls-bar, #quick-seal-buttons, #export-options, #seal-editor, #toast, #loader { 
+            #header, #bottom-actions, #sidebar, #quick-upload, #overlay, #controls-bar, #quick-seal-buttons, #export-options, #seal-editor, #toast, #loader { 
                 display: none !important; 
             }
         }
@@ -1181,7 +1507,7 @@
 </head>
 <body>
 
-    <!-- PROFESSIONAL HEADER -->
+    <!-- ===== প্রফেশনাল হেডার ===== -->
     <header id="header">
         <div class="header-left">
             <button class="header-btn" onclick="toggleSidebar(true)" title="মেনু খুলুন">
@@ -1200,7 +1526,7 @@
         </div>
         
         <div class="header-right">
-            <button class="header-btn" onclick="toggleLanguage()" title="ভাষা পরিবর্তন করুন">
+            <button class="header-btn lang-btn" onclick="toggleLanguage()" title="ভাষা পরিবর্তন করুন">
                 <i class="fas fa-globe"></i>
                 <span id="lang-text">EN</span>
             </button>
@@ -1210,7 +1536,7 @@
         </div>
     </header>
 
-    <!-- QUICK UPLOAD BAR -->
+    <!-- ===== আপলোড বার ===== -->
     <div id="quick-upload">
         <label for="file-upload" class="upload-btn">
             <i class="fas fa-cloud-upload-alt"></i>
@@ -1219,7 +1545,7 @@
         <input id="file-upload" type="file" accept="application/pdf,image/*" onchange="handleFileUpload(event)">
     </div>
 
-    <!-- SIDEBAR -->
+    <!-- ===== সাইডবার ===== -->
     <div id="sidebar">
         <div class="side-header">
             <h3>
@@ -1247,7 +1573,13 @@
         </div>
 
         <div id="search-container">
-            <input type="text" id="search-input" placeholder="সিল খুঁজুন..." oninput="advancedSearch()">
+            <div class="search-wrapper">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" id="search-input" placeholder="সিল খুঁজুন..." oninput="advancedSearch()">
+                <button id="search-clear" onclick="clearSearch()" title="সার্চ মুছুন">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
             <span id="search-status"></span>
         </div>
 
@@ -1256,7 +1588,7 @@
 
     <div id="overlay" onclick="toggleSidebar(false)"></div>
 
-    <!-- MAIN AREA -->
+    <!-- ===== মূল এরিয়া ===== -->
     <div id="main-area">
         <div id="controls-bar" style="display:none;">
             <button id="prev-btn" onclick="prevPage()" title="আগের পৃষ্ঠা">
@@ -1292,7 +1624,7 @@
         </div>
     </div>
 
-    <!-- SEAL EDITOR BOX -->
+    <!-- ===== সিল এডিটর বক্স ===== -->
     <div id="seal-editor">
         <div class="editor-header">
             <h3><i class="fas fa-sliders-h"></i> সিল এডিটর</h3>
@@ -1302,7 +1634,10 @@
         </div>
         
         <div class="editor-section">
-            <div class="editor-section-title">আকার</div>
+            <div class="editor-section-title">
+                <i class="fas fa-expand-arrows-alt"></i>
+                আকার
+            </div>
             <div class="editor-row">
                 <span class="editor-label">ছোট</span>
                 <input type="range" class="editor-input" id="editor-size" min="50" max="300" value="120" oninput="editorSizeChange(this.value)">
@@ -1311,16 +1646,22 @@
         </div>
 
         <div class="editor-section">
-            <div class="editor-section-title">ঘূর্ণন</div>
+            <div class="editor-section-title">
+                <i class="fas fa-sync-alt"></i>
+                ঘূর্ণন
+            </div>
             <div class="editor-row">
                 <button class="editor-btn" onclick="rotateSeal(-15)"><i class="fas fa-undo"></i></button>
-                <span class="editor-label">15°</span>
                 <button class="editor-btn" onclick="rotateSeal(15)"><i class="fas fa-redo"></i></button>
+                <button class="editor-btn" onclick="resetRotation()"><i class="fas fa-undo-alt"></i></button>
             </div>
         </div>
 
         <div class="editor-section">
-            <div class="editor-section-title">স্বচ্ছতা</div>
+            <div class="editor-section-title">
+                <i class="fas fa-adjust"></i>
+                স্বচ্ছতা
+            </div>
             <div class="editor-row">
                 <span class="editor-label">১০%</span>
                 <input type="range" class="editor-input" id="editor-opacity" min="10" max="100" value="100" oninput="editorOpacityChange(this.value)">
@@ -1329,15 +1670,33 @@
         </div>
 
         <div class="editor-section">
-            <div class="editor-section-title">অ্যাকশন</div>
+            <div class="editor-section-title">
+                <i class="fas fa-layer-group"></i>
+                অবস্থান
+            </div>
+            <div class="editor-row">
+                <button class="editor-btn" onclick="centerSeal()"><i class="fas fa-crosshairs"></i></button>
+                <button class="editor-btn" onclick="moveSeal(0, -20)"><i class="fas fa-arrow-up"></i></button>
+                <button class="editor-btn" onclick="moveSeal(0, 20)"><i class="fas fa-arrow-down"></i></button>
+                <button class="editor-btn" onclick="moveSeal(-20, 0)"><i class="fas fa-arrow-left"></i></button>
+                <button class="editor-btn" onclick="moveSeal(20, 0)"><i class="fas fa-arrow-right"></i></button>
+            </div>
+        </div>
+
+        <div class="editor-section">
+            <div class="editor-section-title">
+                <i class="fas fa-tasks"></i>
+                অ্যাকশন
+            </div>
             <div class="editor-row">
                 <button class="editor-btn danger" onclick="deleteSeal()"><i class="fas fa-trash"></i></button>
+                <button class="editor-btn warning" onclick="duplicateSeal()"><i class="fas fa-copy"></i></button>
                 <button class="editor-btn success" onclick="closeSealEditor()"><i class="fas fa-check"></i></button>
             </div>
         </div>
     </div>
 
-    <!-- QUICK SEAL BUTTONS (LEFT SIDE) -->
+    <!-- ===== দ্রুত বাটন ===== -->
     <div id="quick-seal-buttons">
         <button class="quick-btn" onclick="showRecentSeals()" title="সম্প্রতি ব্যবহৃত সিল">
             <span class="quick-btn-label" id="label-recent">সম্প্রতি</span>
@@ -1349,7 +1708,7 @@
         </button>
     </div>
 
-    <!-- EXPORT BUTTON & OPTIONS (RIGHT SIDE) -->
+    <!-- ===== ডাউনলোড বাটন ===== -->
     <div id="bottom-actions">
         <button id="export-btn" onclick="toggleExportMenu()" title="ডাউনলোড বিকল্প">
             <i class="fas fa-download"></i>
@@ -1376,7 +1735,13 @@
         </button>
     </div>
 
-    <!-- NOTIFICATIONS -->
+    <!-- ===== সার্চ রেজাল্ট ব্যাজ ===== -->
+    <div id="search-result-badge" class="search-result-badge">
+        <i class="fas fa-search"></i>
+        <span id="search-result-text"></span>
+    </div>
+
+    <!-- ===== নোটিফিকেশন ===== -->
     <div id="toast">
         <i class="fas fa-check-circle"></i>
         <span id="toast-message"></span>
@@ -1387,77 +1752,24 @@
     </div>
 
     <script>
-        // ===== STATE MANAGEMENT =====
-        let currentPDF = null;
-        let currentLang = 'bn';
-        let toastTimeout;
-        let currentZoom = 1.0;
-        let currentPageNumber = 1;
-        let totalPages = 1;
-        let currentPageElement = null;
-        let recentSeals = [];
-        let dragData = null;
-        let activeSeal = null;
+        // ==========================================
+        // স্টেট ম্যানেজমেন্ট
+        // ==========================================
+        let currentPDF = null;          // বর্তমান PDF ফাইল
+        let currentLang = 'bn';         // বর্তমান ভাষা (বাংলা/ইংরেজি)
+        let toastTimeout;               // টোস্ট নোটিফিকেশন টাইমআউট
+        let currentZoom = 1.0;          // বর্তমান জুম লেভেল
+        let currentPageNumber = 1;      // বর্তমান পৃষ্ঠা নম্বর
+        let totalPages = 1;             // মোট পৃষ্ঠা সংখ্যা
+        let currentPageElement = null;  // বর্তমান পৃষ্ঠার এলিমেন্ট
+        let recentSeals = [];           // সম্প্রতি ব্যবহৃত সিলের তালিকা
+        let dragData = null;            // ড্র্যাগ ডাটা
+        let activeSeal = null;          // সক্রিয় সিল
+        let searchTimeout = null;       // সার্চ টাইমআউট
 
-        // ===== SEAL DATA =====
-        const sealData = [
-            {
-                name_bn: "সরকারি সিল",
-                name_en: "Government Seals",
-                icon: "fas fa-landmark",
-                subfolders: [
-                    {
-                        name_bn: "জাতীয়",
-                        name_en: "National",
-                        icon: "fas fa-flag",
-                        images: [
-                            "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Ccircle cx='100' cy='100' r='95' fill='%23006BB6' stroke='%23003D6B' stroke-width='3'/%3E%3Ctext x='100' y='105' font-size='40' font-weight='bold' fill='white' text-anchor='middle'%3EBD%3C/text%3E%3C/svg%3E",
-                            "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Ccircle cx='100' cy='100' r='95' fill='%23DC241F' stroke='%23961815' stroke-width='3'/%3E%3Ctext x='100' y='110' font-size='35' font-weight='bold' fill='white' text-anchor='middle'%3E%E0%A6%B8%E0%A6%BE%E0%A7%8B%3C/text%3E%3C/svg%3E"
-                        ]
-                    }
-                ]
-            },
-            {
-                name_bn: "আইনি সিল",
-                name_en: "Legal Seals",
-                icon: "fas fa-gavel",
-                subfolders: [
-                    {
-                        name_bn: "আদালত",
-                        name_en: "Court",
-                        icon: "fas fa-balance-scale",
-                        images: [
-                            "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Ccircle cx='100' cy='100' r='95' fill='%238B0000' stroke='%23540000' stroke-width='3'/%3E%3Ctext x='100' y='95' font-size='30' font-weight='bold' fill='white' text-anchor='middle'%3ECOURT%3C/text%3E%3Ctext x='100' y='125' font-size='14' fill='white' text-anchor='middle'%3ESEAL%3C/text%3E%3C/svg%3E"
-                        ]
-                    },
-                    {
-                        name_bn: "নোটারি",
-                        name_en: "Notary",
-                        icon: "fas fa-certificate",
-                        images: [
-                            "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Ccircle cx='100' cy='100' r='95' fill='%23000080' stroke='%23000040' stroke-width='3'/%3E%3Ctext x='100' y='100' font-size='32' font-weight='bold' fill='gold' text-anchor='middle'%3E%E2%9C%93%3C/text%3E%3C/svg%3E"
-                        ]
-                    }
-                ]
-            },
-            {
-                name_bn: "ব্যবসায়িক সিল",
-                name_en: "Business Seals",
-                icon: "fas fa-briefcase",
-                subfolders: [
-                    {
-                        name_bn: "কর্পোরেট",
-                        name_en: "Corporate",
-                        icon: "fas fa-building",
-                        images: [
-                            "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Ccircle cx='100' cy='100' r='95' fill='%23333333' stroke='%23000000' stroke-width='3'/%3E%3Ctext x='100' y='110' font-size='28' font-weight='bold' fill='%23FFD700' text-anchor='middle'%3ECORP%3C/text%3E%3C/svg%3E"
-                        ]
-                    }
-                ]
-            }
-        ];
-
-        // ===== TRANSLATIONS =====
+        // ==========================================
+        // অনুবাদ ডাটা
+        // ==========================================
         const translations = {
             bn: {
                 title: "নোটারি সিল অ্যাপ",
@@ -1479,6 +1791,8 @@
                 toast_delete: "✓ সিল মুছে ফেলা হয়েছে!",
                 toast_download: "✓ ডাউনলোড সম্পন্ন হয়েছে!",
                 toast_print: "✓ প্রিন্ট করা হচ্ছে...",
+                search_found: "টি সিল পাওয়া গেছে",
+                search_notfound: "কোনো সিল পাওয়া যায়নি",
                 help: "কীভাবে ব্যবহার করবেন:\n1. একটি PDF বা ছবি আপলোড করুন\n2. বাম দিকের বোতাম থেকে একটি সিল নির্বাচন করুন\n3. সিল টেনে আনুন এবং অবস্থান পরিবর্তন করুন\n4. সিল ক্লিক করে এডিটর খুলুন\n5. ডান দিকের বোতাম থেকে ডাউনলোড করুন"
             },
             en: {
@@ -1501,11 +1815,17 @@
                 toast_delete: "✓ Seal deleted!",
                 toast_download: "✓ Download completed!",
                 toast_print: "✓ Printing...",
+                search_found: " seals found",
+                search_notfound: "No seals found",
                 help: "How to use:\n1. Upload a PDF or image\n2. Select a seal from the left button\n3. Drag the seal to position it\n4. Click the seal to open editor\n5. Download from the right button"
             }
         };
 
-        // ===== UTILITY FUNCTIONS =====
+        // ==========================================
+        // ইউটিলিটি ফাংশন
+        // ==========================================
+        
+        // টোস্ট নোটিফিকেশন দেখানোর ফাংশন
         function showToast(msg, type = 'success') {
             const t = document.getElementById('toast');
             document.getElementById('toast-message').innerText = msg;
@@ -1515,10 +1835,12 @@
             toastTimeout = setTimeout(() => t.classList.remove('show'), 3500);
         }
 
+        // ভাষা পরিবর্তন করার ফাংশন
         function toggleLanguage() {
             currentLang = currentLang === 'bn' ? 'en' : 'bn';
             const tr = translations[currentLang];
             
+            // UI টেক্সট আপডেট
             document.getElementById('title-text').innerText = tr.title;
             document.getElementById('sidebar-title').innerText = tr.sidebar;
             document.getElementById('quick-upload-text').innerText = tr.quick_upload;
@@ -1537,30 +1859,36 @@
             document.getElementById('label-library').innerText = currentLang === 'bn' ? 'লাইব্রেরি' : 'Library';
             document.getElementById('search-input').placeholder = currentLang === 'bn' ? 'সিল খুঁজুন...' : 'Search seals...';
             
+            // মেনু রিবিল্ড
             buildMenu();
         }
 
+        // সাহায্য দেখানোর ফাংশন
         function showHelp() {
             const tr = translations[currentLang];
             showToast(tr.help, 'info');
         }
 
+        // সাইডবার টগল ফাংশন
         function toggleSidebar(show) {
             document.getElementById('sidebar').classList.toggle('open', show);
             document.getElementById('overlay').classList.toggle('show', show);
         }
 
+        // এক্সপোর্ট মেনু টগল ফাংশন
         function toggleExportMenu() {
             const menu = document.getElementById('export-options');
             menu.classList.toggle('show');
             document.getElementById('seal-editor').classList.remove('show');
         }
 
+        // সাইডবার থেকে আপলোড ট্রিগার
         function triggerSidebarUpload() {
             toggleSidebar(false);
             document.getElementById('file-upload').click();
         }
 
+        // সম্প্রতি ব্যবহৃত সিল দেখানো
         function showRecentSeals() {
             if (recentSeals.length === 0) {
                 showToast(currentLang === 'bn' ? 'এখনো কোনো সিল ব্যবহার করা হয়নি' : 'No recent seals');
@@ -1570,104 +1898,200 @@
             showToast(currentLang === 'bn' ? 'সম্প্রতি ব্যবহৃত সিল দেখুন' : 'Select a recent seal');
         }
 
-        // ===== SEARCH FUNCTIONALITY =====
+        // ==========================================
+        // উন্নত সার্চ ফাংশনালিটি
+        // ==========================================
         function advancedSearch() {
             const query = document.getElementById('search-input').value.toLowerCase().trim();
             const searchStatus = document.getElementById('search-status');
+            const searchClear = document.getElementById('search-clear');
             
+            // সার্চ ক্লিয়ার বাটন দেখানো/লুকানো
+            if (query) {
+                searchClear.classList.add('visible');
+            } else {
+                searchClear.classList.remove('visible');
+            }
+            
+            // সব এলিমেন্ট রিসেট
             const allLevelButtons = document.querySelectorAll('#menu-tree .level-btn');
             const allNested = document.querySelectorAll('#menu-tree .nested-container');
             const allSealItems = document.querySelectorAll('#menu-tree .seal-item');
+            const allImagesContainers = document.querySelectorAll('#menu-tree .images-container');
 
+            // সব হাইলাইট রিসেট
             allLevelButtons.forEach(btn => {
                 btn.innerHTML = btn.innerHTML.replace(/<mark>/g, '').replace(/<\/mark>/g, '');
+                btn.classList.remove('search-match');
             });
             
             allSealItems.forEach(item => {
                 item.style.display = 'flex';
+                item.classList.remove('search-highlight');
             });
 
             if (!query) {
                 searchStatus.innerText = '';
                 allNested.forEach(n => n.classList.remove('show'));
                 allLevelButtons.forEach(b => b.classList.remove('active'));
+                allImagesContainers.forEach(c => c.classList.remove('show'));
+                hideSearchResultBadge();
                 return;
             }
 
             let matchCount = 0;
+            let hasSearchResults = false;
+            let searchResultNames = [];
 
-            allSealItems.forEach(item => {
-                const img = item.querySelector('img');
-                const src = img ? img.src.toLowerCase() : '';
+            // ডাটা থেকে সার্চ করা
+            function searchInImages(images, rootName, subName, subSubName) {
+                images.forEach((imgSrc, idx) => {
+                    // ইমেজ সার্চ
+                    if (rootName.includes(query) || subName.includes(query) || subSubName.includes(query)) {
+                        matchCount++;
+                        hasSearchResults = true;
+                        searchResultNames.push(currentLang === 'bn' ? subSubName : subSubName);
+                        
+                        // মেনুতে ম্যাচ দেখানো
+                        const items = document.querySelectorAll('#menu-tree .seal-item');
+                        const imgItem = items[idx];
+                        if (imgItem) {
+                            imgItem.classList.add('search-highlight');
+                            imgItem.style.display = 'flex';
+                            
+                            // সব প্যারেন্ট খুলে দেওয়া
+                            let parent = imgItem.parentElement;
+                            while (parent && parent.id !== 'menu-tree') {
+                                if (parent.classList.contains('images-container')) parent.classList.add('show');
+                                if (parent.classList.contains('nested-container')) parent.classList.add('show');
+                                parent = parent.parentElement;
+                            }
+                        }
+                    }
+                });
+            }
+
+            // ডাটা থেকে সার্চ করা
+            sealData.forEach(root => {
+                // রুট লেভেল সার্চ
+                const rootName = (currentLang === 'bn' ? root.name_bn : root.name_en).toLowerCase();
                 
-                if (src.includes(query)) {
-                    item.style.display = 'flex';
-                    matchCount++;
-                    let parent = item.parentElement;
-                    while (parent && parent.id !== 'menu-tree') {
-                        if (parent.classList.contains('images-container')) parent.classList.add('show');
-                        if (parent.classList.contains('nested-container')) parent.classList.add('show');
-                        parent = parent.parentElement;
-                    }
-                } else {
-                    item.style.display = 'none';
+                if (root.subfolders) {
+                    root.subfolders.forEach(sub => {
+                        // সাবফোল্ডার সার্চ
+                        const subName = (currentLang === 'bn' ? sub.name_bn : sub.name_en).toLowerCase();
+                        
+                        if (sub.subfolders) {
+                            sub.subfolders.forEach(subSub => {
+                                // সাব-সাবফোল্ডার সার্চ
+                                const subSubName = (currentLang === 'bn' ? subSub.name_bn : subSub.name_en).toLowerCase();
+                                
+                                if (subSub.images) {
+                                    searchInImages(subSub.images, rootName, subName, subSubName);
+                                }
+                            });
+                        }
+                    });
                 }
             });
 
-            allLevelButtons.forEach(btn => {
-                const text = btn.textContent.toLowerCase();
-                if (text.includes(query)) {
-                    const originalHTML = btn.innerHTML;
-                    const regex = new RegExp(`(${query})`, 'gi');
-                    btn.innerHTML = originalHTML.replace(regex, '<mark>$1</mark>');
-                    matchCount++;
-                    
-                    let parent = btn.parentElement;
-                    while (parent && parent.id !== 'menu-tree') {
-                        if (parent.classList.contains('nested-container')) parent.classList.add('show');
-                        parent = parent.parentElement;
-                    }
-                }
-            });
-
-            searchStatus.innerText = matchCount > 0 ? `${matchCount} ${currentLang === 'bn' ? 'টি' : ''}` : (currentLang === 'bn' ? 'পাওয়া যায়নি' : 'Not found');
+            // রেজাল্ট দেখানো
+            if (hasSearchResults) {
+                showSearchResultBadge(`${matchCount} ${translations[currentLang].search_found}`);
+                searchStatus.innerText = `${matchCount} ${currentLang === 'bn' ? 'টি সিল পাওয়া গেছে' : 'seals found'}`;
+            } else {
+                showSearchResultBadge(translations[currentLang].search_notfound);
+                searchStatus.innerText = currentLang === 'bn' ? 'পাওয়া যায়নি' : 'Not found';
+            }
         }
 
-        // ===== MENU BUILDER =====
+        // সার্চ ক্লিয়ার ফাংশন
+        function clearSearch() {
+            document.getElementById('search-input').value = '';
+            document.getElementById('search-clear').classList.remove('visible');
+            document.getElementById('search-status').innerText = '';
+            
+            // সব রিসেট
+            const allSealItems = document.querySelectorAll('#menu-tree .seal-item');
+            allSealItems.forEach(item => {
+                item.style.display = 'flex';
+                item.classList.remove('search-highlight');
+            });
+            
+            const allNested = document.querySelectorAll('#menu-tree .nested-container');
+            allNested.forEach(n => n.classList.remove('show'));
+            
+            const allLevelButtons = document.querySelectorAll('#menu-tree .level-btn');
+            allLevelButtons.forEach(b => b.classList.remove('active', 'search-match'));
+            
+            hideSearchResultBadge();
+        }
+
+        // সার্চ রেজাল্ট ব্যাজ দেখানো
+        function showSearchResultBadge(text) {
+            const badge = document.getElementById('search-result-badge');
+            document.getElementById('search-result-text').innerText = text;
+            badge.classList.add('show');
+        }
+
+        // সার্চ রেজাল্ট ব্যাজ লুকানো
+        function hideSearchResultBadge() {
+            const badge = document.getElementById('search-result-badge');
+            badge.classList.remove('show');
+        }
+
+        // ==========================================
+        // মেনু বিল্ডার
+        // ==========================================
         function buildMenu() {
             const tree = document.getElementById('menu-tree');
             tree.innerHTML = '';
             
+            // sealData ডাটা থেকে মেনু তৈরি
             sealData.forEach((root) => {
                 const div = document.createElement('div');
                 const rootName = currentLang === 'bn' ? root.name_bn : root.name_en;
-                div.innerHTML = `<button class="level-btn" onclick="toggleLevel(this)"><span><i class="${root.icon}" style="margin-right:10px;"></i>${rootName}</span><i class="fas fa-chevron-right"></i></button>`;
+                div.innerHTML = `<button class="level-btn" onclick="toggleLevel(this)"><span class="level-name"><i class="${root.icon}"></i>${rootName}</span><i class="fas fa-chevron-right"></i></button>`;
                 
                 const nested = document.createElement('div');
                 nested.className = 'nested-container';
                 
-                if (root.subfolders) {
+                if (root.subfolders && root.subfolders.length > 0) {
                     root.subfolders.forEach(sub => {
                         const subDiv = document.createElement('div');
                         const subName = currentLang === 'bn' ? sub.name_bn : sub.name_en;
-                        subDiv.innerHTML = `<button class="level-btn" onclick="toggleLevel(this)"><span style="font-size:13px;"><i class="${sub.icon}" style="margin-right:8px;"></i>${subName}</span><i class="fas fa-chevron-right"></i></button>`;
+                        subDiv.innerHTML = `<button class="level-btn" onclick="toggleLevel(this)"><span class="level-name"><i class="${sub.icon}"></i>${subName}</span><i class="fas fa-chevron-right"></i></button>`;
                         
                         const subNested = document.createElement('div');
                         subNested.className = 'nested-container';
                         
-                        if (sub.images) {
-                            const imgC = document.createElement('div');
-                            imgC.className = 'images-container';
-                            
-                            sub.images.forEach(src => {
-                                const item = document.createElement('div');
-                                item.className = 'seal-item';
-                                item.onclick = () => addSeal(src);
-                                item.innerHTML = `<img src="${src}" alt="seal" loading="lazy">`;
-                                imgC.appendChild(item);
+                        if (sub.subfolders && sub.subfolders.length > 0) {
+                            sub.subfolders.forEach(subSub => {
+                                const subSubDiv = document.createElement('div');
+                                const subSubName = currentLang === 'bn' ? subSub.name_bn : subSub.name_en;
+                                subSubDiv.innerHTML = `<button class="level-btn" onclick="toggleLevel(this)"><span class="level-name"><i class="${subSub.icon}"></i>${subSubName}</span><i class="fas fa-chevron-right"></i></button>`;
+                                
+                                const subSubNested = document.createElement('div');
+                                subSubNested.className = 'nested-container';
+                                
+                                if (subSub.images && subSub.images.length > 0) {
+                                    const imgC = document.createElement('div');
+                                    imgC.className = 'images-container';
+                                    
+                                    subSub.images.forEach(src => {
+                                        const item = document.createElement('div');
+                                        item.className = 'seal-item';
+                                        item.onclick = () => addSeal(src);
+                                        item.innerHTML = `<img src="${src}" alt="seal" loading="lazy">`;
+                                        imgC.appendChild(item);
+                                    });
+                                    
+                                    subSubDiv.appendChild(imgC);
+                                }
+                                
+                                subSubDiv.appendChild(subSubNested);
+                                subNested.appendChild(subSubDiv);
                             });
-                            
-                            subDiv.appendChild(imgC);
                         }
                         
                         subDiv.appendChild(subNested);
@@ -1680,12 +2104,15 @@
             });
         }
 
+        // লেভেল টগল ফাংশন
         function toggleLevel(btn) {
             btn.classList.toggle('active');
             btn.nextElementSibling.classList.toggle('show');
         }
 
-        // ===== FILE HANDLING =====
+        // ==========================================
+        // ফাইল আপলোড হ্যান্ডলিং
+        // ==========================================
         function handleFileUpload(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -1698,6 +2125,7 @@
                 const container = document.getElementById('content-layer');
                 container.innerHTML = '';
                 
+                // PDF ফাইল হ্যান্ডলিং
                 if (file.type === 'application/pdf') {
                     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
                     const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
@@ -1711,6 +2139,7 @@
                         document.getElementById('page-jump').max = totalPages;
                         document.getElementById('page-jump').value = 1;
                         
+                        // প্রতিটি পৃষ্ঠা রেন্ডার
                         const renderPage = (pageNum) => {
                             pdf.getPage(pageNum).then(function(page) {
                                 const viewport = page.getViewport({ scale: 2 });
@@ -1739,14 +2168,11 @@
                                     pageDiv.appendChild(canvas);
                                     pageContainer.appendChild(pageDiv);
                                     container.appendChild(pageContainer);
-                                    
-                                    // Add click handler for seal placement
-                                    pageDiv.addEventListener('click', handlePageClick);
                                 });
                             });
                         };
                         
-                        // Render all pages
+                        // সব পৃষ্ঠা রেন্ডার করা
                         for (let i = 1; i <= pdf.numPages; i++) {
                             renderPage(i);
                         }
@@ -1758,6 +2184,7 @@
                         showToast(translations[currentLang].toast_error, 'error');
                     });
                 } 
+                // ইমেজ ফাইল হ্যান্ডলিং
                 else if (file.type.startsWith('image/')) {
                     currentPDF = null;
                     document.getElementById('controls-bar').style.display = 'none';
@@ -1779,9 +2206,6 @@
                         pageContainer.appendChild(pageDiv);
                         container.appendChild(pageContainer);
                         
-                        // Add click handler for seal placement
-                        pageDiv.addEventListener('click', handlePageClick);
-                        
                         document.getElementById('loader').style.display = 'none';
                         showToast(translations[currentLang].toast_upload);
                     };
@@ -1790,17 +2214,9 @@
             reader.readAsArrayBuffer(file);
         }
 
-        function handlePageClick(e) {
-            // Check if click is on a seal
-            if (e.target.closest('.seal-wrapper')) {
-                return;
-            }
-            
-            // Only show editor if seal is clicked
-            closeSealEditor();
-        }
-
-        // ===== PAGINATION =====
+        // ==========================================
+        // পেজিনেশন
+        // ==========================================
         function nextPage() {
             if (currentPageNumber < totalPages) {
                 const pages = document.querySelectorAll('.a4-page');
@@ -1860,7 +2276,9 @@
             closeSealEditor();
         }
 
-        // ===== ZOOM =====
+        // ==========================================
+        // জুম ফাংশনালিটি
+        // ==========================================
         function changeZoom(delta) {
             currentZoom = Math.max(0.5, Math.min(2.5, currentZoom + delta));
             document.getElementById('zoom-value').innerText = Math.round(currentZoom * 100) + '%';
@@ -1871,7 +2289,9 @@
             });
         }
 
-        // ===== SEAL MANAGEMENT =====
+        // ==========================================
+        // সিল ম্যানেজমেন্ট
+        // ==========================================
         function addSeal(src) {
             if (!currentPageElement) {
                 showToast(currentLang === 'bn' ? 'প্রথমে ডকুমেন্ট আপলোড করুন' : 'Upload a document first', 'error');
@@ -1892,7 +2312,7 @@
                 <img src="${src}" class="seal-img" alt="seal">
             `;
 
-            // Make seal draggable on touch devices
+            // টাচ ড্র্যাগ সাপোর্ট
             wrap.addEventListener('touchstart', function(e) {
                 e.stopPropagation();
                 activateSeal(wrap);
@@ -1900,6 +2320,7 @@
                 startTouchDrag(e, wrap);
             }, { passive: false });
 
+            // ক্লিক ইভেন্ট
             wrap.addEventListener('click', function(e) {
                 e.stopPropagation();
                 activateSeal(wrap);
@@ -1908,7 +2329,7 @@
 
             currentPageElement.appendChild(wrap);
 
-            // Add to recent seals
+            // সম্প্রতি ব্যবহৃত সিলে যোগ করা
             if (!recentSeals.includes(src)) {
                 recentSeals.unshift(src);
                 if (recentSeals.length > 5) recentSeals.pop();
@@ -1917,6 +2338,7 @@
             showToast(translations[currentLang].toast_seal);
         }
 
+        // টাচ ড্র্যাগ ফাংশন
         function startTouchDrag(e, wrap) {
             e.preventDefault();
             
@@ -1954,6 +2376,7 @@
             document.addEventListener('touchend', onTouchEnd);
         }
 
+        // সিল অ্যাক্টিভেট ফাংশন
         function activateSeal(el) {
             document.querySelectorAll('.seal-wrapper').forEach(w => {
                 w.classList.remove('active-state');
@@ -1963,11 +2386,12 @@
             activeSeal = el;
         }
 
+        // সিল এডিটর খোলা
         function openSealEditor() {
             const editor = document.getElementById('seal-editor');
             editor.classList.add('show');
             
-            // Set current values
+            // বর্তমান ভ্যালু সেট করা
             if (activeSeal) {
                 const currentSize = parseInt(activeSeal.style.width) || 120;
                 document.getElementById('editor-size').value = currentSize;
@@ -1979,6 +2403,7 @@
             document.getElementById('export-options').classList.remove('show');
         }
 
+        // সিল এডিটর বন্ধ করা
         function closeSealEditor() {
             document.getElementById('seal-editor').classList.remove('show');
             if (activeSeal) {
@@ -1987,17 +2412,79 @@
             }
         }
 
+        // সাইজ পরিবর্তন ফাংশন
         function editorSizeChange(value) {
             if (!activeSeal) return;
             activeSeal.style.width = value + 'px';
             activeSeal.style.height = value + 'px';
         }
 
+        // অপাসিটি পরিবর্তন ফাংশন
         function editorOpacityChange(value) {
             if (!activeSeal) return;
             activeSeal.style.opacity = value / 100;
         }
 
+        // সিল সেন্টার করা
+        function centerSeal() {
+            if (!activeSeal || !currentPageElement) return;
+            activeSeal.style.left = '50%';
+            activeSeal.style.top = '50%';
+            activeSeal.style.transform = 'translate(-50%, -50%)';
+        }
+
+        // সিল সরানো
+        function moveSeal(dx, dy) {
+            if (!activeSeal) return;
+            
+            const currentLeft = parseFloat(activeSeal.style.left) || 0;
+            const currentTop = parseFloat(activeSeal.style.top) || 0;
+            
+            activeSeal.style.left = (currentLeft + dx) + 'px';
+            activeSeal.style.top = (currentTop + dy) + 'px';
+        }
+
+        // সিল ডুপ্লিকেট করা
+        function duplicateSeal() {
+            if (!activeSeal) return;
+            
+            const src = activeSeal.querySelector('.seal-img').src;
+            const newSeal = activeSeal.cloneNode(true);
+            
+            // নতুন সিলের অবস্থান
+            const currentLeft = parseFloat(activeSeal.style.left) || 0;
+            const currentTop = parseFloat(activeSeal.style.top) || 0;
+            newSeal.style.left = (currentLeft + 20) + 'px';
+            newSeal.style.top = (currentTop + 20) + 'px';
+            
+            // নতুন সিলের ক্লিক ইভেন্ট
+            newSeal.addEventListener('click', function(e) {
+                e.stopPropagation();
+                activateSeal(newSeal);
+                openSealEditor();
+            });
+            
+            newSeal.addEventListener('touchstart', function(e) {
+                e.stopPropagation();
+                activateSeal(newSeal);
+                if (!e.target.closest('.seal-img')) return;
+                startTouchDrag(e, newSeal);
+            }, { passive: false });
+            
+            currentPageElement.appendChild(newSeal);
+            
+            showToast(currentLang === 'bn' ? '✓ সিল ডুপ্লিকেট করা হয়েছে!' : '✓ Seal duplicated!');
+        }
+
+        // রোটেশন রিসেট করা
+        function resetRotation() {
+            if (!activeSeal) return;
+            const img = activeSeal.querySelector('.seal-img');
+            img.style.transform = 'rotate(0deg)';
+            img.dataset.rotation = 0;
+        }
+
+        // আউটসাইড ক্লিক হ্যান্ডলার
         document.addEventListener('click', function(e) {
             if (!e.target.closest('.seal-wrapper') && !e.target.closest('#seal-editor') && !e.target.closest('#export-options')) {
                 closeSealEditor();
@@ -2005,7 +2492,11 @@
             }
         });
 
-        // ===== SEAL MANIPULATION =====
+        // ==========================================
+        // সিল ম্যানিপুলেশন
+        // ==========================================
+        
+        // ড্র্যাগ স্টার্ট ফাংশন (ডেস্কটপ)
         function startDrag(e) {
             e.preventDefault();
             e.stopPropagation();
@@ -2048,6 +2539,7 @@
             document.addEventListener('mouseup', up);
         }
 
+        // সিল ডিলিট ফাংশন
         function deleteSeal() {
             if (activeSeal) {
                 activeSeal.remove();
@@ -2056,6 +2548,7 @@
             }
         }
 
+        // সব সিল মুছে ফেলা
         function clearAllSeals() {
             const allSeals = document.querySelectorAll('.seal-wrapper');
             if (allSeals.length === 0) {
@@ -2067,6 +2560,7 @@
             showToast(currentLang === 'bn' ? 'সকল সিল মুছে ফেলা হয়েছে' : 'All seals removed');
         }
 
+        // সিল রোটেট ফাংশন
         function rotateSeal(angle) {
             if (!activeSeal) return;
             
@@ -2077,7 +2571,11 @@
             img.dataset.rotation = newRotation;
         }
 
-        // ===== EXPORT FUNCTIONS =====
+        // ==========================================
+        // এক্সপোর্ট ফাংশন
+        // ==========================================
+        
+        // HD ইমেজ ডাউনলোড
         async function downloadHDImage(format) {
             closeSealEditor();
             document.getElementById('export-options').classList.remove('show');
@@ -2098,18 +2596,22 @@
                     const canvas = await html2canvas(pageContainers[i], { scale: 4, useCORS: true });
                     const imgData = canvas.toDataURL(format === 'jpeg' ? 'image/jpeg' : 'image/png');
                     
+                    // এক পেজ হলে সরাসরি ডাউনলোড
                     if (pageContainers.length === 1) {
                         const link = document.createElement('a');
                         link.download = `document-page-${i + 1}.${format}`;
                         link.href = imgData;
                         link.click();
-                    } else {
+                    } 
+                    // একাধিক পেজ হলে ZIP ফাইলে
+                    else {
                         folder.file(`page-${i + 1}.${format}`, imgData.split(',')[1], { base64: true });
                     }
                     
                     await new Promise(r => setTimeout(r, 300));
                 }
                 
+                // একাধিক পেজ হলে ZIP ডাউনলোড
                 if (pageContainers.length > 1) {
                     const blob = await zip.generateAsync({ type: 'blob' });
                     const link = document.createElement('a');
@@ -2126,6 +2628,7 @@
             }
         }
 
+        // PDF ডাউনলোড
         async function downloadPDF() {
             closeSealEditor();
             document.getElementById('export-options').classList.remove('show');
@@ -2161,6 +2664,7 @@
             }
         }
 
+        // প্রিন্ট ফাংশন
         function printPage() {
             closeSealEditor();
             document.getElementById('export-options').classList.remove('show');
@@ -2174,20 +2678,25 @@
             }, 500);
         }
 
-        // ===== KEYBOARD SHORTCUTS =====
+        // ==========================================
+        // কীবোর্ড শর্টকাট
+        // ==========================================
         document.addEventListener('keydown', function(e) {
+            // ডিলিট কী
             if (e.key === 'Delete' || e.key === 'Backspace') {
                 if (activeSeal) {
                     deleteSeal();
                 }
             }
             
+            // ESC কী
             if (e.key === 'Escape') {
                 toggleSidebar(false);
                 document.getElementById('export-options').classList.remove('show');
                 closeSealEditor();
             }
             
+            // অ্যারো কী - পেজ নেভিগেশন
             if (e.key === 'ArrowLeft') {
                 prevPage();
             }
@@ -2197,16 +2706,28 @@
             }
         });
 
-        // ===== CLOSE EXPORT MENU ON OUTSIDE CLICK =====
+        // ==========================================
+        // এক্সপোর্ট মেনু আউটসাইড ক্লিক
+        // ==========================================
         document.addEventListener('click', (e) => {
             if (!e.target.closest('#export-options') && !e.target.closest('#export-btn')) {
                 document.getElementById('export-options').classList.remove('show');
             }
         });
 
-        // ===== INITIALIZE =====
+        // ==========================================
+        // ইনিশিয়ালাইজেশন
+        // ==========================================
         window.addEventListener('DOMContentLoaded', function() {
+            // মেনু বিল্ড করা
             buildMenu();
+            
+            // সার্চ ইনপুটে কীবোর্ড ইভেন্ট
+            document.getElementById('search-input').addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    clearSearch();
+                }
+            });
         });
     </script>
 </body>
