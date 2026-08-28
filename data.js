@@ -1,5 +1,3 @@
-// এখানে আপনার সব ফোল্ডার ও ইমেজ লিস্ট দিন।
-// name_bn = বাংলা নাম, name_en = ইংরেজি নাম
 const sealData = [
     {
         id: "notary",
@@ -31,7 +29,19 @@ const sealData = [
                 name_bn: "চট্টগ্রাম",
                 name_en: "Chattogram",
                 icon: "fa-solid fa-location-dot",
-                subfolders: []
+                subfolders: [
+                    {
+                        id: "adv-mukbul",
+                        name_bn: "অ্যাডভোকেট মোঃ মুকবুল হোসেন",
+                        name_en: "Adv. Md. Mukbul Hossain",
+                        icon: "fa-solid fa-user-tie",
+                        images: [
+                            "images/Notary-Public/mizen/1000753544-removebg-preview.png",
+                            "images/Notary-Public/mizen/1000753546-removebg-preview.png",
+                            "images/Notary-Public/mizen/1000753542-removebg-preview.png"
+                        ]
+                    }
+                ]
             }
         ]
     },
