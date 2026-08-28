@@ -2,286 +2,1318 @@
 <html lang="bn">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Pro Notary Seal App</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <title>Pro Notary Seal - পেশাদার নোটারি সিল অ্যাপ</title>
     
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="data.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { height: 100vh; display: flex; flex-direction: column; overflow: hidden; background: #f1f5f9; }
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+            font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif; 
+            -webkit-tap-highlight-color: transparent;
+        }
 
-        /* Header */
-        #header { height: 60px; background: linear-gradient(135deg, #0f172a, #1e293b); color: white; display: flex; align-items: center; justify-content: space-between; padding: 0 15px; z-index: 100; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
-        #header h2 { font-size: 16px; display: flex; align-items: center; gap: 10px; font-weight: 700; }
-        #header h2 i { color: #6366f1; font-size: 24px; }
-        #lang-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3); color: white; padding: 8px 15px; border-radius: 20px; font-size: 12px; font-weight: bold; cursor: pointer; }
-        #menu-btn { background: none; border: none; color: white; font-size: 24px; cursor: pointer; }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
-        /* Top Upload Bar */
-        #quick-upload { background: #1e293b; padding: 12px 15px; border-bottom: 1px solid #334155; }
-        #quick-upload-btn { background: linear-gradient(135deg, #6366f1, #818cf8); color: white; border: none; border-radius: 12px; padding: 15px; font-weight: 700; font-size: 14px; cursor: pointer; display: flex; align-items: center; gap: 10px; width: 100%; justify-content: center; }
+        body { 
+            height: 100vh; 
+            display: flex; 
+            flex-direction: column; 
+            overflow: hidden; 
+            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+            color: #1e293b;
+            touch-action: manipulation;
+        }
+
+        /* ===== HEADER ===== */
+        #header { 
+            height: 60px; 
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); 
+            color: white; 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            padding: 0 15px; 
+            z-index: 100; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            flex-shrink: 0;
+        }
+
+        #header h1 { 
+            font-size: 16px; 
+            display: flex; 
+            align-items: center; 
+            gap: 8px; 
+            font-weight: 700; 
+            flex: 1;
+        }
+
+        #header h1 i { 
+            color: #6366f1; 
+            font-size: 24px;
+        }
+
+        .header-controls { 
+            display: flex; 
+            align-items: center; 
+            gap: 8px;
+        }
+
+        .header-btn { 
+            background: rgba(255,255,255,0.15); 
+            border: 1px solid rgba(255,255,255,0.25); 
+            color: white; 
+            padding: 6px 10px; 
+            border-radius: 16px; 
+            font-size: 11px; 
+            font-weight: 600; 
+            cursor: pointer; 
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            white-space: nowrap;
+        }
+
+        .header-btn:hover { 
+            background: rgba(255,255,255,0.25); 
+        }
+
+        /* ===== QUICK UPLOAD BAR ===== */
+        #quick-upload { 
+            background: linear-gradient(135deg, #1e293b, #0f172a); 
+            padding: 8px 15px; 
+            border-bottom: 1px solid #334155;
+            flex-shrink: 0;
+        }
+
+        #quick-upload-btn { 
+            background: linear-gradient(135deg, #6366f1, #8b5cf6); 
+            color: white; 
+            border: none; 
+            border-radius: 10px; 
+            padding: 10px 20px; 
+            font-weight: 700; 
+            font-size: 13px; 
+            cursor: pointer; 
+            display: flex; 
+            align-items: center; 
+            gap: 8px; 
+            width: 100%; 
+            justify-content: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+
+        #quick-upload-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(99, 102, 241, 0.4);
+        }
+
         input[type="file"] { display: none; }
 
-        /* Sidebar */
-        #sidebar { position: fixed; top: 0; left: 0; height: 100%; width: 350px; max-width: 88%; background: linear-gradient(180deg, #1e293b, #0f172a); color: white; transform: translateX(-100%); transition: 0.3s; z-index: 200; display: flex; flex-direction: column; }
-        #sidebar.open { transform: translateX(0); }
-        .side-header { padding: 15px; background: rgba(2, 6, 23, 0.5); display: flex; justify-content: space-between; align-items: center; }
-        .side-header h3 { color: #818cf8; font-size: 16px; display: flex; align-items: center; gap: 10px; }
-        #close-btn { background: none; border: none; color: white; font-size: 22px; cursor: pointer; }
-        
-        /* Sidebar Action Buttons */
-        #sidebar-actions { padding: 10px; border-bottom: 1px solid #334155; display: flex; gap: 8px; justify-content: space-between; align-items: center; }
-        .side-action-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 8px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 5px; justify-content: center; flex: 1; }
-        .side-action-btn:active { background: #6366f1; }
-        .side-action-btn i { font-size: 14px; }
+        /* ===== SIDEBAR ===== */
+        #sidebar { 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            height: 100%; 
+            width: 340px; 
+            max-width: 90%; 
+            background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+            color: white; 
+            transform: translateX(-100%); 
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+            z-index: 200; 
+            display: flex; 
+            flex-direction: column;
+            box-shadow: 4px 0 16px rgba(0,0,0,0.3);
+        }
 
-        /* Search Filter */
-        #menu-search { padding: 10px; border-bottom: 1px solid #334155; }
-        #menu-search input { width: 100%; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 12px; border-radius: 10px; font-size: 14px; outline: none; }
-        #menu-search input::placeholder { color: #94a3b8; }
-        #menu-search input:focus { border-color: #6366f1; }
+        #sidebar.open { 
+            transform: translateX(0); 
+        }
 
-        #menu-tree { flex: 1; overflow-y: auto; padding: 15px; }
-        
-        .level-btn { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; padding: 14px; border-radius: 10px; font-size: 14px; font-weight: 600; display: flex; justify-content: space-between; align-items: center; cursor: pointer; margin-bottom: 10px; }
-        .level-btn i { color: #818cf8; transition: 0.3s; }
-        .level-btn.active i { transform: rotate(90deg); }
-        .nested-container { display: none; padding-left: 12px; border-left: 2px solid #334155; }
-        .nested-container.show { display: block; }
-        .images-container { display: none; grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 10px; background: rgba(2, 6, 23, 0.5); border-radius: 10px; }
-        .images-container.show { display: grid; }
-        .seal-item { background: white; border-radius: 10px; padding: 10px; display: flex; justify-content: center; align-items: center; cursor: pointer; aspect-ratio: 1; border: 2px solid transparent; }
-        .seal-item:active { transform: scale(0.95); border-color: #6366f1; }
-        .seal-item img { max-width: 100%; max-height: 100%; object-fit: contain; }
-        #overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 150; display: none; }
-        #overlay.show { display: block; }
+        .side-header { 
+            padding: 15px; 
+            background: rgba(2, 6, 23, 0.8); 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            border-bottom: 1px solid #334155;
+        }
 
-        /* Main Area */
-        #main-area { flex: 1; display: flex; flex-direction: column; position: relative; overflow: hidden; }
-        
-        /* Page Navigation */
-        #pdf-controls { background: white; padding: 8px; display: none; justify-content: center; align-items: center; gap: 15px; border-bottom: 1px solid #e2e8f0; position: absolute; top: 0; left: 0; right: 0; z-index: 90; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        #pdf-controls button { padding: 8px 15px; border: none; background: #0f172a; color: white; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; }
-        #pdf-controls button:disabled { background: #cbd5e1; color: #64748b; cursor: not-allowed; }
-        #page-jump { width: 50px; text-align: center; border: 1px solid #e2e8f0; border-radius: 6px; padding: 5px; font-size: 13px; font-weight: bold; }
-        #page-count-display { font-size: 13px; font-weight: bold; color: #0f172a; }
+        .side-header h3 { 
+            color: #818cf8; 
+            font-size: 15px; 
+            display: flex; 
+            align-items: center; 
+            gap: 8px; 
+            font-weight: 700;
+        }
 
-        /* Zoom Controls */
-        #zoom-controls { background: white; padding: 8px; display: flex; justify-content: center; align-items: center; gap: 10px; border-bottom: 1px solid #e2e8f0; position: absolute; top: 45px; left: 0; right: 0; z-index: 90; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        #zoom-controls button { background: #0f172a; color: white; border: none; padding: 6px 10px; border-radius: 6px; cursor: pointer; font-size: 14px; }
-        #zoom-value { font-size: 13px; font-weight: bold; color: #0f172a; }
+        #close-btn { 
+            background: rgba(255,255,255,0.1); 
+            border: none; 
+            color: white; 
+            font-size: 20px; 
+            cursor: pointer;
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
 
-        #scroll-area { flex: 1; overflow-y: auto; padding: 10px; padding-top: 95px; display: flex; flex-direction: column; align-items: center; -webkit-overflow-scrolling: touch; }
-        
-        /* A4 Pages */
-        .a4-page { width: 794px; height: 1123px; background: white; box-shadow: 0 10px 30px rgba(0,0,0,0.15); position: relative; overflow: hidden; flex-shrink: 0; margin-bottom: 20px; }
-        @media (max-width: 850px) { 
-            .a4-page { 
-                width: 100%; 
-                max-width: 794px; 
-                height: auto; 
-                max-height: calc(100vh - 180px); 
-                aspect-ratio: 210/297; 
-                overflow-y: auto; 
+        #close-btn:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        #sidebar-actions { 
+            padding: 10px; 
+            border-bottom: 1px solid #334155; 
+            display: flex; 
+            gap: 6px; 
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+
+        .side-action-btn { 
+            background: linear-gradient(135deg, rgba(99,102,241,0.2), rgba(99,102,241,0.1));
+            border: 1px solid rgba(99,102,241,0.3); 
+            color: white; 
+            padding: 8px 10px; 
+            border-radius: 8px; 
+            font-size: 11px; 
+            font-weight: 600; 
+            cursor: pointer; 
+            display: flex; 
+            align-items: center; 
+            gap: 5px; 
+            justify-content: center; 
+            flex: 1;
+            min-width: 60px;
+            transition: all 0.2s;
+        }
+
+        .side-action-btn:hover {
+            background: linear-gradient(135deg, rgba(99,102,241,0.3), rgba(99,102,241,0.2));
+        }
+
+        .side-action-btn i { 
+            font-size: 13px; 
+        }
+
+        /* ===== SEARCH ===== */
+        #search-container { 
+            padding: 10px; 
+            border-bottom: 1px solid #334155; 
+            background: rgba(2, 6, 23, 0.5);
+        }
+
+        #search-input { 
+            width: 100%; 
+            background: rgba(255,255,255,0.08); 
+            border: 1px solid rgba(99,102,241,0.3); 
+            color: white; 
+            padding: 10px 12px; 
+            border-radius: 8px; 
+            font-size: 13px; 
+            outline: none; 
+            transition: all 0.3s;
+        }
+
+        #search-input::placeholder { 
+            color: #94a3b8; 
+        }
+
+        #search-input:focus { 
+            border-color: #6366f1; 
+            background: rgba(99,102,241,0.15);
+        }
+
+        #search-status { 
+            color: #94a3b8; 
+            font-size: 11px; 
+            margin-top: 4px; 
+            display: block; 
+            text-align: center; 
+        }
+
+        #menu-tree { 
+            flex: 1; 
+            overflow-y: auto; 
+            padding: 10px; 
+        }
+
+        .level-btn { 
+            width: 100%; 
+            background: rgba(255,255,255,0.05); 
+            border: 1px solid rgba(255,255,255,0.1); 
+            color: white; 
+            padding: 10px 12px; 
+            border-radius: 8px; 
+            font-size: 12px; 
+            font-weight: 600; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            cursor: pointer; 
+            margin-bottom: 6px;
+            transition: all 0.2s;
+        }
+
+        .level-btn:hover {
+            background: rgba(255,255,255,0.08);
+        }
+
+        .level-btn i { 
+            color: #818cf8; 
+            transition: transform 0.3s; 
+            font-size: 11px;
+        }
+
+        .level-btn.active i { 
+            transform: rotate(90deg); 
+        }
+
+        .nested-container { 
+            display: none; 
+            padding-left: 10px; 
+            border-left: 2px solid #334155; 
+        }
+
+        .nested-container.show { 
+            display: block; 
+        }
+
+        .images-container { 
+            display: none; 
+            grid-template-columns: repeat(3, 1fr); 
+            gap: 6px; 
+            padding: 6px; 
+            background: rgba(2, 6, 23, 0.7); 
+            border-radius: 8px;
+            margin-top: 4px;
+        }
+
+        .images-container.show { 
+            display: grid; 
+        }
+
+        .seal-item { 
+            background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+            border-radius: 8px; 
+            padding: 6px; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            cursor: pointer; 
+            aspect-ratio: 1; 
+            border: 2px solid transparent;
+            transition: all 0.2s;
+            overflow: hidden;
+        }
+
+        .seal-item:hover {
+            background: linear-gradient(135deg, rgba(99,102,241,0.2), rgba(99,102,241,0.1));
+            border-color: #6366f1;
+            transform: scale(1.03);
+        }
+
+        .seal-item:active { 
+            transform: scale(0.95);
+        }
+
+        .seal-item img { 
+            max-width: 90%; 
+            max-height: 90%; 
+            object-fit: contain; 
+        }
+
+        mark { 
+            background: #3b82f6; 
+            color: white; 
+            padding: 1px 3px; 
+            border-radius: 3px; 
+            font-weight: bold; 
+        }
+
+        #overlay { 
+            position: fixed; 
+            inset: 0; 
+            background: rgba(0,0,0,0.5); 
+            z-index: 150; 
+            display: none;
+            backdrop-filter: blur(2px);
+        }
+
+        #overlay.show { 
+            display: block; 
+        }
+
+        /* ===== MAIN AREA ===== */
+        #main-area { 
+            flex: 1; 
+            display: flex; 
+            flex-direction: column; 
+            position: relative; 
+            overflow: hidden; 
+        }
+
+        #controls-bar { 
+            background: white; 
+            padding: 8px 10px; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            gap: 8px; 
+            border-bottom: 1px solid #e2e8f0; 
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            right: 0; 
+            z-index: 90; 
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            flex-wrap: wrap;
+        }
+
+        #controls-bar button { 
+            padding: 6px 10px; 
+            border: 1px solid #e2e8f0;
+            background: white;
+            color: #1e293b; 
+            border-radius: 6px; 
+            font-size: 11px; 
+            font-weight: 600; 
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        #controls-bar button:hover {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+        }
+
+        #controls-bar button:disabled { 
+            background: #f1f5f9; 
+            color: #cbd5e1; 
+            cursor: not-allowed;
+        }
+
+        #controls-bar input { 
+            width: 45px; 
+            text-align: center; 
+            border: 1px solid #e2e8f0; 
+            border-radius: 6px; 
+            padding: 5px; 
+            font-size: 11px; 
+            font-weight: bold;
+        }
+
+        #page-count-display { 
+            font-size: 11px; 
+            font-weight: bold; 
+            color: #0f172a;
+            min-width: 40px;
+            text-align: center;
+        }
+
+        #scroll-area { 
+            flex: 1; 
+            overflow: auto; 
+            padding: 10px; 
+            padding-top: 60px; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            -webkit-overflow-scrolling: touch;
+            background: linear-gradient(180deg, #f8fafc, #f1f5f9);
+            touch-action: pan-x pan-y;
+        }
+
+        .page-container {
+            position: relative;
+            width: 100%;
+            max-width: 794px;
+            margin-bottom: 20px;
+            background: white;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .a4-page { 
+            width: 100%; 
+            aspect-ratio: 210/297;
+            background: white; 
+            position: relative; 
+            overflow: hidden; 
+            flex-shrink: 0; 
+            transform-origin: top center;
+            border-radius: 4px;
+        }
+
+        .a4-page canvas,
+        .a4-page img {
+            width: 100% !important;
+            height: 100% !important;
+            object-fit: contain !important;
+            display: block;
+        }
+
+        .a4-page.current-page {
+            box-shadow: inset 0 0 0 2px #6366f1;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding-top: 60px;
+            color: #94a3b8;
+            padding: 40px 20px;
+        }
+
+        .empty-state i {
+            font-size: 50px;
+            margin-bottom: 15px;
+            color: #cbd5e1;
+        }
+
+        .empty-state h3 {
+            font-size: 16px;
+            color: #64748b;
+            margin-bottom: 6px;
+        }
+
+        .empty-state p {
+            font-size: 13px;
+            color: #94a3b8;
+        }
+
+        /* ===== SEAL INTERACTION ===== */
+        .seal-wrapper { 
+            position: absolute; 
+            z-index: 10;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
+            touch-action: none;
+            cursor: move;
+            transition: opacity 0.2s;
+        }
+
+        .seal-wrapper.normal-state { 
+            border: none; 
+        }
+
+        .seal-wrapper.normal-state .handle { 
+            display: none; 
+        }
+
+        .seal-wrapper.active-state { 
+            outline: 2px dashed #6366f1;
+            outline-offset: 2px;
+        }
+
+        .seal-wrapper.active-state .handle { 
+            display: flex; 
+        }
+
+        .handle { 
+            position: absolute; 
+            width: 36px; 
+            height: 36px; 
+            border-radius: 50%; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            font-size: 14px; 
+            color: white; 
+            z-index: 20; 
+            cursor: pointer; 
+            box-shadow: 0 3px 8px rgba(0,0,0,0.3);
+            transition: all 0.2s;
+        }
+
+        .handle:hover {
+            transform: scale(1.1);
+        }
+
+        .move-handle { 
+            top: -40px; 
+            left: 50%; 
+            transform: translateX(-50%); 
+            background: linear-gradient(135deg, #6366f1, #818cf8);
+            cursor: grab; 
+        }
+
+        .move-handle:active {
+            cursor: grabbing;
+        }
+
+        .resize-handle { 
+            bottom: -40px; 
+            right: -40px; 
+            background: linear-gradient(135deg, #f59e0b, #fbbf24);
+            cursor: nwse-resize; 
+        }
+
+        .rotate-handle { 
+            top: -40px; 
+            right: -40px; 
+            background: linear-gradient(135deg, #10b981, #34d399);
+            cursor: grab; 
+        }
+
+        .delete-handle { 
+            bottom: -40px; 
+            left: -40px; 
+            background: linear-gradient(135deg, #ef4444, #f87171);
+            cursor: pointer; 
+        }
+
+        .seal-img { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: contain; 
+            pointer-events: none; 
+        }
+
+        /* ===== TOOLBAR ===== */
+        #toolbar { 
+            position: fixed; 
+            bottom: 80px; 
+            left: 50%; 
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.98), rgba(30, 41, 59, 0.95));
+            color: white; 
+            border-radius: 12px; 
+            padding: 10px; 
+            display: none; 
+            align-items: center; 
+            gap: 6px; 
+            z-index: 100; 
+            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.1);
+            flex-wrap: wrap;
+            justify-content: center;
+            max-width: 90%;
+        }
+
+        #toolbar button { 
+            background: rgba(255,255,255,0.1); 
+            border: none; 
+            color: white; 
+            font-size: 14px; 
+            padding: 8px; 
+            border-radius: 6px; 
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        #toolbar button:hover {
+            background: rgba(99,102,241,0.3);
+        }
+
+        .tb-sep { 
+            width: 1px; 
+            height: 20px; 
+            background: rgba(255,255,255,0.2); 
+        }
+
+        #opacity-slider { 
+            width: 60px; 
+            cursor: pointer;
+            accent-color: #6366f1;
+        }
+
+        /* ===== QUICK BUTTONS ===== */
+        #quick-seal-buttons {
+            position: fixed;
+            bottom: 20px;
+            left: 15px;
+            z-index: 95;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .quick-btn {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #6366f1, #818cf8);
+            border: none;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(99,102,241,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .quick-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 16px rgba(99,102,241,0.4);
+        }
+
+        .quick-btn:active {
+            transform: scale(0.95);
+        }
+
+        .quick-btn-label {
+            position: absolute;
+            right: 60px;
+            background: rgba(15,23,42,0.9);
+            color: white;
+            padding: 5px 8px;
+            border-radius: 6px;
+            font-size: 10px;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+            z-index: 100;
+        }
+
+        .quick-btn:hover .quick-btn-label {
+            opacity: 1;
+        }
+
+        /* ===== BOTTOM ACTIONS ===== */
+        #bottom-actions { 
+            position: fixed; 
+            bottom: 20px; 
+            right: 15px; 
+            z-index: 95;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        #export-btn { 
+            background: linear-gradient(135deg, #6366f1, #818cf8); 
+            color: white; 
+            border: none; 
+            border-radius: 12px; 
+            padding: 12px 20px; 
+            font-size: 13px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            box-shadow: 0 6px 16px rgba(99,102,241,0.4);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.3s;
+        }
+
+        #export-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(99,102,241,0.5);
+        }
+
+        #export-options { 
+            position: fixed; 
+            bottom: 75px; 
+            right: 15px; 
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.98), rgba(30, 41, 59, 0.95));
+            border-radius: 12px; 
+            padding: 8px; 
+            display: none; 
+            flex-direction: column; 
+            gap: 5px; 
+            z-index: 300; 
+            min-width: 200px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        #export-options.show { 
+            display: flex;
+            animation: slideUp 0.2s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
             }
         }
 
-        #content-layer { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; }
-
-        /* Seal Interaction */
-        .seal-wrapper { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 10; }
-        .seal-wrapper.normal-state { border: none; }
-        .seal-wrapper.normal-state .handle { display: none; }
-        .seal-wrapper.active-state { outline: 2px dashed #6366f1; }
-        .seal-wrapper.active-state .handle { display: flex; }
-
-        .seal-wrapper, .seal-wrapper * { -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
-        .seal-wrapper { touch-action: none; }
-
-        .handle { position: absolute; width: 45px; height: 45px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 18px; color: white; z-index: 20; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
-        .move-handle { top: -25px; left: 50%; transform: translateX(-50%); background: #6366f1; cursor: grab; }
-        .resize-handle { bottom: -25px; right: -25px; background: #f59e0b; cursor: nwse-resize; }
-        .rotate-handle { top: -25px; right: -25px; background: #10b981; cursor: grab; }
-        .delete-handle { bottom: -25px; left: -25px; background: #ef4444; cursor: pointer; }
-        
-        .seal-img { width: 100%; height: 100%; object-fit: contain; pointer-events: none; }
-
-        /* Toolbar */
-        #toolbar { position: absolute; background: rgba(15, 23, 42, 0.95); color: white; border-radius: 12px; padding: 8px; display: none; align-items: center; gap: 10px; z-index: 100; transform: translate(-50%, -180%); box-shadow: 0 10px 30px rgba(0,0,0,0.4); }
-        #toolbar button { background: none; border: none; color: white; font-size: 16px; padding: 10px; border-radius: 8px; cursor: pointer; }
-        #toolbar button:active { background: #6366f1; }
-        .tb-sep { width: 1px; height: 25px; background: #334155; }
-        #opacity-slider { width: 50px; accent-color: #6366f1; }
-
-        #bottom-actions { position: fixed; bottom: 70px; right: 15px; z-index: 95; }
-        #export-btn { background: linear-gradient(135deg, #6366f1, #818cf8); color: white; border: none; border-radius: 12px; padding: 15px 20px; font-size: 14px; font-weight: bold; cursor: pointer; box-shadow: 0 5px 15px rgba(99,102,241,0.4); }
-        #export-options { position: fixed; bottom: 130px; right: 15px; background: rgba(15, 23, 42, 0.95); border-radius: 12px; padding: 8px; display: none; flex-direction: column; gap: 8px; z-index: 300; min-width: 220px; }
-        #export-options.show { display: flex; }
-        #export-options button { background: rgba(255,255,255,0.05); border: none; color: white; text-align: left; padding: 15px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 10px; }
-        #export-options button:active { background: #6366f1; }
-
-        #footer { background: linear-gradient(135deg, #0f172a, #1e293b); color: #94a3b8; text-align: center; padding: 14px; font-size: 13px; font-weight: 600; position: fixed; bottom: 0; left: 0; right: 0; z-index: 96; }
-        #toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-100px); background: rgba(15, 23, 42, 0.95); color: white; padding: 15px 25px; border-radius: 12px; font-size: 14px; font-weight: 600; z-index: 1000; display: flex; align-items: center; gap: 10px; transition: 0.3s; }
-        #toast.show { transform: translateX(-50%) translateY(0); }
-        #toast.success { border: 1px solid #10b981; }
-        #toast.error { border: 1px solid #ef4444; }
-
-        #loader { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(15, 23, 42, 0.9); padding: 20px; border-radius: 50%; z-index: 500; color: #818cf8; }
-        #loader i { font-size: 40px; animation: spin 1s linear infinite; }
-        @keyframes spin { 100% { transform: rotate(360deg); } }
-
-        @media (max-width: 600px) {
-            #header h2 { font-size: 15px; }
-            #quick-upload-btn { font-size: 13px; padding: 13px; }
-            #toolbar { width: 95%; justify-content: space-around; padding: 6px; }
-            #pdf-controls { padding: 6px; gap: 8px; }
-            #zoom-controls { top: 40px; }
+        #export-options button { 
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: white; 
+            text-align: left; 
+            padding: 10px 14px; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            display: flex; 
+            align-items: center; 
+            gap: 10px;
+            transition: all 0.2s;
+            font-size: 13px;
+            font-weight: 500;
         }
 
+        #export-options button:hover {
+            background: rgba(99,102,241,0.2);
+            border-color: #6366f1;
+        }
+
+        /* ===== TOAST ===== */
+        #toast { 
+            position: fixed; 
+            top: 15px; 
+            left: 50%; 
+            transform: translateX(-50%) translateY(-100px); 
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.95));
+            color: white; 
+            padding: 12px 20px; 
+            border-radius: 10px; 
+            font-size: 13px; 
+            font-weight: 600; 
+            z-index: 1000; 
+            display: flex; 
+            align-items: center; 
+            gap: 10px; 
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+            border: 1px solid rgba(255,255,255,0.1);
+            max-width: 90%;
+        }
+
+        #toast.show { 
+            transform: translateX(-50%) translateY(0); 
+        }
+
+        #toast.success { 
+            border-left: 4px solid #10b981; 
+        }
+
+        #toast.error { 
+            border-left: 4px solid #ef4444; 
+        }
+
+        /* ===== LOADER ===== */
+        #loader { 
+            display: none; 
+            position: fixed; 
+            top: 50%; 
+            left: 50%; 
+            transform: translate(-50%, -50%); 
+            background: rgba(15, 23, 42, 0.95); 
+            padding: 25px; 
+            border-radius: 50%; 
+            z-index: 500; 
+            color: #818cf8;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+        }
+
+        #loader i { 
+            font-size: 40px; 
+            animation: spin 1.5s linear infinite; 
+        }
+
+        @keyframes spin { 
+            100% { transform: rotate(360deg); } 
+        }
+
+        /* ===== MOBILE RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            #header {
+                height: 55px;
+                padding: 0 10px;
+            }
+            
+            #header h1 {
+                font-size: 14px;
+            }
+            
+            #header h1 i {
+                font-size: 20px;
+            }
+            
+            .header-btn {
+                padding: 5px 8px;
+                font-size: 10px;
+            }
+            
+            #quick-upload {
+                padding: 6px 10px;
+            }
+            
+            #quick-upload-btn {
+                padding: 8px 16px;
+                font-size: 12px;
+            }
+            
+            #controls-bar {
+                padding: 6px 8px;
+                gap: 6px;
+            }
+            
+            #controls-bar button {
+                padding: 5px 8px;
+                font-size: 10px;
+            }
+            
+            #scroll-area {
+                padding: 8px;
+                padding-top: 55px;
+            }
+            
+            #quick-seal-buttons {
+                left: 10px;
+                bottom: 10px;
+                gap: 6px;
+            }
+            
+            .quick-btn {
+                width: 44px;
+                height: 44px;
+                font-size: 16px;
+            }
+            
+            .quick-btn-label {
+                right: 55px;
+                font-size: 9px;
+            }
+            
+            #bottom-actions {
+                bottom: 10px;
+                right: 10px;
+                gap: 6px;
+            }
+            
+            #export-btn {
+                padding: 10px 16px;
+                font-size: 12px;
+            }
+            
+            #export-options {
+                bottom: 65px;
+                right: 10px;
+                min-width: 180px;
+            }
+            
+            #toolbar {
+                bottom: 70px;
+                max-width: 95%;
+                padding: 8px;
+            }
+            
+            #toolbar button {
+                padding: 7px;
+                font-size: 13px;
+            }
+            
+            .handle {
+                width: 32px;
+                height: 32px;
+                font-size: 12px;
+            }
+            
+            .move-handle {
+                top: -35px;
+            }
+            
+            .resize-handle {
+                bottom: -35px;
+                right: -35px;
+            }
+            
+            .rotate-handle {
+                top: -35px;
+                right: -35px;
+            }
+            
+            .delete-handle {
+                bottom: -35px;
+                left: -35px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            #header h1 span {
+                display: none;
+            }
+            
+            .header-btn span {
+                display: none;
+            }
+            
+            .header-btn {
+                padding: 5px;
+            }
+            
+            .header-btn i {
+                font-size: 16px;
+            }
+            
+            .quick-btn-label {
+                display: none;
+            }
+        }
+
+        /* ===== PRINT STYLES ===== */
         @media print { 
             body * { visibility: hidden; } 
             #scroll-area { padding: 0; }
+            .page-container { 
+                visibility: visible;
+                position: static !important; 
+                width: 100% !important; 
+                max-width: none !important;
+                box-shadow: none; 
+                margin-bottom: 0;
+                page-break-after: always;
+            }
             .a4-page, .a4-page * { visibility: visible; } 
-            .a4-page { position: static !important; width: 100% !important; height: 100% !important; aspect-ratio: auto !important; max-height: none !important; box-shadow: none; margin-bottom: 0; }
-            #header, #footer, #bottom-actions, #toolbar, #sidebar, #quick-upload, #overlay, #pdf-controls, #zoom-controls { display: none !important; }
+            .a4-page { 
+                position: static !important; 
+                width: 100% !important; 
+                height: 100% !important; 
+                box-shadow: none; 
+                margin-bottom: 0;
+            }
+            #header, #bottom-actions, #toolbar, #sidebar, #quick-upload, #overlay, #controls-bar, #quick-seal-buttons, #export-options { 
+                display: none !important; 
+            }
         }
     </style>
 </head>
 <body>
 
+    <!-- HEADER -->
     <header id="header">
-        <button id="menu-btn" onclick="toggleSidebar(true)"><i class="fas fa-bars"></i></button>
-        <h2><i class="fas fa-stamp"></i> <span id="title-text">প্রফেশনাল সিল অ্যাপ</span></h2>
-        <button id="lang-btn" onclick="toggleLanguage()">English</button>
+        <button class="header-btn" onclick="toggleSidebar(true)" title="মেনু খুলুন">
+            <i class="fas fa-bars"></i>
+        </button>
+        <h1>
+            <i class="fas fa-stamp"></i>
+            <span id="title-text">নোটারি সিল অ্যাপ</span>
+        </h1>
+        <div class="header-controls">
+            <button class="header-btn" onclick="toggleLanguage()" title="ভাষা পরিবর্তন করুন">
+                <i class="fas fa-globe"></i>
+                <span id="lang-text">English</span>
+            </button>
+            <button class="header-btn" onclick="showHelp()" title="সাহায্য">
+                <i class="fas fa-question-circle"></i>
+            </button>
+        </div>
     </header>
 
+    <!-- QUICK UPLOAD BAR -->
     <div id="quick-upload">
-        <label for="file-upload" id="quick-upload-btn"><i class="fas fa-cloud-upload-alt"></i> <span id="quick-upload-text">যেকোনো ডকুমেন্ট আপলোড করুন</span></label>
+        <label for="file-upload" id="quick-upload-btn">
+            <i class="fas fa-cloud-upload-alt"></i>
+            <span id="quick-upload-text">ডকুমেন্ট আপলোড করুন</span>
+        </label>
         <input id="file-upload" type="file" accept="application/pdf,image/*" onchange="handleFileUpload(event)">
     </div>
 
+    <!-- SIDEBAR -->
     <div id="sidebar">
         <div class="side-header">
-            <h3><i class="fas fa-folder-tree"></i> <span id="sidebar-title">সিল লাইব্রেরি</span></h3>
-            <button id="close-btn" onclick="toggleSidebar(false)"><i class="fas fa-times"></i></button>
+            <h3>
+                <i class="fas fa-folder-tree"></i>
+                <span id="sidebar-title">সিল লাইব্রেরি</span>
+            </h3>
+            <button id="close-btn" onclick="toggleSidebar(false)" title="বন্ধ করুন">
+                <i class="fas fa-times"></i>
+            </button>
         </div>
         
         <div id="sidebar-actions">
-            <button class="side-action-btn" onclick="triggerSidebarUpload()"><i class="fas fa-cloud-upload-alt"></i> <span id="side-upload-text">আপলোড</span></button>
-            <button class="side-action-btn" onclick="downloadHDImage('png')"><i class="fas fa-download"></i> <span id="side-download-text">ডাউনলোড</span></button>
-            <button class="side-action-btn" onclick="location.reload()"><i class="fas fa-sync-alt"></i> <span id="side-reload-text">রিলোড</span></button>
+            <button class="side-action-btn" onclick="triggerSidebarUpload()" title="আপলোড করুন">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <span id="side-upload-text">আপলোড</span>
+            </button>
+            <button class="side-action-btn" onclick="downloadHDImage('png')" title="ডাউনলোড করুন">
+                <i class="fas fa-download"></i>
+                <span id="side-download-text">ডাউনলোড</span>
+            </button>
+            <button class="side-action-btn" onclick="location.reload()" title="রিফ্রেশ করুন">
+                <i class="fas fa-sync-alt"></i>
+                <span id="side-reload-text">রিফ্রেশ</span>
+            </button>
         </div>
 
-        <!-- Search Filter -->
-        <div id="menu-search">
-            <input type="text" id="search-input" placeholder="সিল খুঁজুন..." oninput="filterMenu()">
+        <div id="search-container">
+            <input type="text" id="search-input" placeholder="সিল খুঁজুন..." oninput="advancedSearch()">
+            <span id="search-status"></span>
         </div>
 
         <div id="menu-tree"></div>
     </div>
+
     <div id="overlay" onclick="toggleSidebar(false)"></div>
 
+    <!-- MAIN AREA -->
     <div id="main-area">
-        <!-- Page Navigation -->
-        <div id="pdf-controls">
-            <button id="prev-btn" onclick="prevPage()"><i class="fas fa-chevron-left"></i></button>
-            <input type="number" id="page-jump" min="1" value="1" onchange="jumpToPage()">
+        <div id="controls-bar" style="display:none;">
+            <button id="prev-btn" onclick="prevPage()" title="আগের পৃষ্ঠা">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <input type="number" id="page-jump" min="1" value="1" onchange="jumpToPage()" title="পৃষ্ঠা নম্বর">
             <span id="page-count-display">/ 1</span>
-            <button id="next-btn" onclick="nextPage()"><i class="fas fa-chevron-right"></i></button>
-        </div>
-
-        <!-- Zoom Controls -->
-        <div id="zoom-controls">
-            <button onclick="changeZoom(-0.1)"><i class="fas fa-minus"></i></button>
+            <button id="next-btn" onclick="nextPage()" title="পরের পৃষ্ঠা">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+            <div class="tb-sep"></div>
+            <button onclick="changeZoom(-0.1)" title="জুম আউট">
+                <i class="fas fa-minus"></i>
+            </button>
             <span id="zoom-value">100%</span>
-            <button onclick="changeZoom(0.1)"><i class="fas fa-plus"></i></button>
+            <button onclick="changeZoom(0.1)" title="জুম ইন">
+                <i class="fas fa-plus"></i>
+            </button>
+            <div class="tb-sep"></div>
+            <button onclick="clearAllSeals()" title="সকল সিল মুছুন">
+                <i class="fas fa-trash-alt"></i>
+            </button>
         </div>
 
         <div id="scroll-area">
             <div id="content-layer">
-                <div style="text-align: center; padding-top: 100px; color: #94a3b8;">
-                    <i class="fas fa-file-upload fa-5x" style="margin-bottom: 15px; color: #cbd5e1;"></i>
+                <div class="empty-state">
+                    <i class="fas fa-file-upload"></i>
                     <h3 id="doc-placeholder">ডকুমেন্ট আপলোড করুন</h3>
-                    <p style="margin-top: 8px; font-size: 13px; color: #64748b;" id="doc-instruction">উপরের বাটন থেকে যেকোনো PDF বা ছবি আপলোড করুন</p>
+                    <p id="doc-instruction">উপরের বাটনে ক্লিক করে PDF বা ছবি আপলোড করুন</p>
                 </div>
             </div>
         </div>
-        
+
         <div id="toolbar">
-            <button onclick="deleteSeal(this)"><i class="fas fa-trash"></i></button>
+            <button onclick="deleteSeal()" title="সিল মুছুন">
+                <i class="fas fa-trash"></i>
+            </button>
             <div class="tb-sep"></div>
-            <button onclick="duplicateSeal(this)"><i class="fas fa-copy"></i></button>
+            <button onclick="rotateSeal(-15)" title="বামে ঘোরান">
+                <i class="fas fa-undo"></i>
+            </button>
+            <button onclick="rotateSeal(15)" title="ডানে ঘোরান">
+                <i class="fas fa-redo"></i>
+            </button>
             <div class="tb-sep"></div>
-            <button onclick="rotateSeal(this, -15)"><i class="fas fa-undo"></i></button>
-            <button onclick="rotateSeal(this, 15)"><i class="fas fa-redo"></i></button>
+            <button onclick="resizeSeal(-10)" title="ছোট করুন">
+                <i class="fas fa-minus"></i>
+            </button>
+            <button onclick="resizeSeal(10)" title="বড় করুন">
+                <i class="fas fa-plus"></i>
+            </button>
             <div class="tb-sep"></div>
-            <button onclick="resizeSeal(this, -10)"><i class="fas fa-minus"></i></button>
-            <button onclick="resizeSeal(this, 10)"><i class="fas fa-plus"></i></button>
-            <div class="tb-sep"></div>
-            <input type="range" id="opacity-slider" min="10" max="100" value="100" oninput="changeOpacity(this)">
+            <input type="range" id="opacity-slider" min="10" max="100" value="100" oninput="changeOpacity()" title="স্বচ্ছতা">
         </div>
     </div>
 
-    <div id="bottom-actions">
-        <button id="export-btn" onclick="toggleExportMenu()"><i class="fas fa-download"></i> <span id="export-text">ডাউনলোড</span></button>
-    </div>
-    <div id="export-options">
-        <button onclick="downloadHDImage('png')"><i class="fas fa-image"></i> <span id="opt-png">HD PNG</span></button>
-        <button onclick="downloadHDImage('jpeg')"><i class="fas fa-file-image"></i> <span id="opt-jpeg">HD JPEG</span></button>
-        <button onclick="downloadPDF()"><i class="fas fa-file-pdf"></i> <span id="opt-pdf">PDF ডাউনলোড</span></button>
-        <button onclick="printPage()"><i class="fas fa-print"></i> <span id="opt-print">প্রিন্ট</span></button>
+    <!-- QUICK SEAL BUTTONS (LEFT SIDE) -->
+    <div id="quick-seal-buttons">
+        <button class="quick-btn" onclick="showRecentSeals()" title="সম্প্রতি ব্যবহৃত সিল">
+            <span class="quick-btn-label" id="label-recent">সম্প্রতি</span>
+            <i class="fas fa-clock"></i>
+        </button>
+        <button class="quick-btn" onclick="toggleSidebar(true)" title="সিল লাইব্রেরি">
+            <span class="quick-btn-label" id="label-library">লাইব্রেরি</span>
+            <i class="fas fa-th"></i>
+        </button>
     </div>
 
-    <div id="footer"><span id="footer-text">এটি একটি সিল মারার প্রফেশনাল ওয়েবসাইট</span></div>
-    <div id="toast"><i class="fas fa-check-circle"></i> <span id="toast-message"></span></div>
-    <div id="loader"><i class="fas fa-circle-notch"></i></div>
+    <!-- EXPORT BUTTON & OPTIONS (RIGHT SIDE) -->
+    <div id="bottom-actions">
+        <button id="export-btn" onclick="toggleExportMenu()" title="ডাউনলোড বিকল্প">
+            <i class="fas fa-download"></i>
+            <span id="export-text">ডাউনলোড</span>
+        </button>
+    </div>
+
+    <div id="export-options">
+        <button onclick="downloadHDImage('png')" title="HD PNG তে ডাউনলোড করুন">
+            <i class="fas fa-image"></i>
+            <span id="opt-png">HD PNG</span>
+        </button>
+        <button onclick="downloadHDImage('jpeg')" title="HD JPEG তে ডাউনলোড করুন">
+            <i class="fas fa-file-image"></i>
+            <span id="opt-jpeg">HD JPEG</span>
+        </button>
+        <button onclick="downloadPDF()" title="PDF তে ডাউনলোড করুন">
+            <i class="fas fa-file-pdf"></i>
+            <span id="opt-pdf">PDF ডাউনলোড</span>
+        </button>
+        <button onclick="printPage()" title="প্রিন্ট করুন">
+            <i class="fas fa-print"></i>
+            <span id="opt-print">প্রিন্ট</span>
+        </button>
+    </div>
+
+    <!-- NOTIFICATIONS -->
+    <div id="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toast-message"></span>
+    </div>
+
+    <div id="loader">
+        <i class="fas fa-circle-notch"></i>
+    </div>
 
     <script>
-        let currentPDF = null, currentLang = 'bn', toastTimeout;
+        // ===== STATE MANAGEMENT =====
+        let currentPDF = null;
+        let currentLang = 'bn';
+        let toastTimeout;
         let currentZoom = 1.0;
         let currentPageNumber = 1;
         let totalPages = 1;
+        let currentPageElement = null;
+        let recentSeals = [];
+        let dragData = null;
+        let touchStartX = 0;
+        let touchStartY = 0;
 
+        // ===== SEAL DATA =====
+        const sealData = [
+            {
+                name_bn: "সরকারি সিল",
+                name_en: "Government Seals",
+                icon: "fas fa-landmark",
+                subfolders: [
+                    {
+                        name_bn: "জাতীয়",
+                        name_en: "National",
+                        icon: "fas fa-flag",
+                        images: [
+                            "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Ccircle cx='100' cy='100' r='95' fill='%23006BB6' stroke='%23003D6B' stroke-width='3'/%3E%3Ctext x='100' y='105' font-size='40' font-weight='bold' fill='white' text-anchor='middle'%3EBD%3C/text%3E%3C/svg%3E",
+                            "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Ccircle cx='100' cy='100' r='95' fill='%23DC241F' stroke='%23961815' stroke-width='3'/%3E%3Ctext x='100' y='110' font-size='35' font-weight='bold' fill='white' text-anchor='middle'%3E%E0%A6%B8%E0%A6%BE%E0%A7%8B%3C/text%3E%3C/svg%3E"
+                        ]
+                    }
+                ]
+            },
+            {
+                name_bn: "আইনি সিল",
+                name_en: "Legal Seals",
+                icon: "fas fa-gavel",
+                subfolders: [
+                    {
+                        name_bn: "আদালত",
+                        name_en: "Court",
+                        icon: "fas fa-balance-scale",
+                        images: [
+                            "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Ccircle cx='100' cy='100' r='95' fill='%238B0000' stroke='%23540000' stroke-width='3'/%3E%3Ctext x='100' y='95' font-size='30' font-weight='bold' fill='white' text-anchor='middle'%3ECOURT%3C/text%3E%3Ctext x='100' y='125' font-size='14' fill='white' text-anchor='middle'%3ESEAL%3C/text%3E%3C/svg%3E"
+                        ]
+                    },
+                    {
+                        name_bn: "নোটারি",
+                        name_en: "Notary",
+                        icon: "fas fa-certificate",
+                        images: [
+                            "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Ccircle cx='100' cy='100' r='95' fill='%23000080' stroke='%23000040' stroke-width='3'/%3E%3Ctext x='100' y='100' font-size='32' font-weight='bold' fill='gold' text-anchor='middle'%3E%E2%9C%93%3C/text%3E%3C/svg%3E"
+                        ]
+                    }
+                ]
+            },
+            {
+                name_bn: "ব্যবসায়িক সিল",
+                name_en: "Business Seals",
+                icon: "fas fa-briefcase",
+                subfolders: [
+                    {
+                        name_bn: "কর্পোরেট",
+                        name_en: "Corporate",
+                        icon: "fas fa-building",
+                        images: [
+                            "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Ccircle cx='100' cy='100' r='95' fill='%23333333' stroke='%23000000' stroke-width='3'/%3E%3Ctext x='100' y='110' font-size='28' font-weight='bold' fill='%23FFD700' text-anchor='middle'%3ECORP%3C/text%3E%3C/svg%3E"
+                        ]
+                    }
+                ]
+            }
+        ];
+
+        // ===== TRANSLATIONS =====
         const translations = {
             bn: {
-                title: "প্রফেশনাল সিল অ্যাপ", sidebar: "সিল লাইব্রেরি", quick_upload: "যেকোনো ডকুমেন্ট আপলোড করুন",
-                placeholder: "ডকুমেন্ট আপলোড করুন", instruction: "উপরের বাটন থেকে যেকোনো PDF বা ছবি আপলোড করুন",
-                side_upload: "আপলোড", side_download: "ডাউনলোড", side_reload: "রিলোড", export: "ডাউনলোড",
-                png: "HD PNG", jpeg: "HD JPEG", pdf: "PDF ডাউনলোড", print: "প্রিন্ট",
-                footer: "এটি একটি সিল মারার প্রফেশনাল ওয়েবসাইট",
-                toast_upload: "ফাইল সফলভাবে আপলোড হয়েছে!", toast_error: "PDF লোড করা যায়নি!",
-                toast_seal: "সিল যোগ হয়েছে!", toast_delete: "সিল মুছে ফেলা হয়েছে!",
-                toast_download: "ডাউনলোড সম্পন্ন!", toast_print: "প্রিন্ট হচ্ছে!"
+                title: "নোটারি সিল অ্যাপ",
+                sidebar: "সিল লাইব্রেরি",
+                quick_upload: "ডকুমেন্ট আপলোড করুন",
+                placeholder: "ডকুমেন্ট আপলোড করুন",
+                instruction: "উপরের বাটনে ক্লিক করে PDF বা ছবি আপলোড করুন",
+                side_upload: "আপলোড",
+                side_download: "ডাউনলোড",
+                side_reload: "রিফ্রেশ",
+                export: "ডাউনলোড",
+                png: "HD PNG",
+                jpeg: "HD JPEG",
+                pdf: "PDF ডাউনলোড",
+                print: "প্রিন্ট",
+                toast_upload: "✓ ফাইল সফলভাবে আপলোড হয়েছে!",
+                toast_error: "✗ PDF লোড করতে ব্যর্থ হয়েছে!",
+                toast_seal: "✓ সিল যোগ করা হয়েছে!",
+                toast_delete: "✓ সিল মুছে ফেলা হয়েছে!",
+                toast_download: "✓ ডাউনলোড সম্পন্ন হয়েছে!",
+                toast_print: "✓ প্রিন্ট করা হচ্ছে...",
+                help: "কীভাবে ব্যবহার করবেন:\n1. একটি PDF বা ছবি আপলোড করুন\n2. বাম দিকের বোতাম থেকে একটি সিল নির্বাচন করুন\n3. সিল টেনে আনুন এবং অবস্থান পরিবর্তন করুন\n4. সিল ক্লিক করে কাস্টমাইজ করুন\n5. রাইট বোতাম থেকে ডাউনলোড করুন"
             },
             en: {
-                title: "Professional Seal App", sidebar: "Seal Library", quick_upload: "Upload any document",
-                placeholder: "Upload your document", instruction: "Upload any PDF or Image from the top button",
-                side_upload: "Upload", side_download: "Download", side_reload: "Reload", export: "Download",
-                png: "HD PNG", jpeg: "HD JPEG", pdf: "Download PDF", print: "Print",
-                footer: "This is a professional seal stamping website",
-                toast_upload: "File uploaded successfully!", toast_error: "Unable to load PDF!",
-                toast_seal: "Seal added!", toast_delete: "Seal deleted!",
-                toast_download: "Download completed!", toast_print: "Printing!"
+                title: "Notary Seal App",
+                sidebar: "Seal Library",
+                quick_upload: "Upload Document",
+                placeholder: "Upload your document",
+                instruction: "Click the button above to upload a PDF or image",
+                side_upload: "Upload",
+                side_download: "Download",
+                side_reload: "Refresh",
+                export: "Download",
+                png: "HD PNG",
+                jpeg: "HD JPEG",
+                pdf: "Download PDF",
+                print: "Print",
+                toast_upload: "✓ File uploaded successfully!",
+                toast_error: "✗ Failed to load PDF!",
+                toast_seal: "✓ Seal added!",
+                toast_delete: "✓ Seal deleted!",
+                toast_download: "✓ Download completed!",
+                toast_print: "✓ Printing...",
+                help: "How to use:\n1. Upload a PDF or image\n2. Select a seal from the left button\n3. Drag the seal to position it\n4. Click the seal to customize it\n5. Download from the right button"
             }
         };
 
+        // ===== UTILITY FUNCTIONS =====
         function showToast(msg, type = 'success') {
             const t = document.getElementById('toast');
             document.getElementById('toast-message').innerText = msg;
             t.className = type;
             t.classList.add('show');
             clearTimeout(toastTimeout);
-            toastTimeout = setTimeout(() => t.classList.remove('show'), 3000);
+            toastTimeout = setTimeout(() => t.classList.remove('show'), 3500);
         }
 
         function toggleLanguage() {
             currentLang = currentLang === 'bn' ? 'en' : 'bn';
             const tr = translations[currentLang];
+            
             document.getElementById('title-text').innerText = tr.title;
             document.getElementById('sidebar-title').innerText = tr.sidebar;
             document.getElementById('quick-upload-text').innerText = tr.quick_upload;
@@ -295,82 +1327,162 @@
             document.getElementById('opt-jpeg').innerText = tr.jpeg;
             document.getElementById('opt-pdf').innerText = tr.pdf;
             document.getElementById('opt-print').innerText = tr.print;
-            document.getElementById('footer-text').innerText = tr.footer;
-            document.getElementById('lang-btn').innerText = currentLang === 'bn' ? 'English' : 'বাংলা';
+            document.getElementById('lang-text').innerText = currentLang === 'bn' ? 'English' : 'বাংলা';
+            document.getElementById('label-recent').innerText = currentLang === 'bn' ? 'সম্প্রতি' : 'Recent';
+            document.getElementById('label-library').innerText = currentLang === 'bn' ? 'লাইব্রেরি' : 'Library';
+            document.getElementById('search-input').placeholder = currentLang === 'bn' ? 'সিল খুঁজুন...' : 'Search seals...';
+            
             buildMenu();
         }
 
-        function toggleSidebar(show) { document.getElementById('sidebar').classList.toggle('open', show); document.getElementById('overlay').classList.toggle('show', show); }
-        function toggleExportMenu() { document.getElementById('export-options').classList.toggle('show'); }
-        
+        function showHelp() {
+            const tr = translations[currentLang];
+            showToast(tr.help);
+        }
+
+        function toggleSidebar(show) {
+            document.getElementById('sidebar').classList.toggle('open', show);
+            document.getElementById('overlay').classList.toggle('show', show);
+        }
+
+        function toggleExportMenu() {
+            document.getElementById('export-options').classList.toggle('show');
+        }
+
         function triggerSidebarUpload() {
             toggleSidebar(false);
             document.getElementById('file-upload').click();
         }
 
-        // Search Filter Function
-        function filterMenu() {
-            const query = document.getElementById('search-input').value.toLowerCase();
-            const allItems = document.querySelectorAll('#menu-tree .seal-item');
-            const allButtons = document.querySelectorAll('#menu-tree .level-btn');
-            
-            allItems.forEach(item => {
-                const img = item.querySelector('img');
-                const src = img ? img.src.toLowerCase() : '';
-                item.style.display = (!query || src.includes(query)) ? 'flex' : 'none';
-            });
-            
-            allButtons.forEach(btn => {
-                btn.style.display = 'block';
-            });
+        function showRecentSeals() {
+            if (recentSeals.length === 0) {
+                showToast(currentLang === 'bn' ? 'এখনো কোনো সিল ব্যবহার করা হয়নি' : 'No recent seals');
+                return;
+            }
+            toggleSidebar(true);
+            showToast(currentLang === 'bn' ? 'সম্প্রতি ব্যবহৃত সিল দেখুন' : 'Select a recent seal');
         }
 
-        document.addEventListener('click', (e) => { if(!e.target.closest('#export-options') && !e.target.closest('#export-btn')) document.getElementById('export-options').classList.remove('show'); });
+        // ===== SEARCH FUNCTIONALITY =====
+        function advancedSearch() {
+            const query = document.getElementById('search-input').value.toLowerCase().trim();
+            const searchStatus = document.getElementById('search-status');
+            
+            const allLevelButtons = document.querySelectorAll('#menu-tree .level-btn');
+            const allNested = document.querySelectorAll('#menu-tree .nested-container');
+            const allSealItems = document.querySelectorAll('#menu-tree .seal-item');
 
+            allLevelButtons.forEach(btn => {
+                btn.innerHTML = btn.innerHTML.replace(/<mark>/g, '').replace(/<\/mark>/g, '');
+            });
+            
+            allSealItems.forEach(item => {
+                item.style.display = 'flex';
+            });
+
+            if (!query) {
+                searchStatus.innerText = '';
+                allNested.forEach(n => n.classList.remove('show'));
+                allLevelButtons.forEach(b => b.classList.remove('active'));
+                return;
+            }
+
+            let matchCount = 0;
+
+            allSealItems.forEach(item => {
+                const img = item.querySelector('img');
+                const src = img ? img.src.toLowerCase() : '';
+                
+                if (src.includes(query)) {
+                    item.style.display = 'flex';
+                    matchCount++;
+                    let parent = item.parentElement;
+                    while (parent && parent.id !== 'menu-tree') {
+                        if (parent.classList.contains('images-container')) parent.classList.add('show');
+                        if (parent.classList.contains('nested-container')) parent.classList.add('show');
+                        parent = parent.parentElement;
+                    }
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+
+            allLevelButtons.forEach(btn => {
+                const text = btn.textContent.toLowerCase();
+                if (text.includes(query)) {
+                    const originalHTML = btn.innerHTML;
+                    const regex = new RegExp(`(${query})`, 'gi');
+                    btn.innerHTML = originalHTML.replace(regex, '<mark>$1</mark>');
+                    matchCount++;
+                    
+                    let parent = btn.parentElement;
+                    while (parent && parent.id !== 'menu-tree') {
+                        if (parent.classList.contains('nested-container')) parent.classList.add('show');
+                        parent = parent.parentElement;
+                    }
+                }
+            });
+
+            searchStatus.innerText = matchCount > 0 ? `${matchCount} ${currentLang === 'bn' ? 'টি' : ''}` : (currentLang === 'bn' ? 'পাওয়া যায়নি' : 'Not found');
+        }
+
+        // ===== MENU BUILDER =====
         function buildMenu() {
-            const tree = document.getElementById('menu-tree'); tree.innerHTML = '';
-            sealData.forEach((root, rIdx) => {
+            const tree = document.getElementById('menu-tree');
+            tree.innerHTML = '';
+            
+            sealData.forEach((root) => {
                 const div = document.createElement('div');
                 const rootName = currentLang === 'bn' ? root.name_bn : root.name_en;
                 div.innerHTML = `<button class="level-btn" onclick="toggleLevel(this)"><span><i class="${root.icon}" style="margin-right:10px;"></i>${rootName}</span><i class="fas fa-chevron-right"></i></button>`;
-                const nested = document.createElement('div'); nested.className = 'nested-container';
+                
+                const nested = document.createElement('div');
+                nested.className = 'nested-container';
+                
                 if (root.subfolders) {
                     root.subfolders.forEach(sub => {
                         const subDiv = document.createElement('div');
                         const subName = currentLang === 'bn' ? sub.name_bn : sub.name_en;
                         subDiv.innerHTML = `<button class="level-btn" onclick="toggleLevel(this)"><span style="font-size:13px;"><i class="${sub.icon}" style="margin-right:8px;"></i>${subName}</span><i class="fas fa-chevron-right"></i></button>`;
-                        const subNested = document.createElement('div'); subNested.className = 'nested-container';
-                        if (sub.subfolders) {
-                            sub.subfolders.forEach(user => {
-                                const uDiv = document.createElement('div');
-                                const userName = currentLang === 'bn' ? user.name_bn : user.name_en;
-                                uDiv.innerHTML = `<button class="level-btn" onclick="toggleLevel(this)"><span style="font-size:12px;"><i class="${user.icon}" style="margin-right:8px;"></i>${userName}</span><i class="fas fa-chevron-right"></i></button>`;
-                                const imgC = document.createElement('div'); imgC.className = 'images-container';
-                                user.images.forEach(src => {
-                                    const item = document.createElement('div'); item.className = 'seal-item'; item.onclick = () => addSeal(src);
-                                    item.innerHTML = `<img src="${src}" onerror="this.src='https://placehold.co/100x100/png?text=Seal'">`;
-                                    imgC.appendChild(item);
-                                });
-                                uDiv.appendChild(imgC); subNested.appendChild(uDiv);
+                        
+                        const subNested = document.createElement('div');
+                        subNested.className = 'nested-container';
+                        
+                        if (sub.images) {
+                            const imgC = document.createElement('div');
+                            imgC.className = 'images-container';
+                            
+                            sub.images.forEach(src => {
+                                const item = document.createElement('div');
+                                item.className = 'seal-item';
+                                item.onclick = () => addSeal(src);
+                                item.innerHTML = `<img src="${src}" alt="seal" loading="lazy">`;
+                                imgC.appendChild(item);
                             });
-                        } else if (sub.images) {
-                            const imgC = document.createElement('div'); imgC.className = 'images-container';
-                            sub.images.forEach(src => { const item = document.createElement('div'); item.className = 'seal-item'; item.onclick = () => addSeal(src); item.innerHTML = `<img src="${src}" onerror="this.src='https://placehold.co/100x100/png?text=Seal'">`; imgC.appendChild(item); });
+                            
                             subDiv.appendChild(imgC);
                         }
-                        subDiv.appendChild(subNested); nested.appendChild(subDiv);
+                        
+                        subDiv.appendChild(subNested);
+                        nested.appendChild(subDiv);
                     });
                 }
-                div.appendChild(nested); tree.appendChild(div);
+                
+                div.appendChild(nested);
+                tree.appendChild(div);
             });
         }
 
-        function toggleLevel(btn) { btn.classList.toggle('active'); btn.nextElementSibling.classList.toggle('show'); }
+        function toggleLevel(btn) {
+            btn.classList.toggle('active');
+            btn.nextElementSibling.classList.toggle('show');
+        }
 
-        // Upload & Render
+        // ===== FILE HANDLING =====
         function handleFileUpload(event) {
             const file = event.target.files[0];
             if (!file) return;
+            
             const reader = new FileReader();
             document.getElementById('loader').style.display = 'block';
 
@@ -382,83 +1494,150 @@
                 if (file.type === 'application/pdf') {
                     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
                     const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
+                    
                     loadingTask.promise.then(function(pdf) {
                         currentPDF = pdf;
                         totalPages = pdf.numPages;
                         currentPageNumber = 1;
-                        document.getElementById('pdf-controls').style.display = 'flex';
+                        document.getElementById('controls-bar').style.display = 'flex';
                         document.getElementById('page-count-display').innerText = `/ ${totalPages}`;
                         document.getElementById('page-jump').max = totalPages;
                         document.getElementById('page-jump').value = 1;
                         
-                        for (let i = 1; i <= pdf.numPages; i++) {
-                            pdf.getPage(i).then(function(page) {
-                                const viewport = page.getViewport({ scale: 1.5 });
+                        const renderPage = (pageNum) => {
+                            pdf.getPage(pageNum).then(function(page) {
+                                const viewport = page.getViewport({ scale: 2 });
                                 const canvas = document.createElement('canvas');
                                 const ctx = canvas.getContext('2d');
                                 canvas.width = viewport.width;
                                 canvas.height = viewport.height;
 
                                 page.render({ canvasContext: ctx, viewport: viewport }).promise.then(() => {
+                                    const pageContainer = document.createElement('div');
+                                    pageContainer.className = 'page-container';
+                                    pageContainer.dataset.pageNum = pageNum;
+                                    
                                     const pageDiv = document.createElement('div');
                                     pageDiv.className = 'a4-page';
+                                    if (pageNum === 1) {
+                                        pageDiv.classList.add('current-page');
+                                        currentPageElement = pageDiv;
+                                    }
+                                    pageDiv.style.display = (pageNum === 1) ? 'block' : 'none';
+                                    
                                     canvas.style.width = '100%';
                                     canvas.style.height = '100%';
                                     canvas.style.objectFit = 'contain';
+                                    
                                     pageDiv.appendChild(canvas);
-                                    container.appendChild(pageDiv);
+                                    pageContainer.appendChild(pageDiv);
+                                    container.appendChild(pageContainer);
+                                    
+                                    // Add touch support for seal placement
+                                    pageDiv.addEventListener('touchstart', handleTouchStart, { passive: false });
+                                    pageDiv.addEventListener('touchmove', handleTouchMove, { passive: false });
+                                    pageDiv.addEventListener('touchend', handleTouchEnd, { passive: false });
                                 });
                             });
+                        };
+                        
+                        // Render all pages
+                        for (let i = 1; i <= pdf.numPages; i++) {
+                            renderPage(i);
                         }
+                        
                         document.getElementById('loader').style.display = 'none';
-                        showToast(translations[currentLang].toast_upload, 'success');
-                    }).catch(function(err) {
+                        showToast(translations[currentLang].toast_upload);
+                    }).catch(function() {
                         document.getElementById('loader').style.display = 'none';
                         showToast(translations[currentLang].toast_error, 'error');
                     });
                 } 
                 else if (file.type.startsWith('image/')) {
                     currentPDF = null;
-                    document.getElementById('pdf-controls').style.display = 'none';
+                    document.getElementById('controls-bar').style.display = 'none';
                     const img = document.createElement('img');
                     img.src = URL.createObjectURL(file);
                     img.onload = function() {
-                        const pageDiv = document.createElement('div'); pageDiv.className = 'a4-page';
-                        img.style.width = '100%'; img.style.height = '100%'; img.style.objectFit = 'contain';
-                        pageDiv.appendChild(img); container.appendChild(pageDiv);
+                        const pageContainer = document.createElement('div');
+                        pageContainer.className = 'page-container';
+                        
+                        const pageDiv = document.createElement('div');
+                        pageDiv.className = 'a4-page current-page';
+                        currentPageElement = pageDiv;
+                        
+                        img.style.width = '100%';
+                        img.style.height = '100%';
+                        img.style.objectFit = 'contain';
+                        
+                        pageDiv.appendChild(img);
+                        pageContainer.appendChild(pageDiv);
+                        container.appendChild(pageContainer);
+                        
+                        // Add touch support
+                        pageDiv.addEventListener('touchstart', handleTouchStart, { passive: false });
+                        pageDiv.addEventListener('touchmove', handleTouchMove, { passive: false });
+                        pageDiv.addEventListener('touchend', handleTouchEnd, { passive: false });
+                        
                         document.getElementById('loader').style.display = 'none';
-                        showToast(translations[currentLang].toast_upload, 'success');
+                        showToast(translations[currentLang].toast_upload);
                     };
                 }
             };
             reader.readAsArrayBuffer(file);
         }
 
+        // ===== TOUCH HANDLING FOR SCROLL =====
+        function handleTouchStart(e) {
+            touchStartX = e.touches[0].clientX;
+            touchStartY = e.touches[0].clientY;
+        }
+
+        function handleTouchMove(e) {
+            // Prevent default scrolling when touching a seal
+            if (e.target.closest('.seal-wrapper')) {
+                e.preventDefault();
+            }
+        }
+
+        function handleTouchEnd(e) {
+            // No action needed
+        }
+
+        // ===== PAGINATION =====
         function nextPage() {
             if (currentPageNumber < totalPages) {
                 const pages = document.querySelectorAll('.a4-page');
-                if (pages[currentPageNumber]) {
-                    pages[currentPageNumber - 1].style.display = 'none';
-                    pages[currentPageNumber].style.display = 'block';
-                    currentPageNumber++;
-                    document.getElementById('page-jump').value = currentPageNumber;
-                    document.getElementById('prev-btn').disabled = false;
-                    if (currentPageNumber === totalPages) document.getElementById('next-btn').disabled = true;
-                }
+                pages.forEach(p => p.classList.remove('current-page'));
+                pages[currentPageNumber].classList.add('current-page');
+                currentPageElement = pages[currentPageNumber];
+                pages[currentPageNumber - 1].style.display = 'none';
+                pages[currentPageNumber].style.display = 'block';
+                currentPageNumber++;
+                document.getElementById('page-jump').value = currentPageNumber;
+                document.getElementById('prev-btn').disabled = false;
+                if (currentPageNumber === totalPages) document.getElementById('next-btn').disabled = true;
+                
+                // Scroll to top
+                document.getElementById('scroll-area').scrollTop = 0;
             }
         }
 
         function prevPage() {
             if (currentPageNumber > 1) {
                 const pages = document.querySelectorAll('.a4-page');
-                if (pages[currentPageNumber - 2]) {
-                    pages[currentPageNumber - 1].style.display = 'none';
-                    pages[currentPageNumber - 2].style.display = 'block';
-                    currentPageNumber--;
-                    document.getElementById('page-jump').value = currentPageNumber;
-                    document.getElementById('next-btn').disabled = false;
-                    if (currentPageNumber === 1) document.getElementById('prev-btn').disabled = true;
-                }
+                pages.forEach(p => p.classList.remove('current-page'));
+                pages[currentPageNumber - 2].classList.add('current-page');
+                currentPageElement = pages[currentPageNumber - 2];
+                pages[currentPageNumber - 1].style.display = 'none';
+                pages[currentPageNumber - 2].style.display = 'block';
+                currentPageNumber--;
+                document.getElementById('page-jump').value = currentPageNumber;
+                document.getElementById('next-btn').disabled = false;
+                if (currentPageNumber === 1) document.getElementById('prev-btn').disabled = true;
+                
+                // Scroll to top
+                document.getElementById('scroll-area').scrollTop = 0;
             }
         }
 
@@ -469,251 +1648,432 @@
             
             const pages = document.querySelectorAll('.a4-page');
             pages.forEach((page, idx) => {
+                page.classList.remove('current-page');
                 page.style.display = (idx === val - 1) ? 'block' : 'none';
+                if (idx === val - 1) {
+                    page.classList.add('current-page');
+                    currentPageElement = page;
+                }
             });
             
             currentPageNumber = val;
-            document.getElementById('page-jump').value = val;
             document.getElementById('prev-btn').disabled = (val === 1);
             document.getElementById('next-btn').disabled = (val === totalPages);
+            
+            // Scroll to top
+            document.getElementById('scroll-area').scrollTop = 0;
         }
 
+        // ===== ZOOM =====
         function changeZoom(delta) {
-            currentZoom = Math.max(0.5, Math.min(2.0, currentZoom + delta));
+            currentZoom = Math.max(0.5, Math.min(2.5, currentZoom + delta));
             document.getElementById('zoom-value').innerText = Math.round(currentZoom * 100) + '%';
+            
             const pages = document.querySelectorAll('.a4-page');
             pages.forEach(page => {
-                page.style.transform = `scale(${currentZoom})`;
-                page.style.transformOrigin = 'top center';
-                page.style.marginBottom = `${20 * currentZoom}px`;
+                const container = page.parentElement;
+                container.style.maxWidth = `${794 * currentZoom}px`;
             });
         }
 
-        // Seal Management (Advanced: Duplicate, Preset, etc.)
+        // ===== SEAL MANAGEMENT =====
         function addSeal(src) {
-            toggleSidebar(false);
-            const container = document.getElementById('content-layer');
-            const pages = container.querySelectorAll('.a4-page');
-            let targetPage = pages[pages.length - 1];
-            if (!targetPage) {
-                const newPage = document.createElement('div'); newPage.className = 'a4-page'; newPage.style.position = 'relative';
-                container.appendChild(newPage); targetPage = newPage;
+            if (!currentPageElement) {
+                showToast(currentLang === 'bn' ? 'প্রথমে ডকুমেন্ট আপলোড করুন' : 'Upload a document first', 'error');
+                return;
             }
 
-            const wrap = document.createElement('div'); 
-            wrap.className = 'seal-wrapper normal-state'; 
-            wrap.style.width = '150px'; wrap.style.height = '150px';
+            toggleSidebar(false);
+
+            const wrap = document.createElement('div');
+            wrap.className = 'seal-wrapper normal-state';
+            wrap.style.width = '120px';
+            wrap.style.height = '120px';
+            wrap.style.left = '50%';
+            wrap.style.top = '50%';
+            wrap.style.transform = 'translate(-50%, -50%)';
             
             wrap.innerHTML = `
-                <img src="${src}" class="seal-img">
-                <div class="handle move-handle" onmousedown="startDrag(event, this.parentElement)" ontouchstart="startDrag(event, this.parentElement)"><i class="fas fa-arrows-alt"></i></div>
-                <div class="handle resize-handle" onmousedown="startResize(event, this.parentElement)" ontouchstart="startResize(event, this.parentElement)"><i class="fas fa-expand"></i></div>
-                <div class="handle rotate-handle" onmousedown="startRotate(event, this.parentElement)" ontouchstart="startRotate(event, this.parentElement)"><i class="fas fa-sync-alt"></i></div>
-                <div class="handle delete-handle" onclick="deleteSeal(this)"><i class="fas fa-trash"></i></div>
+                <img src="${src}" class="seal-img" alt="seal">
+                <div class="handle move-handle" onmousedown="startDrag(event)" ontouchstart="startDrag(event)" title="টেনে আনুন">
+                    <i class="fas fa-arrows-alt"></i>
+                </div>
+                <div class="handle resize-handle" onmousedown="startResize(event)" ontouchstart="startResize(event)" title="আকার পরিবর্তন করুন">
+                    <i class="fas fa-expand"></i>
+                </div>
+                <div class="handle rotate-handle" onmousedown="startRotate(event)" ontouchstart="startRotate(event)" title="ঘোরান">
+                    <i class="fas fa-sync-alt"></i>
+                </div>
+                <div class="handle delete-handle" onclick="deleteSeal()" title="মুছুন">
+                    <i class="fas fa-trash"></i>
+                </div>
             `;
 
-            wrap.onclick = function(e) { e.stopPropagation(); activateSeal(wrap); };
-            wrap.ontouchstart = function(e) { e.stopPropagation(); activateSeal(wrap); };
+            // Make seal draggable on touch devices
+            wrap.addEventListener('touchstart', function(e) {
+                e.stopPropagation();
+                activateSeal(wrap);
+                if (e.target.closest('.handle')) return;
+                startTouchDrag(e, wrap);
+            }, { passive: false });
 
-            targetPage.appendChild(wrap); 
-            showToast(translations[currentLang].toast_seal, 'success');
+            wrap.addEventListener('click', function(e) {
+                e.stopPropagation();
+                activateSeal(wrap);
+            });
+
+            currentPageElement.appendChild(wrap);
+
+            // Add to recent seals
+            if (!recentSeals.includes(src)) {
+                recentSeals.unshift(src);
+                if (recentSeals.length > 5) recentSeals.pop();
+            }
+
+            showToast(translations[currentLang].toast_seal);
+        }
+
+        function startTouchDrag(e, wrap) {
+            e.preventDefault();
+            
+            const touch = e.touches[0];
+            const rect = wrap.parentElement.getBoundingClientRect();
+            const pr = wrap.parentElement;
+            
+            let startX = touch.clientX - rect.left;
+            let startY = touch.clientY - rect.top;
+            let startLeft = wrap.offsetLeft;
+            let startTop = wrap.offsetTop;
+            
+            function onTouchMove(ev) {
+                ev.preventDefault();
+                const t = ev.touches[0];
+                const x = t.clientX - rect.left;
+                const y = t.clientY - rect.top;
+                
+                let newLeft = startLeft + (x - startX);
+                let newTop = startTop + (y - startY);
+                
+                // Constrain to page bounds
+                newLeft = Math.max(0, Math.min(newLeft, pr.offsetWidth - wrap.offsetWidth));
+                newTop = Math.max(0, Math.min(newTop, pr.offsetHeight - wrap.offsetHeight));
+                
+                wrap.style.left = newLeft + 'px';
+                wrap.style.top = newTop + 'px';
+            }
+            
+            function onTouchEnd() {
+                document.removeEventListener('touchmove', onTouchMove);
+                document.removeEventListener('touchend', onTouchEnd);
+            }
+            
+            document.addEventListener('touchmove', onTouchMove, { passive: false });
+            document.addEventListener('touchend', onTouchEnd);
         }
 
         function activateSeal(el) {
-            document.querySelectorAll('.seal-wrapper').forEach(w => { w.classList.remove('active-state'); w.classList.add('normal-state'); });
-            el.classList.remove('normal-state'); el.classList.add('active-state');
+            document.querySelectorAll('.seal-wrapper').forEach(w => {
+                w.classList.remove('active-state');
+                w.classList.add('normal-state');
+            });
             
-            const tb = document.getElementById('toolbar'); 
+            el.classList.remove('normal-state');
+            el.classList.add('active-state');
+            
+            const tb = document.getElementById('toolbar');
             tb.style.display = 'flex';
-            const r = el.getBoundingClientRect(); 
-            const pr = el.parentElement.getBoundingClientRect();
-            tb.style.left = (r.left - pr.left + r.width/2)+'px'; 
-            tb.style.top = (r.top - pr.top)+'px';
-            if(window.innerWidth < 600) { tb.style.left='50%'; tb.style.top='10px'; }
-        }
-
-        function duplicateSeal(btn) {
-            const activeWrap = document.querySelector('.seal-wrapper.active-state');
-            if (!activeWrap) return;
-            
-            const newWrap = activeWrap.cloneNode(true);
-            newWrap.classList.remove('active-state');
-            newWrap.classList.add('normal-state');
-            newWrap.style.left = (parseFloat(activeWrap.style.left) + 20) + 'px';
-            newWrap.style.top = (parseFloat(activeWrap.style.top) + 20) + 'px';
-            newWrap.onclick = function(e) { e.stopPropagation(); activateSeal(newWrap); };
-            newWrap.ontouchstart = function(e) { e.stopPropagation(); activateSeal(newWrap); };
-            activeWrap.parentElement.appendChild(newWrap);
-            
-            showToast(translations[currentLang].toast_seal, 'success');
         }
 
         document.addEventListener('click', function(e) {
-            if (!e.target.closest('.seal-wrapper') && !e.target.closest('#toolbar')) {
-                document.querySelectorAll('.seal-wrapper').forEach(w => { w.classList.remove('active-state'); w.classList.add('normal-state'); });
+            if (!e.target.closest('.seal-wrapper') && !e.target.closest('#toolbar') && !e.target.closest('#export-options')) {
+                document.querySelectorAll('.seal-wrapper').forEach(w => {
+                    w.classList.remove('active-state');
+                    w.classList.add('normal-state');
+                });
                 document.getElementById('toolbar').style.display = 'none';
+                document.getElementById('export-options').classList.remove('show');
             }
         });
 
-        document.addEventListener('touchstart', function(e) {
-            if (!e.target.closest('.seal-wrapper') && !e.target.closest('#toolbar')) {
-                document.querySelectorAll('.seal-wrapper').forEach(w => { w.classList.remove('active-state'); w.classList.add('normal-state'); });
-                document.getElementById('toolbar').style.display = 'none';
-            }
-        });
-
-        function startDrag(e, wrap) {
-            e.preventDefault(); e.stopPropagation();
-            const pr = wrap.parentElement.getBoundingClientRect();
-            const sx = e.clientX || (e.touches && e.touches[0].clientX);
-            const sy = e.clientY || (e.touches && e.touches[0].clientY);
-            const ol = wrap.offsetLeft, ot = wrap.offsetTop;
+        // ===== SEAL MANIPULATION =====
+        function startDrag(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const wrap = e.target.closest('.seal-wrapper');
+            const pr = wrap.parentElement;
+            const rect = pr.getBoundingClientRect();
+            
+            const sx = e.clientX;
+            const sy = e.clientY;
+            
+            dragData = {
+                wrap: wrap,
+                ol: wrap.offsetLeft,
+                ot: wrap.offsetTop,
+                sx: sx,
+                sy: sy,
+                pr: pr,
+                rect: rect
+            };
             
             function move(ev) {
-                const cx = ev.clientX || (ev.touches && ev.touches[0].clientX);
-                const cy = ev.clientY || (ev.touches && ev.touches[0].clientY);
-                let nl = ol + (cx - sx), nt = ot + (cy - sy);
+                const cx = ev.clientX;
+                const cy = ev.clientY;
+                let nl = dragData.ol + (cx - dragData.sx);
+                let nt = dragData.ot + (cy - dragData.sy);
                 
-                if(nl < 0) nl = 0; 
-                if(nt < 0) nt = 0;
-                if(nl + wrap.offsetWidth > pr.width) nl = pr.width - wrap.offsetWidth;
-                if(nt + wrap.offsetHeight > pr.height) nt = pr.height - wrap.offsetHeight;
+                nl = Math.max(0, Math.min(nl, dragData.pr.offsetWidth - dragData.wrap.offsetWidth));
+                nt = Math.max(0, Math.min(nt, dragData.pr.offsetHeight - dragData.wrap.offsetHeight));
                 
-                wrap.style.left = nl+'px'; 
-                wrap.style.top = nt+'px';
+                dragData.wrap.style.left = nl + 'px';
+                dragData.wrap.style.top = nt + 'px';
             }
-            function up() { 
-                document.removeEventListener('mousemove', move); document.removeEventListener('mouseup', up); 
-                document.removeEventListener('touchmove', move); document.removeEventListener('touchend', up); 
+            
+            function up() {
+                document.removeEventListener('mousemove', move);
+                document.removeEventListener('mouseup', up);
+                dragData = null;
             }
-            document.addEventListener('mousemove', move); document.addEventListener('mouseup', up);
-            document.addEventListener('touchmove', move, { passive: false }); document.addEventListener('touchend', up, { passive: false });
+            
+            document.addEventListener('mousemove', move);
+            document.addEventListener('mouseup', up);
         }
 
-        function startResize(e, wrap) {
-            e.preventDefault(); e.stopPropagation();
-            const sx = e.clientX || (e.touches && e.touches[0].clientX);
-            const sy = e.clientY || (e.touches && e.touches[0].clientY);
-            const sw = wrap.offsetWidth, sh = wrap.offsetHeight;
+        function startResize(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const wrap = e.target.closest('.seal-wrapper');
+            const sx = e.clientX;
+            const sy = e.clientY;
+            const sw = wrap.offsetWidth;
+            const sh = wrap.offsetHeight;
 
             function move(ev) {
-                const cx = ev.clientX || (ev.touches && ev.touches[0].clientX);
-                const cy = ev.clientY || (ev.touches && ev.touches[0].clientY);
-                const nw = sw + (cx - sx), nh = sh + (cy - sy);
-                if(nw > 50 && nh > 50) { wrap.style.width = nw+'px'; wrap.style.height = nh+'px'; }
+                const cx = ev.clientX;
+                const cy = ev.clientY;
+                const nw = sw + (cx - sx);
+                const nh = sh + (cy - sy);
+                
+                if (nw > 50 && nh > 50) {
+                    wrap.style.width = nw + 'px';
+                    wrap.style.height = nh + 'px';
+                }
             }
-            function up() { 
-                document.removeEventListener('mousemove', move); document.removeEventListener('mouseup', up); 
-                document.removeEventListener('touchmove', move); document.removeEventListener('touchend', up); 
+            
+            function up() {
+                document.removeEventListener('mousemove', move);
+                document.removeEventListener('mouseup', up);
             }
-            document.addEventListener('mousemove', move); document.addEventListener('mouseup', up);
-            document.addEventListener('touchmove', move, { passive: false }); document.addEventListener('touchend', up, { passive: false });
+            
+            document.addEventListener('mousemove', move);
+            document.addEventListener('mouseup', up);
         }
 
-        function startRotate(e, wrap) {
-            e.preventDefault(); e.stopPropagation();
-            const sx = e.clientX || (e.touches && e.touches[0].clientX);
-            const sy = e.clientY || (e.touches && e.touches[0].clientY);
+        function startRotate(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const wrap = e.target.closest('.seal-wrapper');
             const img = wrap.querySelector('.seal-img');
-            const startRot = img.style.transform ? parseFloat(img.style.transform.replace('rotate(','').replace(')','')) : 0;
+            const sx = e.clientX;
+            const sy = e.clientY;
+            const startRot = img.style.transform ? parseFloat(img.style.transform.replace('rotate(', '').replace(')', '')) : 0;
 
             function move(ev) {
-                const cx = ev.clientX || (ev.touches && ev.touches[0].clientX);
-                const cy = ev.clientY || (ev.touches && ev.touches[0].clientY);
+                const cx = ev.clientX;
+                const cy = ev.clientY;
                 const angle = Math.atan2(cy - sy, cx - sx) * (180 / Math.PI);
                 img.style.transform = `rotate(${startRot + angle}deg)`;
             }
-            function up() { 
-                document.removeEventListener('mousemove', move); document.removeEventListener('mouseup', up); 
-                document.removeEventListener('touchmove', move); document.removeEventListener('touchend', up); 
+            
+            function up() {
+                document.removeEventListener('mousemove', move);
+                document.removeEventListener('mouseup', up);
             }
-            document.addEventListener('mousemove', move); document.addEventListener('mouseup', up);
-            document.addEventListener('touchmove', move, { passive: false }); document.addEventListener('touchend', up, { passive: false });
+            
+            document.addEventListener('mousemove', move);
+            document.addEventListener('mouseup', up);
         }
 
-        function deleteSeal(btn) {
-            const wrap = btn.parentElement;
-            wrap.remove();
+        function deleteSeal() {
+            const activeSeal = document.querySelector('.seal-wrapper.active-state');
+            if (activeSeal) {
+                activeSeal.remove();
+                document.getElementById('toolbar').style.display = 'none';
+                showToast(translations[currentLang].toast_delete);
+            }
+        }
+
+        function clearAllSeals() {
+            const allSeals = document.querySelectorAll('.seal-wrapper');
+            if (allSeals.length === 0) {
+                showToast(currentLang === 'bn' ? 'কোনো সিল নেই' : 'No seals found');
+                return;
+            }
+            allSeals.forEach(seal => seal.remove());
             document.getElementById('toolbar').style.display = 'none';
-            showToast(translations[currentLang].toast_delete, 'success');
+            showToast(currentLang === 'bn' ? 'সকল সিল মুছে ফেলা হয়েছে' : 'All seals removed');
         }
 
-        function rotateSeal(btn, v) {
-            if (!document.querySelector('.seal-wrapper.active-state')) return;
-            const img = document.querySelector('.seal-wrapper.active-state .seal-img');
-            const cr = img.style.transform ? parseFloat(img.style.transform.replace('rotate(','')) : 0;
-            img.style.transform = `rotate(${cr+v}deg)`;
+        function rotateSeal(angle) {
+            const activeSeal = document.querySelector('.seal-wrapper.active-state');
+            if (!activeSeal) return;
+            
+            const img = activeSeal.querySelector('.seal-img');
+            const cr = img.style.transform ? parseFloat(img.style.transform.replace('rotate(', '')) : 0;
+            img.style.transform = `rotate(${cr + angle}deg)`;
         }
 
-        function resizeSeal(btn, v) {
-            if (!document.querySelector('.seal-wrapper.active-state')) return;
-            const wrap = document.querySelector('.seal-wrapper.active-state');
-            const w = wrap.offsetWidth+v, h = wrap.offsetHeight+v;
-            if(w>50 && h>50) { wrap.style.width=w+'px'; wrap.style.height=h+'px'; }
+        function resizeSeal(delta) {
+            const activeSeal = document.querySelector('.seal-wrapper.active-state');
+            if (!activeSeal) return;
+            
+            const w = activeSeal.offsetWidth + delta;
+            const h = activeSeal.offsetHeight + delta;
+            
+            if (w > 50 && h > 50) {
+                activeSeal.style.width = w + 'px';
+                activeSeal.style.height = h + 'px';
+            }
         }
 
-        function changeOpacity(inp) {
-            if (!document.querySelector('.seal-wrapper.active-state')) return;
-            const wrap = document.querySelector('.seal-wrapper.active-state');
-            wrap.style.opacity = inp.value/100;
+        function changeOpacity() {
+            const activeSeal = document.querySelector('.seal-wrapper.active-state');
+            if (!activeSeal) return;
+            
+            const value = document.getElementById('opacity-slider').value;
+            activeSeal.style.opacity = value / 100;
         }
 
-        // 4K Downloads & ALL Pages Print
+        // ===== EXPORT FUNCTIONS =====
         async function downloadHDImage(format) {
             document.getElementById('toolbar').style.display = 'none';
             document.getElementById('export-options').classList.remove('show');
-            document.querySelectorAll('.seal-wrapper').forEach(w => { w.classList.remove('active-state'); w.classList.add('normal-state'); });
+            document.querySelectorAll('.seal-wrapper').forEach(w => {
+                w.classList.remove('active-state');
+                w.classList.add('normal-state');
+            });
             
-            const pages = document.querySelectorAll('.a4-page');
-            if (pages.length === 0) return;
+            const pageContainers = document.querySelectorAll('.page-container');
+            if (pageContainers.length === 0) return;
             
             document.getElementById('loader').style.display = 'block';
             
-            for (let i = 0; i < pages.length; i++) {
-                const canvas = await html2canvas(pages[i], { scale: 4, useCORS: true });
-                const link = document.createElement('a');
-                link.download = `document-page-${i+1}.${format}`;
-                link.href = canvas.toDataURL(format === 'jpeg' ? 'image/jpeg' : 'image/png');
-                link.click();
+            try {
+                const zip = new JSZip();
+                const folder = zip.folder('document_pages');
+                
+                for (let i = 0; i < pageContainers.length; i++) {
+                    const canvas = await html2canvas(pageContainers[i], { scale: 4, useCORS: true });
+                    const imgData = canvas.toDataURL(format === 'jpeg' ? 'image/jpeg' : 'image/png');
+                    
+                    if (pageContainers.length === 1) {
+                        const link = document.createElement('a');
+                        link.download = `document-page-${i + 1}.${format}`;
+                        link.href = imgData;
+                        link.click();
+                    } else {
+                        folder.file(`page-${i + 1}.${format}`, imgData.split(',')[1], { base64: true });
+                    }
+                    
+                    await new Promise(r => setTimeout(r, 300));
+                }
+                
+                if (pageContainers.length > 1) {
+                    const blob = await zip.generateAsync({ type: 'blob' });
+                    const link = document.createElement('a');
+                    link.download = 'document-pages.zip';
+                    link.href = URL.createObjectURL(blob);
+                    link.click();
+                }
+                
+                document.getElementById('loader').style.display = 'none';
+                showToast(translations[currentLang].toast_download);
+            } catch (error) {
+                document.getElementById('loader').style.display = 'none';
+                showToast('✗ ' + error.message, 'error');
             }
-            
-            document.getElementById('loader').style.display = 'none';
-            showToast(translations[currentLang].toast_download, 'success');
         }
 
         async function downloadPDF() {
             document.getElementById('toolbar').style.display = 'none';
             document.getElementById('export-options').classList.remove('show');
-            document.querySelectorAll('.seal-wrapper').forEach(w => { w.classList.remove('active-state'); w.classList.add('normal-state'); });
+            document.querySelectorAll('.seal-wrapper').forEach(w => {
+                w.classList.remove('active-state');
+                w.classList.add('normal-state');
+            });
             
-            const pages = document.querySelectorAll('.a4-page');
-            if (pages.length === 0) return;
+            const pageContainers = document.querySelectorAll('.page-container');
+            if (pageContainers.length === 0) return;
             
             document.getElementById('loader').style.display = 'block';
-            const { jsPDF } = window.jspdf;
-            const pdf = new jsPDF('p', 'mm', 'a4');
             
-            for (let i = 0; i < pages.length; i++) {
-                const canvas = await html2canvas(pages[i], { scale: 3, useCORS: true });
-                const imgData = canvas.toDataURL('image/jpeg', 1.0);
-                if (i > 0) pdf.addPage();
-                pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297);
+            try {
+                const { jsPDF } = window.jspdf;
+                const pdf = new jsPDF('p', 'mm', 'a4');
+                
+                for (let i = 0; i < pageContainers.length; i++) {
+                    const canvas = await html2canvas(pageContainers[i], { scale: 3, useCORS: true });
+                    const imgData = canvas.toDataURL('image/jpeg', 1.0);
+                    
+                    if (i > 0) pdf.addPage();
+                    pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297);
+                    
+                    await new Promise(r => setTimeout(r, 300));
+                }
+                
+                pdf.save('document.pdf');
+                document.getElementById('loader').style.display = 'none';
+                showToast(translations[currentLang].toast_download);
+            } catch (error) {
+                document.getElementById('loader').style.display = 'none';
+                showToast('✗ ' + error.message, 'error');
             }
-            
-            pdf.save('document.pdf');
-            document.getElementById('loader').style.display = 'none';
-            showToast(translations[currentLang].toast_download, 'success');
         }
 
         function printPage() {
             document.getElementById('toolbar').style.display = 'none';
             document.getElementById('export-options').classList.remove('show');
-            document.querySelectorAll('.seal-wrapper').forEach(w => { w.classList.remove('active-state'); w.classList.add('normal-state'); });
-            showToast(translations[currentLang].toast_print, 'success');
-            setTimeout(() => { window.print(); }, 500);
+            document.querySelectorAll('.seal-wrapper').forEach(w => {
+                w.classList.remove('active-state');
+                w.classList.add('normal-state');
+            });
+            
+            showToast(translations[currentLang].toast_print);
+            setTimeout(() => {
+                window.print();
+            }, 500);
         }
 
-        window.onload = buildMenu;
+        // ===== KEYBOARD SHORTCUTS =====
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Delete') {
+                const activeSeal = document.querySelector('.seal-wrapper.active-state');
+                if (activeSeal) {
+                    deleteSeal();
+                }
+            }
+            
+            if (e.key === 'Escape') {
+                toggleSidebar(false);
+                document.getElementById('export-options').classList.remove('show');
+                document.getElementById('toolbar').style.display = 'none';
+            }
+        });
+
+        // ===== CLOSE EXPORT MENU ON OUTSIDE CLICK =====
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('#export-options') && !e.target.closest('#export-btn')) {
+                document.getElementById('export-options').classList.remove('show');
+            }
+        });
+
+        // ===== INITIALIZE =====
+        window.addEventListener('DOMContentLoaded', function() {
+            buildMenu();
+        });
     </script>
 </body>
 </html>
