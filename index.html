@@ -345,6 +345,8 @@
         let currentPDF=null,currentLang='bn',toastTimeout,currentZoom=1.0,currentPageNumber=1,totalPages=1,currentPageElement=null,recentSeals=[],activeSeal=null,allPages=[],longPressTimer=null,isDarkMode=false;
         let customSealCount=0;
         let pageContainers=[];
+        let observer=null;
+        let hasUploaded=false;
         
         function showToast(msg,type='success'){
             const el=document.getElementById('toast');
@@ -560,6 +562,13 @@
                         
                         document.getElementById('loader').style.display='none';
                         showToast('✓ ফাইল আপলোড হয়েছে!');
+                        
+                        // Hide upload button after successful upload
+                        hasUploaded = true;
+                        document.getElementById('quick-upload').style.display = 'none';
+                        
+                        // Setup observer for scroll tracking
+                        setupScrollObserver();
                     }).catch((err)=>{
                         document.getElementById('loader').style.display='none';
                         showToast('✗ PDF লোড ব্যর্থ! '+err.message,'error');
@@ -585,10 +594,56 @@
                         allPages=[pd];
                         document.getElementById('loader').style.display='none';
                         showToast('✓ ফাইল আপলোড হয়েছে!');
+                        
+                        // Hide upload button after successful upload
+                        hasUploaded = true;
+                        document.getElementById('quick-upload').style.display = 'none';
+                        
+                        // Setup observer for scroll tracking
+                        setupScrollObserver();
                     };
                 }
             };
             reader.readAsArrayBuffer(file);
+        }
+        
+        function setupScrollObserver(){
+            if(observer){
+                observer.disconnect();
+            }
+            
+            // Create Intersection Observer to track which page is visible
+            observer = new IntersectionObserver((entries)=>{
+                entries.forEach(entry=>{
+                    if(entry.isIntersecting){
+                        const index = pageContainers.indexOf(entry.target);
+                        if(index >= 0){
+                            currentPageNumber = index + 1;
+                            document.getElementById('page-jump').value = currentPageNumber;
+                            
+                            // Update current page classes
+                            document.querySelectorAll('.a4-page').forEach(p=>p.classList.remove('current-page'));
+                            const pd = entry.target.querySelector('.a4-page');
+                            if(pd){
+                                pd.classList.add('current-page');
+                                currentPageElement = pd;
+                            }
+                            
+                            // Close seal editor if open
+                            closeSealEditor();
+                        }
+                    }
+                });
+            }, {
+                root: document.getElementById('scroll-area'),
+                threshold: 0.5,
+                rootMargin: '0px'
+            });
+            
+            // Observe all page containers
+            pageContainers.forEach(pc=>{
+                observer.observe(pc);
+            });
         }
         
         function nextPage(){
@@ -620,9 +675,19 @@
         }
         
         function jumpToPage(){
-            let v=parseInt(document.getElementById('page-jump').value)||1;
-            if(v>totalPages)v=totalPages;
-            if(v<1)v=1;
+            let v=parseInt(document.getElementById('page-jump').value);
+            
+            // Validate the input
+            if(isNaN(v) || v < 1){
+                v = 1;
+            }
+            if(v > totalPages){
+                v = totalPages;
+            }
+            
+            // Update the input field with valid value
+            document.getElementById('page-jump').value = v;
+            
             const pages=document.querySelectorAll('.a4-page');
             pages.forEach((p,i)=>{
                 p.classList.remove('current-page');
