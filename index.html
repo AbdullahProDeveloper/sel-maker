@@ -9,6 +9,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <!-- ডাটা ফাইল -->
+    <script src="data.js"></script>
     <style>
         :root{--primary:#6366f1;--primary-light:#818cf8;--secondary:#10b981;--danger:#ef4444;--dark:#0f172a;--border:#e2e8f0;--text:#1e293b;--radius:10px;--shadow:0 4px 16px rgba(0,0,0,0.12)}
         *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI','Roboto',sans-serif;-webkit-tap-highlight-color:transparent}
@@ -239,22 +241,6 @@
     <div id="toast"><i class="fas fa-check-circle"></i> <span id="toast-message"></span></div>
     <div id="loader"><i class="fas fa-circle-notch"></i></div>
     <script>
-        var sealData = [
-            { name_bn: 'সরকারি সিল', name_en: 'Govt Seal', icon: 'fas fa-landmark', subfolders: [
-                { name_bn: 'নোটারি', name_en: 'Notary', icon: 'fas fa-stamp', subfolders: [
-                    { name_bn: 'পাবলিক', name_en: 'Public', icon: 'fas fa-stamp', images: [
-                        'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"%3E%3Ccircle cx="60" cy="60" r="55" fill="%23fef2f2" stroke="%23dc2626" stroke-width="3"/%3E%3Ccircle cx="60" cy="60" r="45" fill="none" stroke="%23dc2626" stroke-width="1.5"/%3E%3Ctext x="60" y="55" font-size="14" text-anchor="middle" fill="%23dc2626" font-family="sans-serif" font-weight="bold"%3Eনোটারি%3C/text%3E%3Ctext x="60" y="70" font-size="12" text-anchor="middle" fill="%23dc2626" font-family="sans-serif"%3Eপাবলিক%3C/text%3E%3C/svg%3E'
-                    ]}
-                ]}
-            ]},
-            { name_bn: 'ব্যক্তিগত', name_en: 'Personal', icon: 'fas fa-user', subfolders: [
-                { name_bn: 'অ্যাডভোকেট', name_en: 'Advocate', icon: 'fas fa-gavel', subfolders: [
-                    { name_bn: 'সুপ্রিম', name_en: 'Supreme', icon: 'fas fa-university', images: [
-                        'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"%3E%3Ccircle cx="60" cy="60" r="55" fill="%23dcfce7" stroke="%2316a34a" stroke-width="3"/%3E%3Ccircle cx="60" cy="60" r="45" fill="none" stroke="%2316a34a" stroke-width="1.5"/%3E%3Ctext x="60" y="55" font-size="14" text-anchor="middle" fill="%23166534" font-family="sans-serif" font-weight="bold"%3Eঅ্যাডভোকেট%3C/text%3E%3Ctext x="60" y="70" font-size="12" text-anchor="middle" fill="%23166534" font-family="sans-serif"%3Eসুপ্রিম%3C/text%3E%3C/svg%3E'
-                    ]}
-                ]}
-            ]}
-        ];
         let currentPDF=null,currentLang='bn',toastTimeout,currentZoom=1.0,currentPageNumber=1,totalPages=1,currentPageElement=null,recentSeals=[],activeSeal=null,allPages=[],longPressTimer=null,isDarkMode=false;
         function showToast(msg,type='success'){const el=document.getElementById('toast');document.getElementById('toast-message').innerText=msg;el.className=type;el.classList.add('show');clearTimeout(toastTimeout);toastTimeout=setTimeout(()=>el.classList.remove('show'),2000)}
         function toggleDarkMode(){isDarkMode=!isDarkMode;document.body.classList.toggle('dark-mode',isDarkMode);document.getElementById('dark-icon').className=isDarkMode?'fas fa-sun':'fas fa-moon'}
