@@ -60,20 +60,20 @@
         
         /* ===== HEADER ===== */
         #header {
-            height: 60px;
+            height: 58px;
             background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #2d3748 100%);
             color: #fff;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0 16px;
+            padding: 0 14px;
             z-index: 1000;
             flex-shrink: 0;
-            position: sticky;
+            position: relative;
             top: 0;
             width: 100%;
-            min-height: 60px;
-            max-height: 60px;
+            min-height: 58px;
+            max-height: 58px;
             box-shadow: 0 4px 30px rgba(0,0,0,0.3);
             border-bottom: 2px solid var(--primary);
         }
@@ -86,20 +86,20 @@
         }
         
         .brand-icon {
-            width: 38px;
-            height: 38px;
+            width: 36px;
+            height: 36px;
             background: linear-gradient(135deg, var(--primary), var(--primary-light));
-            border-radius: 12px;
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 18px;
+            font-size: 16px;
             box-shadow: 0 4px 15px rgba(99,102,241,0.4);
             flex-shrink: 0;
         }
         
         .brand-title {
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 800;
             white-space: nowrap;
             letter-spacing: 0.3px;
@@ -109,13 +109,13 @@
             background: rgba(255,255,255,0.1);
             border: 1px solid rgba(255,255,255,0.2);
             color: #fff;
-            padding: 8px 12px;
+            padding: 7px 10px;
             border-radius: 20px;
             font-size: 10px;
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 5px;
             transition: var(--transition);
         }
         
@@ -128,7 +128,7 @@
         
         /* ===== UPLOAD AREA ===== */
         #quick-upload {
-            background: #0f172a;
+            background: linear-gradient(135deg, #0f172a, #1e293b);
             padding: 10px 14px;
             flex-shrink: 0;
             position: relative;
@@ -136,16 +136,18 @@
             min-height: 52px;
             max-height: 52px;
             border-bottom: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
         }
         
         .upload-btn {
             background: linear-gradient(135deg, var(--primary), var(--primary-light));
             color: #fff;
             border: none;
-            border-radius: 10px;
+            border-radius: 12px;
             padding: 12px;
             font-weight: 700;
-            font-size: 13px;
+            font-size: 12px;
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -154,11 +156,34 @@
             width: 100%;
             box-shadow: 0 4px 15px rgba(99,102,241,0.4);
             transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .upload-btn::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.3), transparent);
+            transform: rotate(45deg);
+            animation: shine 2s infinite;
         }
         
         .upload-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(99,102,241,0.5);
+        }
+        
+        @keyframes shine {
+            0% {
+                transform: translateX(-100%) rotate(45deg);
+            }
+            100% {
+                transform: translateX(100%) rotate(45deg);
+            }
         }
         
         input[type="file"] {
@@ -194,7 +219,7 @@
         }
         
         .side-header {
-            padding: 16px;
+            padding: 14px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -215,11 +240,11 @@
             background: rgba(255,255,255,0.2);
             border: none;
             color: #fff;
-            width: 36px;
-            height: 36px;
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 13px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -232,9 +257,9 @@
         }
         
         #sidebar-actions {
-            padding: 12px;
+            padding: 10px;
             display: flex;
-            gap: 8px;
+            gap: 6px;
             border-bottom: 1px solid var(--border);
         }
         
@@ -250,7 +275,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 6px;
+            gap: 5px;
             font-weight: 600;
             transition: var(--transition);
         }
@@ -262,7 +287,7 @@
         }
         
         #search-container {
-            padding: 12px;
+            padding: 10px;
         }
         
         #search-input {
@@ -270,9 +295,9 @@
             background: #f1f5f9;
             border: 2px solid var(--border);
             color: var(--text);
-            padding: 12px 35px 12px 30px;
+            padding: 10px 30px 10px 25px;
             border-radius: 10px;
-            font-size: 12px;
+            font-size: 11px;
             outline: none;
             transition: var(--transition);
         }
@@ -291,7 +316,7 @@
         #menu-tree {
             flex: 1;
             overflow-y: auto;
-            padding: 12px;
+            padding: 10px;
         }
         
         .level-btn {
@@ -299,15 +324,15 @@
             background: #f8fafc;
             border: 1px solid var(--border);
             color: var(--text);
-            padding: 12px;
+            padding: 10px;
             border-radius: 10px;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 600;
             display: flex;
             justify-content: space-between;
             align-items: center;
             cursor: pointer;
-            margin-bottom: 6px;
+            margin-bottom: 5px;
             text-align: left;
             transition: var(--transition);
         }
@@ -325,7 +350,7 @@
         }
         
         .level-btn i {
-            font-size: 10px;
+            font-size: 9px;
             color: var(--primary);
             transition: transform 0.3s;
         }
@@ -336,9 +361,9 @@
         
         .nested-container {
             display: none;
-            padding-left: 12px;
+            padding-left: 10px;
             border-left: 2px solid var(--primary);
-            margin-left: 10px;
+            margin-left: 8px;
         }
         
         .nested-container.show {
@@ -348,11 +373,11 @@
         .images-container {
             display: none;
             grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-            padding: 10px;
+            gap: 6px;
+            padding: 8px;
             background: #f8fafc;
             border-radius: 10px;
-            margin-top: 6px;
+            margin-top: 5px;
         }
         
         body.dark-mode .images-container {
@@ -366,7 +391,7 @@
         .seal-item {
             background: var(--white);
             border-radius: 10px;
-            padding: 8px;
+            padding: 6px;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -397,15 +422,15 @@
             background: #f8fafc;
             border: 1px solid var(--border);
             color: var(--text);
-            padding: 12px;
+            padding: 10px;
             border-radius: 10px;
             font-size: 11px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
-            margin: 12px;
+            gap: 6px;
+            margin: 10px;
             transition: var(--transition);
         }
         
@@ -438,7 +463,7 @@
         
         #controls-bar {
             background: var(--white);
-            padding: 6px 10px;
+            padding: 5px 8px;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -448,8 +473,8 @@
             z-index: 90;
             flex-wrap: wrap;
             width: 100%;
-            min-height: 42px;
-            max-height: 42px;
+            min-height: 40px;
+            max-height: 40px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.08);
         }
         
@@ -459,16 +484,16 @@
         }
         
         #controls-bar button {
-            padding: 6px 10px;
+            padding: 5px 8px;
             border: 1px solid var(--border);
             background: #f8fafc;
             color: var(--text);
-            border-radius: 8px;
-            font-size: 10px;
+            border-radius: 6px;
+            font-size: 9px;
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 4px;
+            gap: 3px;
             transition: var(--transition);
             font-weight: 500;
         }
@@ -487,12 +512,12 @@
         }
         
         #controls-bar input {
-            width: 40px;
+            width: 36px;
             text-align: center;
             border: 2px solid var(--border);
-            border-radius: 8px;
-            padding: 6px;
-            font-size: 10px;
+            border-radius: 6px;
+            padding: 4px;
+            font-size: 9px;
             background: #f8fafc;
             font-weight: 600;
         }
@@ -506,12 +531,14 @@
         #scroll-area {
             flex: 1;
             overflow: auto;
-            padding: 10px;
-            padding-top: 6px;
+            padding: 8px;
+            padding-top: 4px;
             display: flex;
             flex-direction: column;
             align-items: center;
             background: #f1f5f9;
+            overflow-x: auto;
+            overflow-y: auto;
         }
         
         body.dark-mode #scroll-area {
@@ -531,9 +558,9 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 40px;
+            padding: 30px;
             text-align: center;
-            margin: 20px auto;
+            margin: 15px auto;
             border: 3px dashed var(--border);
             transition: var(--transition);
             position: relative;
@@ -552,27 +579,27 @@
         }
         
         .preview-box i {
-            font-size: 60px;
-            margin-bottom: 20px;
+            font-size: 50px;
+            margin-bottom: 15px;
             color: var(--primary);
             animation: bounce 2s infinite;
         }
         
         .preview-box h3 {
-            font-size: 20px;
-            margin-bottom: 12px;
+            font-size: 18px;
+            margin-bottom: 10px;
             color: var(--text);
         }
         
         .preview-box p {
-            font-size: 14px;
+            font-size: 13px;
             color: var(--text-light);
             line-height: 1.6;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
         
         .preview-box .upload-btn {
-            max-width: 250px;
+            max-width: 220px;
             margin: 0 auto;
         }
         
@@ -590,10 +617,10 @@
             position: relative;
             width: 100%;
             max-width: 794px;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             background: var(--white);
             box-shadow: var(--shadow-lg);
-            border-radius: 10px;
+            border-radius: 8px;
             overflow: hidden;
             transition: var(--transition);
         }
@@ -836,22 +863,22 @@
         /* ===== FLOATING BUTTONS ===== */
         #quick-seal-buttons {
             position: fixed;
-            bottom: 15px;
-            left: 10px;
+            bottom: 12px;
+            left: 8px;
             z-index: 950;
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 6px;
         }
         
         .quick-btn {
-            width: 44px;
-            height: 44px;
-            border-radius: 14px;
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
             background: linear-gradient(135deg, var(--primary), var(--primary-light));
             border: none;
             color: #fff;
-            font-size: 15px;
+            font-size: 14px;
             cursor: pointer;
             box-shadow: 0 4px 15px rgba(99,102,241,0.4);
             display: flex;
@@ -867,27 +894,27 @@
         
         #bottom-actions {
             position: fixed;
-            bottom: 15px;
-            right: 10px;
+            bottom: 12px;
+            right: 8px;
             z-index: 950;
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 6px;
         }
         
         #export-btn {
             background: linear-gradient(135deg, var(--primary), var(--primary-light));
             color: #fff;
             border: none;
-            border-radius: 14px;
-            padding: 12px 18px;
-            font-size: 11px;
+            border-radius: 12px;
+            padding: 10px 16px;
+            font-size: 10px;
             font-weight: bold;
             cursor: pointer;
             box-shadow: 0 4px 15px rgba(99,102,241,0.5);
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             transition: var(--transition);
         }
         
@@ -898,16 +925,16 @@
         
         #export-options {
             position: fixed;
-            bottom: 70px;
-            right: 10px;
+            bottom: 60px;
+            right: 8px;
             background: var(--dark-2);
-            border-radius: 14px;
-            padding: 10px;
+            border-radius: 12px;
+            padding: 8px;
             display: none;
             flex-direction: column;
-            gap: 6px;
+            gap: 5px;
             z-index: 3000;
-            min-width: 160px;
+            min-width: 150px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.4);
         }
         
@@ -920,12 +947,12 @@
             border: none;
             color: #fff;
             text-align: left;
-            padding: 10px 12px;
-            border-radius: 10px;
+            padding: 8px 10px;
+            border-radius: 8px;
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             font-size: 10px;
             transition: var(--transition);
         }
@@ -944,7 +971,7 @@
             right: 0;
             background: var(--white);
             border-radius: 25px 25px 0 0;
-            padding: 25px;
+            padding: 20px;
             z-index: 4000;
             box-shadow: 0 -10px 40px rgba(0,0,0,0.3);
             max-height: 65vh;
@@ -963,8 +990,8 @@
         .settings-section {
             background: #f8fafc;
             border-radius: 15px;
-            padding: 15px;
-            margin-bottom: 12px;
+            padding: 12px;
+            margin-bottom: 10px;
             border: 1px solid var(--border);
         }
         
@@ -977,28 +1004,28 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
         
         .settings-label {
             color: var(--text-light);
-            font-size: 12px;
+            font-size: 11px;
         }
         
         .settings-value {
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 600;
         }
         
         input[type="range"] {
             flex: 1;
-            margin: 0 10px;
+            margin: 0 8px;
             accent-color: var(--primary);
         }
         
         input[type="color"] {
-            width: 40px;
-            height: 32px;
+            width: 35px;
+            height: 28px;
             border: 1px solid var(--border);
             border-radius: 6px;
             cursor: pointer;
@@ -1007,19 +1034,19 @@
         /* ===== TOAST ===== */
         #toast {
             position: fixed;
-            top: 20px;
+            top: 15px;
             left: 50%;
             transform: translateX(-50%) translateY(-120px);
             background: var(--dark-2);
             color: #fff;
-            padding: 14px 24px;
+            padding: 12px 20px;
             border-radius: 15px;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 600;
             z-index: 10000;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             transition: transform 0.4s;
             box-shadow: 0 10px 30px rgba(0,0,0,0.4);
             max-width: 90%;
@@ -1046,7 +1073,7 @@
             left: 50%;
             transform: translate(-50%, -50%);
             background: rgba(15,23,42,0.95);
-            padding: 30px;
+            padding: 25px;
             border-radius: 50%;
             z-index: 5000;
             color: var(--primary-light);
@@ -1054,7 +1081,7 @@
         }
         
         #loader i {
-            font-size: 40px;
+            font-size: 35px;
             animation: spin 1s linear infinite;
         }
         
@@ -1073,23 +1100,23 @@
             transform: translate(-50%, -50%);
             background: var(--dark-2);
             border-radius: 20px;
-            padding: 25px;
+            padding: 20px;
             z-index: 6000;
             max-width: 90%;
-            width: 400px;
+            width: 380px;
             box-shadow: 0 20px 60px rgba(0,0,0,0.5);
             border: 2px solid rgba(99,102,241,0.4);
         }
         
         #help-modal h3 {
             color: var(--primary-light);
-            margin-bottom: 15px;
-            font-size: 16px;
+            margin-bottom: 12px;
+            font-size: 15px;
         }
         
         #help-modal p {
             color: #cbd5e1;
-            font-size: 13px;
+            font-size: 12px;
             line-height: 1.8;
         }
         
@@ -1097,11 +1124,11 @@
             background: var(--primary);
             border: none;
             color: #fff;
-            padding: 12px 20px;
+            padding: 10px 18px;
             border-radius: 10px;
             cursor: pointer;
-            font-size: 13px;
-            margin-top: 15px;
+            font-size: 12px;
+            margin-top: 12px;
             width: 100%;
             transition: var(--transition);
         }
@@ -1124,7 +1151,7 @@
                 width: 32px;
                 height: 32px;
                 font-size: 15px;
-                border-radius: 10px;
+                border-radius: 8px;
             }
             
             .brand-title {
@@ -1133,8 +1160,9 @@
             
             .header-btn {
                 padding: 6px 8px;
-                font-size: 8px;
+                font-size: 9px;
                 border-radius: 15px;
+                gap: 4px;
             }
             
             .header-btn span {
@@ -1148,23 +1176,23 @@
             }
             
             .upload-btn {
-                padding: 10px;
+                padding: 11px;
                 font-size: 11px;
                 border-radius: 8px;
                 gap: 6px;
             }
             
             #controls-bar {
-                padding: 5px 6px;
+                padding: 4px 6px;
                 gap: 3px;
-                min-height: 38px;
-                max-height: 38px;
+                min-height: 36px;
+                max-height: 36px;
             }
             
             #controls-bar button {
-                padding: 5px 8px;
+                padding: 5px 7px;
                 font-size: 8px;
-                border-radius: 6px;
+                border-radius: 5px;
                 gap: 3px;
             }
             
@@ -1173,44 +1201,44 @@
             }
             
             #controls-bar input {
-                width: 36px;
+                width: 32px;
                 padding: 4px;
-                font-size: 9px;
-                border-radius: 6px;
+                font-size: 8px;
+                border-radius: 5px;
             }
             
             #scroll-area {
-                padding: 8px;
-                padding-top: 4px;
+                padding: 6px;
+                padding-top: 3px;
             }
             
             .preview-box {
                 min-height: 350px;
-                padding: 30px;
-                margin: 15px auto;
+                padding: 20px;
+                margin: 10px auto;
             }
             
             .preview-box i {
-                font-size: 50px;
-                margin-bottom: 15px;
+                font-size: 40px;
+                margin-bottom: 12px;
             }
             
             .preview-box h3 {
-                font-size: 17px;
-                margin-bottom: 10px;
+                font-size: 16px;
+                margin-bottom: 8px;
             }
             
             .preview-box p {
-                font-size: 13px;
+                font-size: 12px;
             }
             
             .page-container {
-                margin-bottom: 15px;
-                border-radius: 8px;
+                margin-bottom: 12px;
+                border-radius: 6px;
             }
             
             #seal-editor {
-                padding: 12px;
+                padding: 10px;
                 border-radius: 15px;
                 max-width: 98%;
                 gap: 6px;
@@ -1225,7 +1253,7 @@
             
             .editor-section {
                 padding: 5px 6px;
-                gap: 4px;
+                gap: 3px;
             }
             
             .editor-label {
@@ -1234,7 +1262,7 @@
             }
             
             input[type="range"].editor-input {
-                width: 55px;
+                width: 50px;
             }
             
             .editor-presets {
@@ -1247,8 +1275,8 @@
             }
             
             .seal-resize-handle {
-                width: 22px;
-                height: 22px;
+                width: 20px;
+                height: 20px;
                 bottom: -8px;
                 right: -8px;
                 font-size: 9px;
@@ -1256,8 +1284,8 @@
             }
             
             .seal-rotate-handle {
-                width: 22px;
-                height: 22px;
+                width: 20px;
+                height: 20px;
                 top: -8px;
                 left: -8px;
                 font-size: 9px;
@@ -1265,44 +1293,44 @@
             }
             
             #quick-seal-buttons {
-                left: 8px;
-                bottom: 10px;
-                gap: 6px;
+                left: 5px;
+                bottom: 8px;
+                gap: 5px;
             }
             
             .quick-btn {
                 width: 40px;
                 height: 40px;
                 font-size: 14px;
-                border-radius: 12px;
+                border-radius: 10px;
             }
             
             #bottom-actions {
-                right: 8px;
-                bottom: 10px;
-                gap: 6px;
+                right: 5px;
+                bottom: 8px;
+                gap: 5px;
             }
             
             #export-btn {
-                padding: 10px 14px;
-                font-size: 10px;
-                border-radius: 10px;
-                gap: 6px;
+                padding: 9px 12px;
+                font-size: 9px;
+                border-radius: 8px;
+                gap: 5px;
             }
             
             #export-options {
-                bottom: 65px;
-                right: 8px;
-                min-width: 150px;
-                padding: 8px;
-                border-radius: 12px;
+                bottom: 55px;
+                right: 5px;
+                min-width: 140px;
+                padding: 6px;
+                border-radius: 10px;
             }
             
             #export-options button {
-                padding: 9px 10px;
-                font-size: 10px;
-                border-radius: 8px;
-                gap: 6px;
+                padding: 8px 9px;
+                font-size: 9px;
+                border-radius: 6px;
+                gap: 5px;
             }
         }
         
@@ -1327,8 +1355,8 @@
             
             .header-btn {
                 padding: 5px 6px;
-                font-size: 7px;
-                border-radius: 12px;
+                font-size: 8px;
+                border-radius: 10px;
                 gap: 3px;
             }
             
@@ -1339,60 +1367,60 @@
             }
             
             .upload-btn {
-                padding: 9px;
+                padding: 10px;
                 font-size: 10px;
                 border-radius: 6px;
                 gap: 5px;
             }
             
             #controls-bar {
-                padding: 4px 5px;
+                padding: 3px 4px;
                 gap: 2px;
-                min-height: 36px;
-                max-height: 36px;
+                min-height: 34px;
+                max-height: 34px;
             }
             
             #controls-bar button {
                 padding: 4px 6px;
                 font-size: 7px;
-                border-radius: 5px;
+                border-radius: 4px;
                 gap: 2px;
             }
             
             #controls-bar input {
-                width: 32px;
+                width: 30px;
                 padding: 3px;
-                font-size: 8px;
-                border-radius: 5px;
+                font-size: 7px;
+                border-radius: 4px;
             }
             
             #scroll-area {
-                padding: 6px;
+                padding: 5px;
             }
             
             .preview-box {
                 min-height: 300px;
-                padding: 20px;
-                margin: 10px auto;
+                padding: 15px;
+                margin: 8px auto;
             }
             
             .preview-box i {
-                font-size: 40px;
-                margin-bottom: 10px;
-            }
-            
-            .preview-box h3 {
-                font-size: 15px;
+                font-size: 35px;
                 margin-bottom: 8px;
             }
             
+            .preview-box h3 {
+                font-size: 14px;
+                margin-bottom: 6px;
+            }
+            
             .preview-box p {
-                font-size: 12px;
+                font-size: 11px;
             }
             
             .page-container {
-                margin-bottom: 12px;
-                border-radius: 6px;
+                margin-bottom: 10px;
+                border-radius: 4px;
             }
         }
     </style>
@@ -1468,19 +1496,19 @@
     
     <!-- SETTINGS -->
     <div id="settings-panel">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px">
-            <h3 style="color:var(--primary);font-size:16px"><i class="fas fa-cog"></i> <span id="settings-title">সেটিংস</span></h3>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+            <h3 style="color:var(--primary);font-size:15px"><i class="fas fa-cog"></i> <span id="settings-title">সেটিংস</span></h3>
             <button class="icon-btn" onclick="closeSettingsPanel()"><i class="fas fa-times"></i></button>
         </div>
         <div class="settings-section">
-            <h4 style="font-size:12px;margin-bottom:10px"><i class="fas fa-palette"></i> <span id="theme-color-title">থিম কালার</span></h4>
+            <h4 style="font-size:12px;margin-bottom:8px"><i class="fas fa-palette"></i> <span id="theme-color-title">থিম কালার</span></h4>
             <div class="settings-row">
                 <span class="settings-label" id="primary-color-label">প্রাইমারি</span>
                 <input type="color" id="primary-color" value="#6366f1" onchange="changePrimaryColor(this.value)">
             </div>
         </div>
         <div class="settings-section">
-            <h4 style="font-size:12px;margin-bottom:10px"><i class="fas fa-moon"></i> <span id="dark-mode-title">ডার্ক মোড</span></h4>
+            <h4 style="font-size:12px;margin-bottom:8px"><i class="fas fa-moon"></i> <span id="dark-mode-title">ডার্ক মোড</span></h4>
             <div class="settings-row">
                 <span class="settings-label" id="darkness-label">ডার্কনেস</span>
                 <input type="range" id="darkness-level" min="0" max="100" value="100" oninput="document.getElementById('darkness-value').innerText=this.value+'%'">
@@ -1488,14 +1516,14 @@
             </div>
         </div>
         <div class="settings-section">
-            <h4 style="font-size:12px;margin-bottom:10px"><i class="fas fa-font"></i> <span id="font-size-title">ফন্ট সাইজ</span></h4>
+            <h4 style="font-size:12px;margin-bottom:8px"><i class="fas fa-font"></i> <span id="font-size-title">ফন্ট সাইজ</span></h4>
             <div class="settings-row">
                 <span class="settings-label" id="font-small">ছোট</span>
                 <input type="range" id="font-size" min="10" max="18" value="14" oninput="document.documentElement.style.fontSize=this.value+'px'">
                 <span class="settings-label" id="font-large">বড়</span>
             </div>
         </div>
-        <button class="side-action-btn" style="width:100%;padding:12px" onclick="resetSettings()">
+        <button class="side-action-btn" style="width:100%;padding:10px" onclick="resetSettings()">
             <i class="fas fa-undo"></i>
             <span id="reset-btn-text">ডিফল্ট</span>
         </button>
@@ -1506,10 +1534,10 @@
         <div id="controls-bar" style="display:none;">
             <button onclick="prevPage()"><i class="fas fa-chevron-left"></i></button>
             <input type="number" id="page-jump" min="1" value="1" onchange="jumpToPage()">
-            <span id="page-count-display" style="font-size:9px">/ 1</span>
+            <span id="page-count-display" style="font-size:8px">/ 1</span>
             <button onclick="nextPage()"><i class="fas fa-chevron-right"></i></button>
             <button onclick="changeZoom(-0.1)"><i class="fas fa-minus"></i></button>
-            <span id="zoom-value" style="font-size:9px">100%</span>
+            <span id="zoom-value" style="font-size:8px">100%</span>
             <button onclick="changeZoom(0.1)"><i class="fas fa-plus"></i></button>
             <button onclick="downloadCurrentPage()"><i class="fas fa-download"></i> <span id="this-page-btn">এই পেজ</span></button>
             <button onclick="printAllPages()" style="background:#10b981;color:#fff;border-color:#10b981"><i class="fas fa-print"></i> <span id="print-btn">প্রিন্ট</span></button>
@@ -1625,7 +1653,7 @@
             el.className=type;
             el.classList.add('show');
             clearTimeout(toastTimeout);
-            toastTimeout=setTimeout(()=>el.classList.remove('show'),2500);
+            toastTimeout=setTimeout(()=>el.classList.remove('show'),2000);
         }
         
         function toggleDarkMode(){
@@ -1794,7 +1822,6 @@
                 previewBox.style.display='none';
             }
             
-            // Clear previous content
             container.innerHTML='';
             pageContainers=[];
             allPages=[];
@@ -1867,13 +1894,13 @@
             totalPages=pageContainers.length;
             currentPageNumber=1;
             
-            // Show controls bar
+            // Show controls
             document.getElementById('controls-bar').style.display='flex';
             document.getElementById('page-count-display').innerText=`/ ${totalPages}`;
             document.getElementById('page-jump').max=totalPages;
             document.getElementById('page-jump').value=1;
             
-            // Hide upload buttons
+            // Hide upload
             hasUploaded=true;
             document.getElementById('quick-upload').style.display='none';
             
@@ -1965,14 +1992,18 @@
         }
         
         function changeZoom(d){
-            currentZoom=Math.max(0.5,Math.min(2.5,currentZoom+d));
-            document.getElementById('zoom-value').innerText=Math.round(currentZoom*100)+'%';
+            // Correct zoom logic: + for zoom in, - for zoom out
+            currentZoom = currentZoom + d;
+            if(currentZoom < 0.5) currentZoom = 0.5;
+            if(currentZoom > 2.5) currentZoom = 2.5;
             
-            pageContainers.forEach(pc=>{
-                const width=794*currentZoom;
-                pc.style.width=width+'px';
-                pc.style.maxWidth=width+'px';
-                pc.style.minWidth=width+'px';
+            document.getElementById('zoom-value').innerText = Math.round(currentZoom * 100) + '%';
+            
+            pageContainers.forEach(pc => {
+                const width = 794 * currentZoom;
+                pc.style.width = width + 'px';
+                pc.style.maxWidth = width + 'px';
+                pc.style.minWidth = width + 'px';
             });
         }
         
