@@ -1179,50 +1179,13 @@
             document.getElementById('loader').style.display='block';
             
             try{
-                // Create a hidden container to render all pages
-                const printContainer=document.createElement('div');
-                printContainer.style.position='fixed';
-                printContainer.style.left='-9999px';
-                printContainer.style.top='0';
-                printContainer.style.width='794px';
-                printContainer.style.background='#ffffff';
-                printContainer.style.zIndex='-1';
-                
-                // Clone all pages with seals
-                for(const pc of pages){
-                    const clone=pc.cloneNode(true);
-                    clone.style.maxWidth='794px';
-                    clone.style.margin='0';
-                    clone.style.boxShadow='none';
-                    
-                    // Remove edit handles
-                    clone.querySelectorAll('.seal-resize-handle').forEach(i=>i.remove());
-                    clone.querySelectorAll('.seal-rotate-handle').forEach(i=>i.remove());
-                    
-                    // Remove active states
-                    clone.querySelectorAll('.seal-wrapper').forEach(w=>{
-                        w.classList.remove('active-state');
-                        w.style.outline='none';
-                        w.style.cursor='default';
-                    });
-                    
-                    printContainer.appendChild(clone);
-                }
-                
-                document.body.appendChild(printContainer);
-                
-                // Wait for rendering
-                await new Promise(r=>setTimeout(r,500));
-                
                 // Convert all pages to images
                 const images=[];
                 for(let i=0;i<pages.length;i++){
-                    const canvas=await html2canvas(printContainer.children[i],{scale:2,useCORS:true,backgroundColor:'#ffffff',logging:false});
+                    await new Promise(r=>setTimeout(r,200));
+                    const canvas=await html2canvas(pages[i],{scale:2,useCORS:true,backgroundColor:'#ffffff',logging:false});
                     images.push(canvas.toDataURL('image/jpeg',0.95));
                 }
-                
-                // Remove the print container
-                document.body.removeChild(printContainer);
                 
                 // Open print window
                 const pw=window.open('','_blank');
