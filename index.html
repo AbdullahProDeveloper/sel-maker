@@ -126,70 +126,6 @@
             box-shadow: 0 4px 15px rgba(99,102,241,0.4);
         }
         
-        /* ===== UPLOAD AREA ===== */
-        #quick-upload {
-            background: linear-gradient(135deg, #0f172a, #1e293b);
-            padding: 10px 14px;
-            flex-shrink: 0;
-            position: relative;
-            z-index: 999;
-            min-height: 52px;
-            max-height: 52px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            display: flex;
-            align-items: center;
-        }
-        
-        .upload-btn {
-            background: linear-gradient(135deg, var(--primary), var(--primary-light));
-            color: #fff;
-            border: none;
-            border-radius: 12px;
-            padding: 12px;
-            font-weight: 700;
-            font-size: 12px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            width: 100%;
-            box-shadow: 0 4px 15px rgba(99,102,241,0.4);
-            transition: var(--transition);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .upload-btn::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.3), transparent);
-            transform: rotate(45deg);
-            animation: shine 2s infinite;
-        }
-        
-        .upload-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(99,102,241,0.5);
-        }
-        
-        @keyframes shine {
-            0% {
-                transform: translateX(-100%) rotate(45deg);
-            }
-            100% {
-                transform: translateX(100%) rotate(45deg);
-            }
-        }
-        
-        input[type="file"] {
-            display: none;
-        }
-        
         /* ===== SIDEBAR ===== */
         #sidebar {
             position: fixed;
@@ -545,12 +481,11 @@
             background: #0a0a0a;
         }
         
-        /* ===== PREVIEW BOX ===== */
-        .preview-box {
+        /* ===== UPLOAD BOX ===== */
+        .upload-box {
             width: 100%;
             max-width: 600px;
-            height: 100%;
-            min-height: 400px;
+            height: 300px;
             background: var(--white);
             border-radius: var(--radius-lg);
             box-shadow: var(--shadow-lg);
@@ -563,44 +498,63 @@
             margin: 15px auto;
             border: 3px dashed var(--border);
             transition: var(--transition);
+            cursor: pointer;
             position: relative;
             overflow: hidden;
         }
         
-        .preview-box:hover {
+        .upload-box:hover {
             border-color: var(--primary);
             box-shadow: 0 8px 40px rgba(99,102,241,0.2);
             transform: scale(1.02);
         }
         
-        body.dark-mode .preview-box {
+        body.dark-mode .upload-box {
             background: #111;
             border-color: #334155;
         }
         
-        .preview-box i {
+        .upload-box i {
             font-size: 50px;
             margin-bottom: 15px;
             color: var(--primary);
             animation: bounce 2s infinite;
         }
         
-        .preview-box h3 {
+        .upload-box h3 {
             font-size: 18px;
             margin-bottom: 10px;
             color: var(--text);
         }
         
-        .preview-box p {
+        .upload-box p {
             font-size: 13px;
             color: var(--text-light);
             line-height: 1.6;
             margin-bottom: 15px;
         }
         
-        .preview-box .upload-btn {
-            max-width: 220px;
+        .upload-box .upload-btn {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            padding: 12px 24px;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(99,102,241,0.4);
+            transition: var(--transition);
+            max-width: 250px;
             margin: 0 auto;
+        }
+        
+        .upload-box .upload-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(99,102,241,0.5);
         }
         
         @keyframes bounce {
@@ -656,11 +610,6 @@
         
         .a4-page.current-page {
             box-shadow: inset 0 0 0 3px var(--primary);
-        }
-        
-        /* ===== EMPTY STATE ===== */
-        .empty-state {
-            display: none;
         }
         
         /* ===== SEAL WRAPPER ===== */
@@ -1169,19 +1118,6 @@
                 display: none;
             }
             
-            #quick-upload {
-                padding: 8px 10px;
-                min-height: 48px;
-                max-height: 48px;
-            }
-            
-            .upload-btn {
-                padding: 11px;
-                font-size: 11px;
-                border-radius: 8px;
-                gap: 6px;
-            }
-            
             #controls-bar {
                 padding: 4px 6px;
                 gap: 3px;
@@ -1212,23 +1148,28 @@
                 padding-top: 3px;
             }
             
-            .preview-box {
-                min-height: 350px;
+            .upload-box {
+                min-height: 250px;
                 padding: 20px;
                 margin: 10px auto;
             }
             
-            .preview-box i {
+            .upload-box i {
                 font-size: 40px;
                 margin-bottom: 12px;
             }
             
-            .preview-box h3 {
+            .upload-box h3 {
                 font-size: 16px;
                 margin-bottom: 8px;
             }
             
-            .preview-box p {
+            .upload-box p {
+                font-size: 12px;
+            }
+            
+            .upload-box .upload-btn {
+                padding: 10px 20px;
                 font-size: 12px;
             }
             
@@ -1360,19 +1301,6 @@
                 gap: 3px;
             }
             
-            #quick-upload {
-                padding: 6px 8px;
-                min-height: 44px;
-                max-height: 44px;
-            }
-            
-            .upload-btn {
-                padding: 10px;
-                font-size: 10px;
-                border-radius: 6px;
-                gap: 5px;
-            }
-            
             #controls-bar {
                 padding: 3px 4px;
                 gap: 2px;
@@ -1398,23 +1326,28 @@
                 padding: 5px;
             }
             
-            .preview-box {
-                min-height: 300px;
+            .upload-box {
+                min-height: 220px;
                 padding: 15px;
                 margin: 8px auto;
             }
             
-            .preview-box i {
+            .upload-box i {
                 font-size: 35px;
                 margin-bottom: 8px;
             }
             
-            .preview-box h3 {
+            .upload-box h3 {
                 font-size: 14px;
                 margin-bottom: 6px;
             }
             
-            .preview-box p {
+            .upload-box p {
+                font-size: 11px;
+            }
+            
+            .upload-box .upload-btn {
+                padding: 8px 16px;
                 font-size: 11px;
             }
             
@@ -1448,15 +1381,6 @@
             </button>
         </div>
     </header>
-    
-    <!-- UPLOAD -->
-    <div id="quick-upload">
-        <label for="file-upload" class="upload-btn">
-            <i class="fas fa-cloud-upload-alt"></i>
-            <span id="quick-upload-text">ডকুমেন্ট আপলোড করুন</span>
-        </label>
-        <input id="file-upload" type="file" accept="application/pdf,image/*" multiple onchange="handleFileUpload(event)">
-    </div>
     
     <!-- SIDEBAR -->
     <div id="sidebar">
@@ -1544,16 +1468,16 @@
         </div>
         <div id="scroll-area">
             <div id="content-layer">
-                <!-- PREVIEW BOX -->
-                <div class="preview-box" id="preview-box">
-                    <i class="fas fa-file-upload"></i>
+                <!-- UPLOAD BOX -->
+                <div class="upload-box" id="upload-box" onclick="triggerFileUpload()">
+                    <i class="fas fa-cloud-upload-alt"></i>
                     <h3 id="doc-placeholder">ডকুমেন্ট আপলোড করুন</h3>
-                    <p id="doc-instruction">উপরের বাটনে ক্লিক করে PDF বা ছবি আপলোড করুন</p>
-                    <label for="file-upload-2" class="upload-btn">
-                        <i class="fas fa-cloud-upload-alt"></i>
+                    <p id="doc-instruction">এখানে যেকোনো জায়গায় চাপ দিন অথবা ফাইল নির্বাচন করুন</p>
+                    <button class="upload-btn" onclick="event.stopPropagation(); triggerFileUpload()">
+                        <i class="fas fa-folder-open"></i>
                         <span>ফাইল নির্বাচন করুন</span>
-                    </label>
-                    <input id="file-upload-2" type="file" accept="application/pdf,image/*" multiple onchange="handleFileUpload(event)">
+                    </button>
+                    <input type="file" id="file-upload" accept="application/pdf,image/*" multiple style="display:none;" onchange="handleFileUpload(event)">
                 </div>
             </div>
         </div>
@@ -1673,9 +1597,8 @@
             const bn=currentLang==='bn';
             document.getElementById('title-text').innerText=bn?'নোটারি সিল স্টুডিও':'Notary Seal Studio';
             document.getElementById('sidebar-title').innerText=bn?'সিল লাইব্রেরি':'Seal Library';
-            document.getElementById('quick-upload-text').innerText=bn?'ডকুমেন্ট আপলোড করুন':'Upload Document';
             document.getElementById('doc-placeholder').innerText=bn?'ডকুমেন্ট আপলোড করুন':'Upload your document';
-            document.getElementById('doc-instruction').innerText=bn?'উপরের বাটনে ক্লিক করে PDF বা ছবি আপলোড করুন':'Click above to upload PDF or image';
+            document.getElementById('doc-instruction').innerText=bn?'এখানে যেকোনো জায়গায় চাপ দিন অথবা ফাইল নির্বাচন করুন':'Click anywhere here or select file';
             document.getElementById('export-text').innerText=bn?'ডাউনলোড':'Download';
             document.getElementById('help-btn-text').innerText=bn?'সাহায্য':'Help';
             document.getElementById('upload-btn-text').innerText=bn?'সিল আপলোড':'Upload Seal';
@@ -1786,6 +1709,13 @@
             btn.nextElementSibling.classList.toggle('show');
         }
         
+        function triggerFileUpload(){
+            const input=document.getElementById('file-upload');
+            if(input){
+                input.click();
+            }
+        }
+        
         function triggerCustomSealUpload(){
             if(!currentPageElement){
                 showToast('প্রথমে ডকুমেন্ট আপলোড করুন','error');
@@ -1816,10 +1746,10 @@
             document.getElementById('loader').style.display='block';
             const container=document.getElementById('content-layer');
             
-            // Hide preview box
-            const previewBox=document.getElementById('preview-box');
-            if(previewBox){
-                previewBox.style.display='none';
+            // Hide upload box
+            const uploadBox=document.getElementById('upload-box');
+            if(uploadBox){
+                uploadBox.style.display='none';
             }
             
             container.innerHTML='';
@@ -1899,10 +1829,6 @@
             document.getElementById('page-count-display').innerText=`/ ${totalPages}`;
             document.getElementById('page-jump').max=totalPages;
             document.getElementById('page-jump').value=1;
-            
-            // Hide upload
-            hasUploaded=true;
-            document.getElementById('quick-upload').style.display='none';
             
             document.getElementById('loader').style.display='none';
             showToast('✓ ফাইল আপলোড হয়েছে!');
