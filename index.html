@@ -86,39 +86,37 @@
         .seal-wrapper{position:absolute;z-index:10;user-select:none;cursor:move;touch-action:none}
         .seal-wrapper.active-state{outline:2px dashed var(--primary);outline-offset:2px;box-shadow:0 0 20px rgba(99,102,241,0.3)}
         .seal-img{width:100%;height:100%;object-fit:contain;pointer-events:none;display:block}
-        .seal-edit-icon{position:absolute;top:-12px;right:-12px;width:30px;height:30px;background:var(--primary);border-radius:50%;border:2px solid #fff;display:none;align-items:center;justify-content:center;color:#fff;font-size:12px;z-index:20;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.3)}
-        .seal-wrapper.active-state .seal-edit-icon{display:flex}
         
-        .seal-resize-handle{position:absolute;bottom:-10px;right:-10px;width:24px;height:24px;background:var(--secondary);border-radius:50%;border:2px solid #fff;display:none;align-items:center;justify-content:center;color:#fff;font-size:10px;z-index:20;cursor:nwse-resize;box-shadow:0 2px 8px rgba(0,0,0,0.3)}
-        .seal-rotate-handle{position:absolute;top:-12px;left:-12px;width:24px;height:24px;background:var(--primary-light);border-radius:50%;border:2px solid #fff;display:none;align-items:center;justify-content:center;color:#fff;font-size:10px;z-index:20;cursor:grab;box-shadow:0 2px 8px rgba(0,0,0,0.3)}
+        .seal-resize-handle{position:absolute;bottom:-8px;right:-8px;width:20px;height:20px;background:var(--secondary);border-radius:50%;border:2px solid #fff;display:none;align-items:center;justify-content:center;color:#fff;font-size:8px;z-index:20;cursor:nwse-resize;box-shadow:0 2px 8px rgba(0,0,0,0.3)}
+        .seal-rotate-handle{position:absolute;top:-8px;left:-8px;width:20px;height:20px;background:var(--primary-light);border-radius:50%;border:2px solid #fff;display:none;align-items:center;justify-content:center;color:#fff;font-size:8px;z-index:20;cursor:grab;box-shadow:0 2px 8px rgba(0,0,0,0.3)}
         .seal-wrapper.active-state .seal-resize-handle,.seal-wrapper.active-state .seal-rotate-handle{display:flex}
         
-        #seal-editor{position:fixed;bottom:15px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#1e293b,#0f172a);border-radius:20px;padding:15px;z-index:500;display:none;flex-direction:column;gap:8px;max-width:95%;box-shadow:0 20px 60px rgba(0,0,0,0.5);border:2px solid rgba(99,102,241,0.4)}
+        #seal-editor{position:fixed;background:linear-gradient(135deg,#1e293b,#0f172a);border-radius:15px;padding:10px;z-index:500;display:none;flex-direction:column;gap:6px;max-width:95%;box-shadow:0 20px 60px rgba(0,0,0,0.5);border:2px solid rgba(99,102,241,0.4);cursor:move;user-select:none;touch-action:none}
         #seal-editor.show{display:flex}
         
-        .editor-row{display:flex;flex-direction:row;flex-wrap:wrap;gap:5px;align-items:center;justify-content:center}
-        .editor-btn{background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:#fff;width:36px;height:36px;border-radius:8px;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition:all 0.2s}
+        .editor-header{display:flex;justify-content:space-between;align-items:center;color:#fff;font-size:10px;font-weight:700;padding-bottom:4px;border-bottom:1px solid rgba(255,255,255,0.1);cursor:move}
+        .editor-close-btn{background:rgba(239,68,68,0.3);border:none;color:#fff;width:24px;height:24px;border-radius:50%;cursor:pointer;font-size:10px;display:flex;align-items:center;justify-content:center}
+        
+        .editor-row{display:flex;flex-direction:row;flex-wrap:wrap;gap:4px;align-items:center;justify-content:center}
+        .editor-btn{background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:#fff;width:30px;height:30px;border-radius:6px;cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center;transition:all 0.2s}
         .editor-btn:hover{background:var(--primary);transform:scale(1.1)}
         .editor-btn:active{transform:scale(0.95)}
-        .editor-section{display:flex;align-items:center;gap:3px;background:rgba(255,255,255,0.1);padding:6px 10px;border-radius:10px}
-        .editor-label{color:#94a3b8;font-size:10px;white-space:nowrap;min-width:40px}
-        input[type="range"].editor-input{width:80px;height:4px;accent-color:var(--primary);cursor:pointer;background:transparent}
+        .editor-section{display:flex;align-items:center;gap:2px;background:rgba(255,255,255,0.1);padding:4px 6px;border-radius:8px}
+        .editor-label{color:#94a3b8;font-size:8px;white-space:nowrap;min-width:30px}
+        input[type="range"].editor-input{width:60px;height:3px;accent-color:var(--primary);cursor:pointer;background:transparent}
         
-        .editor-header{display:flex;justify-content:space-between;align-items:center;color:#fff;font-size:11px;font-weight:700;padding-bottom:5px;border-bottom:1px solid rgba(255,255,255,0.1)}
-        .editor-close-btn{background:rgba(239,68,68,0.3);border:none;color:#fff;width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center}
-        
-        .editor-presets{display:flex;gap:4px;flex-wrap:wrap;justify-content:center}
-        .preset-btn{background:rgba(99,102,241,0.2);border:1px solid rgba(99,102,241,0.3);color:#fff;padding:4px 8px;border-radius:8px;font-size:9px;cursor:pointer}
+        .editor-presets{display:flex;gap:3px;flex-wrap:wrap;justify-content:center}
+        .preset-btn{background:rgba(99,102,241,0.2);border:1px solid rgba(99,102,241,0.3);color:#fff;padding:3px 6px;border-radius:6px;font-size:8px;cursor:pointer}
         .preset-btn:hover{background:var(--primary)}
         
-        #quick-seal-buttons{position:fixed;bottom:15px;left:10px;z-index:95;display:flex;flex-direction:column;gap:6px}
-        .quick-btn{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,var(--primary),var(--primary-light));border:none;color:#fff;font-size:15px;cursor:pointer;box-shadow:0 4px 12px rgba(99,102,241,0.4);display:flex;align-items:center;justify-content:center}
+        #quick-seal-buttons{position:fixed;bottom:10px;left:5px;z-index:95;display:flex;flex-direction:column;gap:5px}
+        .quick-btn{width:35px;height:35px;border-radius:10px;background:linear-gradient(135deg,var(--primary),var(--primary-light));border:none;color:#fff;font-size:13px;cursor:pointer;box-shadow:0 4px 12px rgba(99,102,241,0.4);display:flex;align-items:center;justify-content:center}
         
-        #bottom-actions{position:fixed;bottom:15px;right:10px;z-index:95;display:flex;flex-direction:column;gap:6px}
-        #export-btn{background:linear-gradient(135deg,var(--primary),var(--primary-light));color:#fff;border:none;border-radius:12px;padding:11px 18px;font-size:11px;font-weight:bold;cursor:pointer;box-shadow:0 4px 15px rgba(99,102,241,0.5);display:flex;align-items:center;gap:6px}
-        #export-options{position:fixed;bottom:65px;right:10px;background:#1e293b;border-radius:12px;padding:8px;display:none;flex-direction:column;gap:4px;z-index:300;min-width:170px;box-shadow:0 10px 30px rgba(0,0,0,0.4)}
+        #bottom-actions{position:fixed;bottom:10px;right:5px;z-index:95;display:flex;flex-direction:column;gap:5px}
+        #export-btn{background:linear-gradient(135deg,var(--primary),var(--primary-light));color:#fff;border:none;border-radius:10px;padding:9px 13px;font-size:9px;font-weight:bold;cursor:pointer;box-shadow:0 4px 15px rgba(99,102,241,0.5);display:flex;align-items:center;gap:5px}
+        #export-options{position:fixed;bottom:55px;right:5px;background:#1e293b;border-radius:10px;padding:6px;display:none;flex-direction:column;gap:3px;z-index:300;min-width:140px;box-shadow:0 10px 30px rgba(0,0,0,0.4)}
         #export-options.show{display:flex}
-        #export-options button{background:rgba(255,255,255,0.06);border:none;color:#fff;text-align:left;padding:9px 12px;border-radius:8px;cursor:pointer;display:flex;align-items:center;gap:8px;font-size:10px}
+        #export-options button{background:rgba(255,255,255,0.06);border:none;color:#fff;text-align:left;padding:8px 10px;border-radius:6px;cursor:pointer;display:flex;align-items:center;gap:6px;font-size:9px}
         #export-options button:hover{background:var(--primary)}
         
         #settings-panel{display:none;position:fixed;bottom:0;left:0;right:0;background:#fff;border-radius:20px 20px 0 0;padding:20px;z-index:400;box-shadow:0 -10px 40px rgba(0,0,0,0.3);max-height:60vh;overflow-y:auto}
@@ -157,21 +155,21 @@
             #controls-bar button span{display:none}
             #scroll-area{padding:5px;padding-top:40px}
             
-            #seal-editor{padding:10px;border-radius:15px;bottom:10px;max-width:98%}
-            .editor-btn{width:32px;height:32px;font-size:12px}
-            .editor-section{padding:4px 8px}
-            .editor-label{font-size:8px;min-width:30px}
-            input[type="range"].editor-input{width:60px}
-            .editor-presets{gap:3px}
-            .preset-btn{padding:3px 6px;font-size:8px}
+            #seal-editor{padding:8px;border-radius:12px;max-width:98%}
+            .editor-btn{width:28px;height:28px;font-size:11px}
+            .editor-section{padding:3px 5px}
+            .editor-label{font-size:7px;min-width:25px}
+            input[type="range"].editor-input{width:50px}
+            .editor-presets{gap:2px}
+            .preset-btn{padding:2px 5px;font-size:7px}
             
-            .seal-resize-handle{width:20px;height:20px;bottom:-8px;right:-8px;font-size:8px}
-            .seal-rotate-handle{width:20px;height:20px;top:-8px;left:-8px;font-size:8px}
+            .seal-resize-handle{width:18px;height:18px;bottom:-6px;right:-6px;font-size:7px}
+            .seal-rotate-handle{width:18px;height:18px;top:-6px;left:-6px;font-size:7px}
             
-            #quick-seal-buttons{left:5px;bottom:8px}
-            .quick-btn{width:38px;height:38px;font-size:13px}
-            #bottom-actions{right:5px;bottom:8px}
-            #export-btn{padding:9px 13px;font-size:9px}
+            #quick-seal-buttons{left:3px;bottom:6px}
+            .quick-btn{width:32px;height:32px;font-size:12px}
+            #bottom-actions{right:3px;bottom:6px}
+            #export-btn{padding:8px 11px;font-size:8px}
         }
     </style>
 </head>
@@ -271,7 +269,7 @@
     
     <div id="seal-editor">
         <div class="editor-header">
-            <span><i class="fas fa-edit"></i> <span id="editor-title">সিল এডিটর</span></span>
+            <span><i class="fas fa-edit"></i> <span id="editor-title">সিল এডিটর</span> <i class="fas fa-grip-vertical" style="margin-left:5px;color:#64748b"></i></span>
             <button class="editor-close-btn" onclick="closeSealEditor()"><i class="fas fa-times"></i></button>
         </div>
         
@@ -283,23 +281,23 @@
         </div>
         
         <div class="editor-row">
-            <button class="editor-btn" onclick="moveSeal(0,-20)"><i class="fas fa-arrow-up"></i></button>
-            <button class="editor-btn" onclick="moveSeal(-20,0)"><i class="fas fa-arrow-left"></i></button>
+            <button class="editor-btn" onclick="moveSeal(0,-15)"><i class="fas fa-arrow-up"></i></button>
+            <button class="editor-btn" onclick="moveSeal(-15,0)"><i class="fas fa-arrow-left"></i></button>
             <button class="editor-btn" onclick="centerSeal()"><i class="fas fa-crosshairs"></i></button>
-            <button class="editor-btn" onclick="moveSeal(20,0)"><i class="fas fa-arrow-right"></i></button>
-            <button class="editor-btn" onclick="moveSeal(0,20)"><i class="fas fa-arrow-down"></i></button>
+            <button class="editor-btn" onclick="moveSeal(15,0)"><i class="fas fa-arrow-right"></i></button>
+            <button class="editor-btn" onclick="moveSeal(0,15)"><i class="fas fa-arrow-down"></i></button>
         </div>
         
         <div class="editor-row">
             <div class="editor-section">
                 <span class="editor-label">আকার</span>
                 <input type="range" id="editor-size" min="30" max="300" value="120" oninput="editorSizeChange(this.value)">
-                <span id="size-display" style="color:#94a3b8;font-size:10px;min-width:40px;text-align:center">120px</span>
+                <span id="size-display" style="color:#94a3b8;font-size:8px;min-width:30px;text-align:center">120</span>
             </div>
             <div class="editor-section">
                 <span class="editor-label">ঘুরান</span>
                 <input type="range" id="editor-rotation" min="0" max="360" value="0" oninput="editorRotationChange(this.value)">
-                <span id="rotation-display" style="color:#94a3b8;font-size:10px;min-width:40px;text-align:center">0°</span>
+                <span id="rotation-display" style="color:#94a3b8;font-size:8px;min-width:30px;text-align:center">0°</span>
             </div>
         </div>
         
@@ -307,7 +305,7 @@
             <div class="editor-section">
                 <span class="editor-label">অপাসিটি</span>
                 <input type="range" id="editor-opacity" min="10" max="100" value="100" oninput="editorOpacityChange(this.value)">
-                <span id="opacity-display" style="color:#94a3b8;font-size:10px;min-width:40px;text-align:center">100%</span>
+                <span id="opacity-display" style="color:#94a3b8;font-size:8px;min-width:30px;text-align:center">100%</span>
             </div>
             <button class="editor-btn" onclick="rotateSealBy(15)"><i class="fas fa-redo"></i></button>
             <button class="editor-btn" onclick="rotateSealBy(-15)"><i class="fas fa-undo"></i></button>
@@ -336,7 +334,7 @@
     
     <div id="help-modal">
         <h3><i class="fas fa-question-circle"></i> <span id="help-title">ব্যবহার টিপস</span></h3>
-        <p id="help-content">১. ডকুমেন্ট আপলোড করুন<br>২. সিল বাছুন<br>৩. সিলে চাপ দিয়ে এডিটর খুলুন<br>৪. টেনে সরান, রিসাইজ করুন, ঘুরান<br>৫. ডাউনলোড করুন</p>
+        <p id="help-content">১. ডকুমেন্ট আপলোড করুন<br>২. সিল বাছুন<br>৩. সিলে চাপ ধরে রাখলে এডিটর খুলবে<br>৪. এডিটর বক্সটি টেনে যেকোনো জায়গায় রাখুন<br>৫. টেনে সরান, রিসাইজ করুন, ঘুরান<br>৬. ডাউনলোড করুন</p>
         <button onclick="closeHelp()"><span id="close-btn-text">বন্ধ করুন</span></button>
     </div>
     
@@ -647,35 +645,41 @@
             toggleSidebar(false);
             const wrap=document.createElement('div');
             wrap.className='seal-wrapper';
-            wrap.style.width='120px';
-            wrap.style.height='120px';
+            wrap.style.width='100px';
+            wrap.style.height='100px';
             wrap.style.left='50%';
             wrap.style.top='50%';
             wrap.style.transform='translate(-50%,-50%)';
             wrap.innerHTML=`
                 <img src="${src}" class="seal-img">
-                <span class="seal-edit-icon" onclick="event.stopPropagation();activateSeal(this.parentElement);openSealEditor()"><i class="fas fa-edit"></i></span>
                 <span class="seal-resize-handle" onmousedown="startResize(event, this.parentElement)" ontouchstart="startTouchResize(event, this.parentElement)"><i class="fas fa-expand-arrows-alt"></i></span>
                 <span class="seal-rotate-handle" onmousedown="startRotate(event, this.parentElement)" ontouchstart="startTouchRotate(event, this.parentElement)"><i class="fas fa-sync-alt"></i></span>
             `;
+            
+            // Touch events for mobile
             wrap.addEventListener('touchstart',(e)=>{
                 e.stopPropagation();
                 activateSeal(wrap);
                 startTouchDrag(e,wrap);
                 startLongPress(wrap);
             },{passive:false});
+            
             wrap.addEventListener('touchend',cancelLongPress);
             wrap.addEventListener('touchmove',cancelLongPress);
+            
+            // Mouse events for desktop
             wrap.addEventListener('mousedown',(e)=>{
                 e.stopPropagation();
                 activateSeal(wrap);
                 startMouseDrag(e,wrap);
             });
+            
             wrap.addEventListener('dblclick',(e)=>{
                 e.stopPropagation();
                 activateSeal(wrap);
                 openSealEditor();
             });
+            
             currentPageElement.appendChild(wrap);
             showToast('✓ সিল যোগ হয়েছে!');
         }
@@ -762,8 +766,8 @@
             e.preventDefault();
             e.stopPropagation();
             const rect=wrap.parentElement.getBoundingClientRect();
-            const startW=parseInt(wrap.style.width)||120;
-            const startH=parseInt(wrap.style.height)||120;
+            const startW=parseInt(wrap.style.width)||100;
+            const startH=parseInt(wrap.style.height)||100;
             let startX=e.clientX;
             let startY=e.clientY;
             
@@ -791,7 +795,7 @@
             e.preventDefault();
             e.stopPropagation();
             const touch=e.touches[0];
-            const startW=parseInt(wrap.style.width)||120;
+            const startW=parseInt(wrap.style.width)||100;
             let startX=touch.clientX;
             
             function move(ev){
@@ -877,21 +881,49 @@
         function activateSeal(el){
             document.querySelectorAll('.seal-wrapper').forEach(w=>{
                 w.classList.remove('active-state');
-                w.querySelector('.seal-edit-icon').style.display='none';
                 w.querySelector('.seal-resize-handle').style.display='none';
                 w.querySelector('.seal-rotate-handle').style.display='none';
             });
             el.classList.add('active-state');
-            el.querySelector('.seal-edit-icon').style.display='flex';
             el.querySelector('.seal-resize-handle').style.display='flex';
             el.querySelector('.seal-rotate-handle').style.display='flex';
             activeSeal=el;
         }
         
         function openSealEditor(){
-            document.getElementById('seal-editor').classList.add('show');
+            const editor=document.getElementById('seal-editor');
+            editor.classList.add('show');
+            
+            // Position the editor near the active seal or center of screen
             if(activeSeal){
-                const size=parseInt(activeSeal.style.width)||120;
+                const rect=activeSeal.getBoundingClientRect();
+                const windowWidth=window.innerWidth;
+                const windowHeight=window.innerHeight;
+                
+                // Position editor to the right of the seal, or left if no space
+                let editorX=rect.right+10;
+                if(editorX+300>windowWidth){
+                    editorX=rect.left-310;
+                }
+                
+                // If still not enough space, center it
+                if(editorX<0){
+                    editorX=Math.max(10,(windowWidth-300)/2);
+                }
+                
+                // Position vertically
+                let editorY=rect.top;
+                if(editorY+200>windowHeight){
+                    editorY=windowHeight-210;
+                }
+                
+                // Set editor position
+                editor.style.left=editorX+'px';
+                editor.style.top=Math.max(10,editorY)+'px';
+                editor.style.transform='none';
+                
+                // Update values
+                const size=parseInt(activeSeal.style.width)||100;
                 const opacity=parseFloat(activeSeal.style.opacity||1)*100;
                 const rotation=parseFloat(activeSeal.querySelector('.seal-img').dataset.rotation||0);
                 document.getElementById('editor-size').value=size;
@@ -900,6 +932,11 @@
                 document.getElementById('size-display').innerText=size+'px';
                 document.getElementById('opacity-display').innerText=Math.round(opacity)+'%';
                 document.getElementById('rotation-display').innerText=Math.round(rotation)+'°';
+            } else {
+                // Center editor
+                editor.style.left='50%';
+                editor.style.top='50%';
+                editor.style.transform='translate(-50%,-50%)';
             }
         }
         
@@ -907,11 +944,68 @@
             document.getElementById('seal-editor').classList.remove('show');
             if(activeSeal){
                 activeSeal.classList.remove('active-state');
-                activeSeal.querySelector('.seal-edit-icon').style.display='none';
                 activeSeal.querySelector('.seal-resize-handle').style.display='none';
                 activeSeal.querySelector('.seal-rotate-handle').style.display='none';
                 activeSeal=null;
             }
+        }
+        
+        // Make the seal editor draggable
+        function makeEditorDraggable(){
+            const editor=document.getElementById('seal-editor');
+            const header=editor.querySelector('.editor-header');
+            let isDragging=false;
+            let startX,startY,startLeft,startTop;
+            
+            header.addEventListener('mousedown',(e)=>{
+                isDragging=true;
+                startX=e.clientX;
+                startY=e.clientY;
+                startLeft=editor.offsetLeft;
+                startTop=editor.offsetTop;
+                e.preventDefault();
+            });
+            
+            document.addEventListener('mousemove',(e)=>{
+                if(isDragging){
+                    let dx=e.clientX-startX;
+                    let dy=e.clientY-startY;
+                    editor.style.left=(startLeft+dx)+'px';
+                    editor.style.top=(startTop+dy)+'px';
+                    editor.style.transform='none';
+                }
+            });
+            
+            document.addEventListener('mouseup',()=>{
+                isDragging=false;
+            });
+            
+            // Touch events for mobile
+            header.addEventListener('touchstart',(e)=>{
+                isDragging=true;
+                const touch=e.touches[0];
+                startX=touch.clientX;
+                startY=touch.clientY;
+                startLeft=editor.offsetLeft;
+                startTop=editor.offsetTop;
+                e.preventDefault();
+            },{passive:false});
+            
+            document.addEventListener('touchmove',(e)=>{
+                if(isDragging){
+                    const touch=e.touches[0];
+                    let dx=touch.clientX-startX;
+                    let dy=touch.clientY-startY;
+                    editor.style.left=(startLeft+dx)+'px';
+                    editor.style.top=(startTop+dy)+'px';
+                    editor.style.transform='none';
+                    e.preventDefault();
+                }
+            },{passive:false});
+            
+            document.addEventListener('touchend',()=>{
+                isDragging=false;
+            });
         }
         
         function editorSizeChange(v){
@@ -980,7 +1074,6 @@
             newS.style.left=(parseFloat(activeSeal.style.left)+20)+'px';
             newS.style.top=(parseFloat(activeSeal.style.top)+20)+'px';
             newS.classList.remove('active-state');
-            newS.querySelector('.seal-edit-icon').style.display='none';
             newS.querySelector('.seal-resize-handle').style.display='none';
             newS.querySelector('.seal-rotate-handle').style.display='none';
             currentPageElement.appendChild(newS);
@@ -1097,14 +1190,12 @@
             pw.document.write('.a4-page canvas,.a4-page img{width:100%!important;height:100%!important;object-fit:contain!important;display:block}');
             pw.document.write('.seal-wrapper{position:absolute}');
             pw.document.write('.seal-img{width:100%;height:100%;object-fit:contain}');
-            pw.document.write('.seal-edit-icon{display:none!important}');
             pw.document.write('.seal-resize-handle{display:none!important}');
             pw.document.write('.seal-rotate-handle{display:none!important}');
             pw.document.write('</style></head><body>');
             
             pages.forEach(pc=>{
                 const clone=pc.cloneNode(true);
-                clone.querySelectorAll('.seal-edit-icon').forEach(i=>i.remove());
                 clone.querySelectorAll('.seal-resize-handle').forEach(i=>i.remove());
                 clone.querySelectorAll('.seal-rotate-handle').forEach(i=>i.remove());
                 clone.querySelectorAll('.seal-wrapper').forEach(w=>{
@@ -1139,6 +1230,7 @@
         
         window.addEventListener('DOMContentLoaded',()=>{
             buildMenu();
+            makeEditorDraggable();
         });
     </script>
 </body>
