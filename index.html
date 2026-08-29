@@ -28,12 +28,13 @@
         ];
     </script>
     <style>
-        :root{--primary:#6366f1;--primary-light:#818cf8;--secondary:#10b981;--danger:#ef4444;--warning:#f59e0b;--dark:#0f172a;--dark2:#1e293b;--light:#f8fafc;--border:#e2e8f0;--text:#1e293b;--radius-sm:8px;--radius-md:12px;--radius-lg:16px;--radius-xl:20px;--shadow-sm:0 2px 8px rgba(0,0,0,0.08);--shadow-md:0 4px 16px rgba(0,0,0,0.12);--shadow-lg:0 8px 32px rgba(0,0,0,0.18);--transition:all 0.3s cubic-bezier(0.4,0,0.2,1)}
+        :root{--primary:#6366f1;--primary-light:#818cf8;--secondary:#10b981;--danger:#ef4444;--dark:#0f172a;--dark2:#1e293b;--light:#f8fafc;--border:#e2e8f0;--text:#1e293b;--radius-sm:8px;--radius-md:12px;--radius-lg:16px;--radius-xl:20px;--shadow-sm:0 2px 8px rgba(0,0,0,0.08);--shadow-md:0 4px 16px rgba(0,0,0,0.12);--shadow-lg:0 8px 32px rgba(0,0,0,0.18);--transition:all 0.3s}
         *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI','Roboto',sans-serif;-webkit-tap-highlight-color:transparent}
         ::-webkit-scrollbar{width:5px;height:5px}
         ::-webkit-scrollbar-track{background:#f1f5f9}
         ::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:10px}
         body{height:100vh;display:flex;flex-direction:column;overflow:hidden;background:linear-gradient(135deg,#f0f4ff,#e8ecf8);color:var(--text);transition:var(--transition)}
+        /* ডার্ক মোড - সম্পূর্ণ কালো */
         body.dark-mode{background:#000000;color:#e2e8f0}
         body.dark-mode #scroll-area{background:#0a0a0a}
         body.dark-mode .page-container{background:#111111;box-shadow:0 4px 12px rgba(0,0,0,0.7);border:1px solid #333}
@@ -54,6 +55,9 @@
         body.dark-mode #sidebar .seal-item:hover{background:rgba(99,102,241,0.2)}
         body.dark-mode #quick-upload{background:#000000;border-bottom:1px solid #333}
         body.dark-mode #header{background:#000000;border-bottom:2px solid var(--primary)}
+        body.dark-mode #settings-panel{background:#000000;border-top:2px solid #333}
+        body.dark-mode #settings-panel .settings-section{background:rgba(255,255,255,0.05)}
+        /* হেডার */
         #header{height:56px;background:linear-gradient(135deg,#0f172a,#1e293b);color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 14px;z-index:100;flex-shrink:0;box-shadow:0 4px 20px rgba(0,0,0,0.15)}
         .header-left,.header-right{display:flex;align-items:center;gap:10px}
         .brand-icon{width:36px;height:36px;background:linear-gradient(135deg,var(--primary),var(--primary-light));border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;font-size:18px;animation:pulse 2s infinite}
@@ -66,51 +70,52 @@
         .upload-btn{background:linear-gradient(135deg,var(--primary),var(--primary-light));color:#fff;border:none;border-radius:var(--radius-md);padding:12px;font-weight:700;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;width:100%;transition:var(--transition);box-shadow:0 4px 15px rgba(99,102,241,0.35)}
         .upload-btn:hover{transform:translateY(-3px);box-shadow:0 8px 25px rgba(99,102,241,0.5)}
         input[type="file"]{display:none}
-        #sidebar{position:fixed;top:0;left:0;height:100%;width:340px;max-width:90%;background:linear-gradient(180deg,#1e293b,#0f172a);color:#fff;transform:translateX(-100%);transition:transform 0.35s;z-index:200;display:flex;flex-direction:column;box-shadow:4px 0 30px rgba(0,0,0,0.4)}
+        /* সাইডবার - সাদা থিমে সাদা থাকবে */
+        #sidebar{position:fixed;top:0;left:0;height:100%;width:340px;max-width:90%;background:#ffffff;color:var(--text);transform:translateX(-100%);transition:transform 0.35s;z-index:200;display:flex;flex-direction:column;box-shadow:4px 0 30px rgba(0,0,0,0.15);border-right:1px solid var(--border)}
         #sidebar.open{transform:translateX(0)}
-        .side-header{padding:16px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(255,255,255,0.1)}
-        .side-header h3{font-size:14px;display:flex;align-items:center;gap:8px;color:var(--primary-light)}
+        .side-header{padding:16px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);background:#f8fafc}
+        .side-header h3{font-size:14px;display:flex;align-items:center;gap:8px;color:var(--primary)}
         .side-header-actions{display:flex;gap:6px}
-        .icon-btn{background:rgba(255,255,255,0.1);border:none;color:#fff;width:34px;height:34px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:var(--transition)}
-        .icon-btn:hover{background:var(--primary);transform:rotate(90deg)}
-        #sidebar-actions{padding:10px;display:flex;gap:6px;border-bottom:1px solid rgba(255,255,255,0.1)}
-        .side-action-btn{background:rgba(99,102,241,0.2);border:1px solid rgba(99,102,241,0.4);color:#fff;padding:8px;border-radius:var(--radius-sm);font-size:10px;cursor:pointer;flex:1;display:flex;align-items:center;justify-content:center;gap:4px;transition:var(--transition)}
-        .side-action-btn:hover{background:var(--primary);transform:translateY(-2px)}
-        #search-container{padding:12px}
+        .icon-btn{background:rgba(255,255,255,0.8);border:1px solid var(--border);color:var(--text);width:34px;height:34px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:var(--transition)}
+        .icon-btn:hover{background:var(--primary);color:#fff;transform:rotate(90deg)}
+        #sidebar-actions{padding:10px;display:flex;gap:6px;border-bottom:1px solid var(--border);background:#f8fafc}
+        .side-action-btn{background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.3);color:var(--primary);padding:8px;border-radius:var(--radius-sm);font-size:10px;cursor:pointer;flex:1;display:flex;align-items:center;justify-content:center;gap:4px;transition:var(--transition);font-weight:600}
+        .side-action-btn:hover{background:var(--primary);color:#fff;transform:translateY(-2px)}
+        #search-container{padding:12px;background:#f8fafc}
         .search-wrapper{position:relative}
         .search-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:#94a3b8;font-size:12px}
-        #search-input{width:100%;background:rgba(255,255,255,0.07);border:2px solid rgba(99,102,241,0.3);color:#fff;padding:10px 36px 10px 34px;border-radius:var(--radius-sm);font-size:12px;outline:none;transition:var(--transition)}
-        #search-input:focus{border-color:var(--primary);background:rgba(99,102,241,0.15)}
-        #search-clear{position:absolute;right:8px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.1);border:none;color:#94a3b8;width:24px;height:24px;border-radius:50%;cursor:pointer;display:none}
+        #search-input{width:100%;background:#ffffff;border:2px solid var(--border);color:var(--text);padding:10px 36px 10px 34px;border-radius:var(--radius-sm);font-size:12px;outline:none;transition:var(--transition)}
+        #search-input:focus{border-color:var(--primary);background:#f0f4ff}
+        #search-clear{position:absolute;right:8px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.8);border:none;color:#94a3b8;width:24px;height:24px;border-radius:50%;cursor:pointer;display:none}
         #search-clear.visible{display:block}
-        #menu-tree{flex:1;overflow-y:auto;padding:10px}
-        .level-btn{width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:#fff;padding:10px 12px;border-radius:var(--radius-sm);font-size:11px;font-weight:600;display:flex;justify-content:space-between;align-items:center;cursor:pointer;margin-bottom:5px;text-align:left;transition:var(--transition)}
-        .level-btn:hover{background:rgba(99,102,241,0.2);transform:translateX(5px)}
-        .level-btn i{font-size:9px;transition:transform 0.3s}
+        #menu-tree{flex:1;overflow-y:auto;padding:10px;background:#ffffff}
+        .level-btn{width:100%;background:#ffffff;border:1px solid var(--border);color:var(--text);padding:10px 12px;border-radius:var(--radius-sm);font-size:11px;font-weight:600;display:flex;justify-content:space-between;align-items:center;cursor:pointer;margin-bottom:5px;text-align:left;transition:var(--transition)}
+        .level-btn:hover{background:#f0f4ff;border-color:var(--primary);transform:translateX(5px)}
+        .level-btn i{font-size:9px;transition:transform 0.3s;color:var(--primary)}
         .level-btn.active i{transform:rotate(90deg)}
-        .nested-container{display:none;padding-left:12px;border-left:2px solid rgba(99,102,241,0.25);margin-left:10px}
+        .nested-container{display:none;padding-left:12px;border-left:2px solid var(--primary);margin-left:10px}
         .nested-container.show{display:block;animation:slideDown 0.3s}
         @keyframes slideDown{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
-        .images-container{display:none;grid-template-columns:repeat(3,1fr);gap:7px;padding:10px;background:rgba(2,6,23,0.8);border-radius:var(--radius-sm);margin-top:5px}
+        .images-container{display:none;grid-template-columns:repeat(3,1fr);gap:7px;padding:10px;background:#f8fafc;border-radius:var(--radius-sm);margin-top:5px;border:1px solid var(--border)}
         .images-container.show{display:grid}
-        .seal-item{background:rgba(255,255,255,0.06);border-radius:var(--radius-sm);padding:6px;display:flex;justify-content:center;align-items:center;cursor:pointer;aspect-ratio:1;border:2px solid transparent;transition:var(--transition)}
-        .seal-item:hover{border-color:var(--primary);background:rgba(99,102,241,0.2);transform:scale(1.1)}
+        .seal-item{background:#ffffff;border-radius:var(--radius-sm);padding:6px;display:flex;justify-content:center;align-items:center;cursor:pointer;aspect-ratio:1;border:2px solid var(--border);transition:var(--transition)}
+        .seal-item:hover{border-color:var(--primary);background:#f0f4ff;transform:scale(1.1)}
         .seal-item img{max-width:90%;max-height:90%;object-fit:contain}
-        #settings-btn{background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:#fff;padding:10px;border-radius:var(--radius-sm);font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;margin:10px;transition:var(--transition)}
-        #settings-btn:hover{background:var(--primary);transform:translateY(-2px)}
-        #settings-panel{display:none;position:fixed;bottom:0;left:0;right:0;background:linear-gradient(135deg,#1e293b,#0f172a);border-radius:20px 20px 0 0;padding:20px;z-index:400;box-shadow:0 -10px 40px rgba(0,0,0,0.5);max-height:70vh;overflow-y:auto}
+        #settings-btn{background:#f8fafc;border:1px solid var(--border);color:var(--text);padding:10px;border-radius:var(--radius-sm);font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;margin:10px;transition:var(--transition);font-weight:600}
+        #settings-btn:hover{background:var(--primary);color:#fff;transform:translateY(-2px)}
+        #settings-panel{display:none;position:fixed;bottom:0;left:0;right:0;background:#ffffff;border-radius:20px 20px 0 0;padding:20px;z-index:400;box-shadow:0 -10px 40px rgba(0,0,0,0.3);max-height:70vh;overflow-y:auto;border-top:2px solid var(--primary)}
         #settings-panel.show{display:block;animation:slideUp 0.3s}
         @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
         .settings-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px}
-        .settings-header h3{color:var(--primary-light);font-size:16px;display:flex;align-items:center;gap:8px}
-        .settings-section{background:rgba(255,255,255,0.05);border-radius:var(--radius-md);padding:15px;margin-bottom:10px}
-        .settings-section h4{color:#cbd5e1;font-size:12px;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+        .settings-header h3{color:var(--primary);font-size:16px;display:flex;align-items:center;gap:8px}
+        .settings-section{background:#f8fafc;border-radius:var(--radius-md);padding:15px;margin-bottom:10px;border:1px solid var(--border)}
+        .settings-section h4{color:var(--text);font-size:12px;margin-bottom:10px;display:flex;align-items:center;gap:6px}
         .settings-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
-        .settings-label{color:#94a3b8;font-size:11px}
-        .settings-value{color:#fff;font-size:11px;font-weight:600;min-width:40px;text-align:center}
+        .settings-label{color:var(--text-light);font-size:11px}
+        .settings-value{color:var(--text);font-size:11px;font-weight:600;min-width:40px;text-align:center}
         input[type="range"].settings-slider{flex:1;margin:0 10px;accent-color:var(--primary);cursor:pointer}
-        input[type="color"]{width:40px;height:30px;border:none;border-radius:4px;cursor:pointer;background:transparent}
-        #overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:150;display:none;backdrop-filter:blur(3px)}
+        input[type="color"]{width:40px;height:30px;border:1px solid var(--border);border-radius:4px;cursor:pointer;background:#ffffff}
+        #overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:150;display:none;backdrop-filter:blur(3px)}
         #overlay.show{display:block}
         #main-area{flex:1;display:flex;flex-direction:column;position:relative;overflow:hidden}
         #controls-bar{background:rgba(255,255,255,0.98);padding:6px 10px;display:flex;justify-content:center;align-items:center;gap:5px;border-bottom:1px solid var(--border);position:absolute;top:0;left:0;right:0;z-index:90;flex-wrap:wrap;backdrop-filter:blur(10px)}
@@ -118,12 +123,12 @@
         #controls-bar button:hover{background:var(--primary);color:#fff;border-color:var(--primary);transform:translateY(-1px)}
         #controls-bar input{width:35px;text-align:center;border:1px solid var(--border);border-radius:6px;padding:3px;font-size:9px}
         #scroll-area{flex:1;overflow:auto;padding:10px;padding-top:50px;display:flex;flex-direction:column;align-items:center}
-        .page-container{position:relative;width:100%;max-width:794px;margin-bottom:20px;border-radius:4px;overflow:hidden;transition:var(--transition)}
+        .page-container{position:relative;width:100%;max-width:794px;margin-bottom:20px;border-radius:4px;overflow:hidden;transition:var(--transition);background:#fff}
         .page-container:hover{box-shadow:var(--shadow-lg)}
-        .a4-page{width:100%;aspect-ratio:210/297;position:relative;overflow:hidden}
+        .a4-page{width:100%;aspect-ratio:210/297;position:relative;overflow:hidden;background:#fff}
         .a4-page canvas,.a4-page img{width:100%!important;height:100%!important;object-fit:contain!important;display:block}
         .a4-page.current-page{box-shadow:inset 0 0 0 2px var(--primary)}
-        .empty-state{text-align:center;padding:60px 20px;border-radius:20px;margin:20px;max-width:420px;box-shadow:var(--shadow-md)}
+        .empty-state{text-align:center;padding:60px 20px;border-radius:20px;margin:20px;max-width:420px;box-shadow:var(--shadow-md);background:#fff}
         .empty-state i{font-size:60px;margin-bottom:20px;color:#cbd5e1}
         .empty-state h3{font-size:18px;margin-bottom:8px;color:var(--text-light)}
         .empty-state p{font-size:13px;color:#94a3b8}
@@ -178,7 +183,7 @@
         </div>
         <div class="header-right">
             <button class="header-btn" onclick="toggleLanguage()"><i class="fas fa-globe"></i> <span id="lang-text">EN</span></button>
-            <button class="header-btn" onclick="showHelp()"><i class="fas fa-question-circle"></i> <span>সাহায্য</span></button>
+            <button class="header-btn" onclick="showHelp()"><i class="fas fa-question-circle"></i> <span id="help-btn-text">সাহায্য</span></button>
         </div>
     </header>
     <div id="quick-upload">
@@ -194,9 +199,9 @@
             </div>
         </div>
         <div id="sidebar-actions">
-            <button class="side-action-btn" onclick="triggerSidebarUpload()"><i class="fas fa-cloud-upload-alt"></i> <span>আপলোড</span></button>
-            <button class="side-action-btn" onclick="downloadAllPages()"><i class="fas fa-download"></i> <span>ডাউনলোড</span></button>
-            <button class="side-action-btn" onclick="location.reload()"><i class="fas fa-sync-alt"></i> <span>রিফ্রেশ</span></button>
+            <button class="side-action-btn" onclick="triggerSidebarUpload()"><i class="fas fa-cloud-upload-alt"></i> <span id="upload-btn-text">আপলোড</span></button>
+            <button class="side-action-btn" onclick="downloadAllPages()"><i class="fas fa-download"></i> <span id="download-btn-text">ডাউনলোড</span></button>
+            <button class="side-action-btn" onclick="location.reload()"><i class="fas fa-sync-alt"></i> <span id="refresh-btn-text">রিফ্রেশ</span></button>
         </div>
         <div id="search-container">
             <div class="search-wrapper">
@@ -206,42 +211,42 @@
             </div>
         </div>
         <div id="menu-tree"></div>
-        <button id="settings-btn" onclick="toggleSettingsPanel()"><i class="fas fa-cog"></i> <span>সেটিংস</span></button>
+        <button id="settings-btn" onclick="toggleSettingsPanel()"><i class="fas fa-cog"></i> <span id="settings-btn-text">সেটিংস</span></button>
     </div>
     <div id="overlay" onclick="toggleSidebar(false);closeSettingsPanel()"></div>
     <div id="settings-panel">
         <div class="settings-header">
-            <h3><i class="fas fa-cog"></i> <span>সেটিংস</span></h3>
+            <h3><i class="fas fa-cog"></i> <span id="settings-title">সেটিংস</span></h3>
             <button class="icon-btn" onclick="closeSettingsPanel()"><i class="fas fa-times"></i></button>
         </div>
         <div class="settings-section">
-            <h4><i class="fas fa-palette"></i> <span>থিম কালার</span></h4>
+            <h4><i class="fas fa-palette"></i> <span id="theme-color-title">থিম কালার</span></h4>
             <div class="settings-row">
-                <span class="settings-label">প্রাইমারি কালার</span>
+                <span class="settings-label" id="primary-color-label">প্রাইমারি কালার</span>
                 <input type="color" id="primary-color" value="#6366f1" onchange="changePrimaryColor(this.value)">
             </div>
             <div class="settings-row">
-                <span class="settings-label">সেকেন্ডারি কালার</span>
+                <span class="settings-label" id="secondary-color-label">সেকেন্ডারি কালার</span>
                 <input type="color" id="secondary-color" value="#10b981" onchange="changeSecondaryColor(this.value)">
             </div>
         </div>
         <div class="settings-section">
-            <h4><i class="fas fa-moon"></i> <span>ডার্ক মোড</span></h4>
+            <h4><i class="fas fa-moon"></i> <span id="dark-mode-title">ডার্ক মোড</span></h4>
             <div class="settings-row">
-                <span class="settings-label">ডার্কনেস লেভেল</span>
+                <span class="settings-label" id="darkness-label">ডার্কনেস লেভেল</span>
                 <input type="range" class="settings-slider" id="darkness-level" min="0" max="100" value="100" oninput="changeDarkness(this.value)">
                 <span class="settings-value" id="darkness-value">100%</span>
             </div>
         </div>
         <div class="settings-section">
-            <h4><i class="fas fa-font"></i> <span>ফন্ট সাইজ</span></h4>
+            <h4><i class="fas fa-font"></i> <span id="font-size-title">ফন্ট সাইজ</span></h4>
             <div class="settings-row">
-                <span class="settings-label">ছোট</span>
+                <span class="settings-label" id="font-small">ছোট</span>
                 <input type="range" class="settings-slider" id="font-size" min="10" max="18" value="14" oninput="changeFontSize(this.value)">
-                <span class="settings-label">বড়</span>
+                <span class="settings-label" id="font-large">বড়</span>
             </div>
         </div>
-        <button class="side-action-btn" style="width:100%;padding:12px;margin-top:10px" onclick="resetSettings()"><i class="fas fa-undo"></i> <span>ডিফল্ট সেটিংস</span></button>
+        <button class="side-action-btn" style="width:100%;padding:12px;margin-top:10px" onclick="resetSettings()"><i class="fas fa-undo"></i> <span id="reset-btn-text">ডিফল্ট সেটিংস</span></button>
     </div>
     <div id="main-area">
         <div id="controls-bar" style="display:none;">
@@ -254,8 +259,8 @@
             <span id="zoom-value" style="font-size:9px">100%</span>
             <button onclick="changeZoom(0.1)"><i class="fas fa-plus"></i></button>
             <span style="width:1px;height:20px;background:#ddd;margin:0 4px"></span>
-            <button onclick="downloadCurrentPage()"><i class="fas fa-download"></i> <span>এই পেজ</span></button>
-            <button onclick="printAllPages()" style="background:linear-gradient(135deg,#10b981,#059669);color:#fff;border-color:#10b981"><i class="fas fa-print"></i> <span>প্রিন্ট</span></button>
+            <button onclick="downloadCurrentPage()"><i class="fas fa-download"></i> <span id="this-page-btn">এই পেজ</span></button>
+            <button onclick="printAllPages()" style="background:linear-gradient(135deg,#10b981,#059669);color:#fff;border-color:#10b981"><i class="fas fa-print"></i> <span id="print-btn">প্রিন্ট</span></button>
         </div>
         <div id="scroll-area">
             <div id="content-layer">
@@ -292,45 +297,48 @@
         <button id="export-btn" onclick="toggleExportMenu()"><i class="fas fa-download"></i> <span id="export-text">ডাউনলোড</span></button>
     </div>
     <div id="export-options">
-        <button onclick="downloadAllPages()"><i class="fas fa-file-export"></i> <span>সকল পেজ (সিলসহ)</span></button>
-        <button onclick="downloadPDF()"><i class="fas fa-file-pdf"></i> <span>PDF ডাউনলোড</span></button>
-        <button onclick="printAllPages()"><i class="fas fa-print"></i> <span>প্রিন্ট</span></button>
+        <button onclick="downloadAllPages()"><i class="fas fa-file-export"></i> <span id="all-pages-btn">সকল পেজ (সিলসহ)</span></button>
+        <button onclick="downloadPDF()"><i class="fas fa-file-pdf"></i> <span id="pdf-download-btn">PDF ডাউনলোড</span></button>
+        <button onclick="printAllPages()"><i class="fas fa-print"></i> <span id="print-all-btn">প্রিন্ট</span></button>
     </div>
     <div id="help-modal">
-        <h3><i class="fas fa-question-circle"></i> <span>ব্যবহার টিপস</span></h3>
-        <p>১. ডকুমেন্ট আপলোড করুন<br>২. বাম মেনু থেকে সিল বাছুন<br>৩. সিলে চাপ দিয়ে ধরে রাখুন এডিটর খুলতে<br>৪. সিল টেনে সরান<br>৫. ডান বাটন থেকে ডাউনলোড করুন</p>
-        <button onclick="closeHelp()"><span>বন্ধ করুন</span></button>
+        <h3><i class="fas fa-question-circle"></i> <span id="help-title">ব্যবহার টিপস</span></h3>
+        <p id="help-content">১. ডকুমেন্ট আপলোড করুন<br>২. বাম মেনু থেকে সিল বাছুন<br>৩. সিলে চাপ দিয়ে ধরে রাখুন এডিটর খুলতে<br>৪. সিল টেনে সরান<br>৫. ডান বাটন থেকে ডাউনলোড করুন</p>
+        <button onclick="closeHelp()"><span id="close-btn-text">বন্ধ করুন</span></button>
     </div>
     <div id="toast"><i class="fas fa-check-circle"></i> <span id="toast-message"></span></div>
     <div id="loader"><i class="fas fa-circle-notch"></i></div>
     <script>
         let currentPDF=null,currentLang='bn',toastTimeout,currentZoom=1.0,currentPageNumber=1,totalPages=1,currentPageElement=null,recentSeals=[],activeSeal=null,currentSealSrc=null,allPages=[],longPressTimer=null,editorDrag=false,editorOffsetX=0,editorOffsetY=0,isDarkMode=false,darknessLevel=100;
-        function showToast(msg,type='success'){const t=document.getElementById('toast');document.getElementById('toast-message').innerText=msg;t.className=type;t.classList.add('show');clearTimeout(toastTimeout);toastTimeout=setTimeout(()=>t.classList.remove('show'),2500)}
+        const translations={bn:{title:"নোটারি সিল স্টুডিও",sidebar:"সিল লাইব্রেরি",quick_upload:"ডকুমেন্ট আপলোড করুন",placeholder:"ডকুমেন্ট আপলোড করুন",instruction:"উপরের বাটনে ক্লিক করে PDF বা ছবি আপলোড করুন",export:"ডাউনলোড",upload:"আপলোড",download:"ডাউনলোড",refresh:"রিফ্রেশ",settings:"সেটিংস",help:"সাহায্য",this_page:"এই পেজ",print:"প্রিন্ট",all_pages:"সকল পেজ (সিলসহ)",pdf_download:"PDF ডাউনলোড",close:"বন্ধ করুন",primary_color:"প্রাইমারি কালার",secondary_color:"সেকেন্ডারি কালার",darkness:"ডার্কনেস লেভেল",font_size:"ফন্ট সাইজ",small:"ছোট",large:"বড়",theme_color:"থিম কালার",dark_mode:"ডার্ক মোড",default_settings:"ডিফল্ট সেটিংস",help_title:"ব্যবহার টিপস",help_content:"১. ডকুমেন্ট আপলোড করুন<br>২. বাম মেনু থেকে সিল বাছুন<br>৩. সিলে চাপ দিয়ে ধরে রাখুন এডিটর খুলতে<br>৪. সিল টেনে সরান<br>৫. ডান বাটন থেকে ডাউনলোড করুন",no_seal:"আগে সিল দিন তারপর ডাউনলোড করুন!",upload_success:"✓ ফাইল সফলভাবে আপলোড হয়েছে!",upload_error:"✗ PDF লোড করতে ব্যর্থ হয়েছে!",seal_added:"✓ সিল যোগ করা হয়েছে!",seal_deleted:"✓ সিল মুছে ফেলা হয়েছে!",download_success:"✓ ডাউনলোড সম্পন্ন হয়েছে!",print_success:"✓ প্রিন্ট করা হচ্ছে...",no_seal_page:"এই পেজে কোন সিল নেই!",all_sealed:"সকল সিল পেজ ডাউনলোড হয়েছে!",pdf_success:"PDF ডাউনলোড হয়েছে!",popup_error:"পপ-আপ ব্লক করা আছে!",settings_reset:"সেটিংস ডিফল্ট করা হয়েছে!",no_recent:"কোন সাম্প্রতিক সিল নেই"},en:{title:"Notary Seal Studio",sidebar:"Seal Library",quick_upload:"Upload Document",placeholder:"Upload your document",instruction:"Click above to upload PDF or image",export:"Download",upload:"Upload",download:"Download",refresh:"Refresh",settings:"Settings",help:"Help",this_page:"This Page",print:"Print",all_pages:"All Pages (with seals)",pdf_download:"Download PDF",close:"Close",primary_color:"Primary Color",secondary_color:"Secondary Color",darkness:"Darkness Level",font_size:"Font Size",small:"Small",large:"Large",theme_color:"Theme Color",dark_mode:"Dark Mode",default_settings:"Default Settings",help_title:"How to Use",help_content:"1. Upload document<br>2. Pick a seal from left menu<br>3. Long press seal to open editor<br>4. Drag seal to move<br>5. Download from right button",no_seal:"Add a seal first then download!",upload_success:"✓ File uploaded!",upload_error:"✗ Failed to load PDF!",seal_added:"✓ Seal added!",seal_deleted:"✓ Seal deleted!",download_success:"✓ Download completed!",print_success:"✓ Printing...",no_seal_page:"No seal on this page!",all_sealed:"All sealed pages downloaded!",pdf_success:"PDF downloaded!",popup_error:"Popup blocked!",settings_reset:"Settings reset to default!",no_recent:"No recent seals"};
+        function t(key){return translations[currentLang][key]||key}
+        function showToast(msg,type='success'){const el=document.getElementById('toast');document.getElementById('toast-message').innerText=msg;el.className=type;el.classList.add('show');clearTimeout(toastTimeout);toastTimeout=setTimeout(()=>el.classList.remove('show'),2500)}
         function toggleDarkMode(){isDarkMode=!isDarkMode;document.body.classList.toggle('dark-mode',isDarkMode);const icon=document.querySelector('.side-header-actions .icon-btn i');if(icon)icon.className=isDarkMode?'fas fa-sun':'fas fa-moon'}
-        function changeDarkness(value){darknessLevel=parseInt(value);document.getElementById('darkness-value').innerText=darknessLevel+'%';if(isDarkMode){const opacity=darknessLevel/100;document.documentElement.style.setProperty('--darkness',opacity)}}
+        function changeDarkness(value){darknessLevel=parseInt(value);document.getElementById('darkness-value').innerText=darknessLevel+'%'}
         function changePrimaryColor(color){document.documentElement.style.setProperty('--primary',color);const r=parseInt(color.substr(1,2),16),g=parseInt(color.substr(3,2),16),b=parseInt(color.substr(5,2),16);document.documentElement.style.setProperty('--primary-light',`rgb(${Math.min(r+50,255)},${Math.min(g+50,255)},${Math.min(b+50,255)})`)}
         function changeSecondaryColor(color){document.documentElement.style.setProperty('--secondary',color)}
         function changeFontSize(size){document.documentElement.style.fontSize=size+'px'}
         function toggleSettingsPanel(){document.getElementById('settings-panel').classList.toggle('show');document.getElementById('overlay').classList.toggle('show')}
         function closeSettingsPanel(){document.getElementById('settings-panel').classList.remove('show');document.getElementById('overlay').classList.remove('show')}
-        function resetSettings(){changePrimaryColor('#6366f1');changeSecondaryColor('#10b981');changeDarkness(100);changeFontSize(14);if(isDarkMode)toggleDarkMode();document.getElementById('primary-color').value='#6366f1';document.getElementById('secondary-color').value='#10b981';document.getElementById('darkness-level').value=100;document.getElementById('font-size').value=14;showToast('সেটিংস ডিফল্ট করা হয়েছে!')}
+        function resetSettings(){changePrimaryColor('#6366f1');changeSecondaryColor('#10b981');changeDarkness(100);changeFontSize(14);if(isDarkMode)toggleDarkMode();document.getElementById('primary-color').value='#6366f1';document.getElementById('secondary-color').value='#10b981';document.getElementById('darkness-level').value=100;document.getElementById('font-size').value=14;showToast(t('settings_reset'))}
         function showHelp(){document.getElementById('help-modal').style.display='block'}
         function closeHelp(){document.getElementById('help-modal').style.display='none'}
-        function toggleLanguage(){currentLang=currentLang==='bn'?'en':'bn';document.getElementById('lang-text').innerText=currentLang==='bn'?'EN':'বাং';buildMenu()}
+        function toggleLanguage(){currentLang=currentLang==='bn'?'en':'bn';document.getElementById('lang-text').innerText=currentLang==='bn'?'EN':'বাং';updateAllTexts();buildMenu()}
+        function updateAllTexts(){document.getElementById('title-text').innerText=t('title');document.getElementById('sidebar-title').innerText=t('sidebar');document.getElementById('quick-upload-text').innerText=t('quick_upload');document.getElementById('doc-placeholder').innerText=t('placeholder');document.getElementById('doc-instruction').innerText=t('instruction');document.getElementById('export-text').innerText=t('export');document.getElementById('help-btn-text').innerText=t('help');document.getElementById('upload-btn-text').innerText=t('upload');document.getElementById('download-btn-text').innerText=t('download');document.getElementById('refresh-btn-text').innerText=t('refresh');document.getElementById('settings-btn-text').innerText=t('settings');document.getElementById('settings-title').innerText=t('settings');document.getElementById('theme-color-title').innerText=t('theme_color');document.getElementById('primary-color-label').innerText=t('primary_color');document.getElementById('secondary-color-label').innerText=t('secondary_color');document.getElementById('dark-mode-title').innerText=t('dark_mode');document.getElementById('darkness-label').innerText=t('darkness');document.getElementById('font-size-title').innerText=t('font_size');document.getElementById('font-small').innerText=t('small');document.getElementById('font-large').innerText=t('large');document.getElementById('reset-btn-text').innerText=t('default_settings');document.getElementById('this-page-btn').innerText=t('this_page');document.getElementById('print-btn').innerText=t('print');document.getElementById('all-pages-btn').innerText=t('all_pages');document.getElementById('pdf-download-btn').innerText=t('pdf_download');document.getElementById('close-btn-text').innerText=t('close');document.getElementById('help-title').innerText=t('help_title');document.getElementById('help-content').innerHTML=t('help_content');document.getElementById('search-input').placeholder=currentLang==='bn'?'সিল খুঁজুন...':'Search seals...'}
         function toggleSidebar(show){document.getElementById('sidebar').classList.toggle('open',show);document.getElementById('overlay').classList.toggle('show',show);if(!show)closeSettingsPanel()}
         function toggleExportMenu(){document.getElementById('export-options').classList.toggle('show')}
         function triggerSidebarUpload(){toggleSidebar(false);document.getElementById('file-upload').click()}
-        function showRecentSeals(){if(recentSeals.length===0)showToast('কোন সাম্প্রতিক সিল নেই','info');else toggleSidebar(true)}
+        function showRecentSeals(){if(recentSeals.length===0)showToast(t('no_recent'),'info');else toggleSidebar(true)}
         function advancedSearch(){const q=document.getElementById('search-input').value.toLowerCase().trim();document.getElementById('search-clear').classList.toggle('visible',!!q);const items=document.querySelectorAll('.seal-item');items.forEach(item=>{const match=!q||item.querySelector('img')?.src?.toLowerCase().includes(q);item.style.display=match?'flex':'none'});if(q){document.querySelectorAll('.nested-container').forEach(n=>n.classList.add('show'));document.querySelectorAll('.images-container').forEach(c=>c.classList.add('show'))}}
         function clearSearch(){document.getElementById('search-input').value='';document.getElementById('search-clear').classList.remove('visible');document.querySelectorAll('.seal-item').forEach(i=>i.style.display='flex')}
         function buildMenu(){const tree=document.getElementById('menu-tree');tree.innerHTML='';sealData.forEach(root=>{const div=document.createElement('div');div.innerHTML=`<button class="level-btn" onclick="toggleLevel(this)"><span><i class="${root.icon}"></i> ${currentLang==='bn'?root.name_bn:root.name_en}</span><i class="fas fa-chevron-right"></i></button>`;const nested=document.createElement('div');nested.className='nested-container';root.subfolders?.forEach(sub=>{const subDiv=document.createElement('div');subDiv.innerHTML=`<button class="level-btn" onclick="toggleLevel(this)"><span><i class="${sub.icon}"></i> ${currentLang==='bn'?sub.name_bn:sub.name_en}</span><i class="fas fa-chevron-right"></i></button>`;const subNested=document.createElement('div');subNested.className='nested-container';sub.subfolders?.forEach(subSub=>{const ssDiv=document.createElement('div');ssDiv.innerHTML=`<button class="level-btn" onclick="toggleLevel(this)"><span><i class="${subSub.icon}"></i> ${currentLang==='bn'?subSub.name_bn:subSub.name_en}</span><i class="fas fa-chevron-right"></i></button>`;const imgC=document.createElement('div');imgC.className='images-container';subSub.images?.forEach(src=>{const item=document.createElement('div');item.className='seal-item';item.onclick=()=>addSeal(src);item.innerHTML=`<img src="${src}" alt="seal" loading="lazy">`;imgC.appendChild(item)});ssDiv.appendChild(imgC);subNested.appendChild(ssDiv)});subDiv.appendChild(subNested);nested.appendChild(subDiv)});div.appendChild(nested);tree.appendChild(div)})}
         function toggleLevel(btn){btn.classList.toggle('active');btn.nextElementSibling.classList.toggle('show')}
-        function handleFileUpload(event){const file=event.target.files[0];if(!file)return;const reader=new FileReader();document.getElementById('loader').style.display='block';reader.onload=function(e){const arrayBuffer=e.target.result;const container=document.getElementById('content-layer');container.innerHTML='';if(file.type==='application/pdf'){pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';pdfjsLib.getDocument({data:arrayBuffer}).promise.then(pdf=>{currentPDF=pdf;totalPages=pdf.numPages;currentPageNumber=1;document.getElementById('controls-bar').style.display='flex';document.getElementById('page-count-display').innerText=`/ ${totalPages}`;document.getElementById('page-jump').max=totalPages;document.getElementById('page-jump').value=1;allPages=[];for(let i=1;i<=totalPages;i++){pdf.getPage(i).then(page=>{const viewport=page.getViewport({scale:2});const canvas=document.createElement('canvas');const ctx=canvas.getContext('2d');canvas.width=viewport.width;canvas.height=viewport.height;page.render({canvasContext:ctx,viewport:viewport}).promise.then(()=>{const pc=document.createElement('div');pc.className='page-container';pc.dataset.pageNum=i;const pd=document.createElement('div');pd.className='a4-page';if(i===1){pd.classList.add('current-page');currentPageElement=pd}pd.style.display=(i===1)?'block':'none';canvas.style.width='100%';canvas.style.height='100%';canvas.style.objectFit='contain';pd.appendChild(canvas);pc.appendChild(pd);container.appendChild(pc);allPages.push(pd);if(allPages.length===totalPages){document.getElementById('loader').style.display='none';showToast('✓ ফাইল সফলভাবে আপলোড হয়েছে!')}})})}}).catch(()=>{document.getElementById('loader').style.display='none';showToast('✗ PDF লোড করতে ব্যর্থ হয়েছে!','error')})}else if(file.type.startsWith('image/')){currentPDF=null;document.getElementById('controls-bar').style.display='none';const img=document.createElement('img');img.src=URL.createObjectURL(file);img.onload=function(){const pc=document.createElement('div');pc.className='page-container';const pd=document.createElement('div');pd.className='a4-page current-page';currentPageElement=pd;img.style.width='100%';img.style.height='100%';img.style.objectFit='contain';pd.appendChild(img);pc.appendChild(pd);container.appendChild(pc);allPages=[pd];document.getElementById('loader').style.display='none';showToast('✓ ফাইল সফলভাবে আপলোড হয়েছে!')}}};reader.readAsArrayBuffer(file)}
+        function handleFileUpload(event){const file=event.target.files[0];if(!file)return;const reader=new FileReader();document.getElementById('loader').style.display='block';reader.onload=function(e){const arrayBuffer=e.target.result;const container=document.getElementById('content-layer');container.innerHTML='';if(file.type==='application/pdf'){pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';pdfjsLib.getDocument({data:arrayBuffer}).promise.then(pdf=>{currentPDF=pdf;totalPages=pdf.numPages;currentPageNumber=1;document.getElementById('controls-bar').style.display='flex';document.getElementById('page-count-display').innerText=`/ ${totalPages}`;document.getElementById('page-jump').max=totalPages;document.getElementById('page-jump').value=1;allPages=[];for(let i=1;i<=totalPages;i++){pdf.getPage(i).then(page=>{const viewport=page.getViewport({scale:2});const canvas=document.createElement('canvas');const ctx=canvas.getContext('2d');canvas.width=viewport.width;canvas.height=viewport.height;page.render({canvasContext:ctx,viewport:viewport}).promise.then(()=>{const pc=document.createElement('div');pc.className='page-container';pc.dataset.pageNum=i;const pd=document.createElement('div');pd.className='a4-page';if(i===1){pd.classList.add('current-page');currentPageElement=pd}pd.style.display=(i===1)?'block':'none';canvas.style.width='100%';canvas.style.height='100%';canvas.style.objectFit='contain';pd.appendChild(canvas);pc.appendChild(pd);container.appendChild(pc);allPages.push(pd);if(allPages.length===totalPages){document.getElementById('loader').style.display='none';showToast(t('upload_success'))}})})}}).catch(()=>{document.getElementById('loader').style.display='none';showToast(t('upload_error'),'error')})}else if(file.type.startsWith('image/')){currentPDF=null;document.getElementById('controls-bar').style.display='none';const img=document.createElement('img');img.src=URL.createObjectURL(file);img.onload=function(){const pc=document.createElement('div');pc.className='page-container';const pd=document.createElement('div');pd.className='a4-page current-page';currentPageElement=pd;img.style.width='100%';img.style.height='100%';img.style.objectFit='contain';pd.appendChild(img);pc.appendChild(pd);container.appendChild(pc);allPages=[pd];document.getElementById('loader').style.display='none';showToast(t('upload_success'))}}};reader.readAsArrayBuffer(file)}
         function nextPage(){if(currentPageNumber<totalPages){const pages=document.querySelectorAll('.a4-page');pages.forEach(p=>p.classList.remove('current-page'));pages[currentPageNumber].classList.add('current-page');currentPageElement=pages[currentPageNumber];pages[currentPageNumber-1].style.display='none';pages[currentPageNumber].style.display='block';currentPageNumber++;document.getElementById('page-jump').value=currentPageNumber;closeSealEditor()}}
         function prevPage(){if(currentPageNumber>1){const pages=document.querySelectorAll('.a4-page');pages.forEach(p=>p.classList.remove('current-page'));pages[currentPageNumber-2].classList.add('current-page');currentPageElement=pages[currentPageNumber-2];pages[currentPageNumber-1].style.display='none';pages[currentPageNumber-2].style.display='block';currentPageNumber--;document.getElementById('page-jump').value=currentPageNumber;closeSealEditor()}}
         function jumpToPage(){let v=parseInt(document.getElementById('page-jump').value)||1;if(v>totalPages)v=totalPages;if(v<1)v=1;const pages=document.querySelectorAll('.a4-page');pages.forEach((p,i)=>{p.classList.remove('current-page');p.style.display=(i===v-1)?'block':'none';if(i===v-1){p.classList.add('current-page');currentPageElement=p}});currentPageNumber=v;closeSealEditor()}
         function changeZoom(d){currentZoom=Math.max(0.5,Math.min(2.5,currentZoom+d));document.getElementById('zoom-value').innerText=Math.round(currentZoom*100)+'%';document.querySelectorAll('.page-container').forEach(p=>p.style.maxWidth=(794*currentZoom)+'px')}
-        function addSeal(src){if(!currentPageElement){showToast('প্রথমে ডকুমেন্ট আপলোড করুন','error');return}toggleSidebar(false);const wrap=document.createElement('div');wrap.className='seal-wrapper';wrap.style.width='120px';wrap.style.height='120px';wrap.style.left='50%';wrap.style.top='50%';wrap.style.transform='translate(-50%,-50%)';wrap.innerHTML=`<img src="${src}" class="seal-img" alt="seal"><span class="seal-edit-icon" onclick="event.stopPropagation();activateSeal(this.parentElement);openSealEditor()"><i class="fas fa-edit"></i></span>`;wrap.addEventListener('touchstart',(e)=>{e.stopPropagation();activateSeal(wrap);startTouchDrag(e,wrap);startLongPress(wrap)},{passive:false});wrap.addEventListener('touchend',cancelLongPress);wrap.addEventListener('touchmove',cancelLongPress);wrap.addEventListener('dblclick',(e)=>{e.stopPropagation();activateSeal(wrap);openSealEditor()});currentPageElement.appendChild(wrap);if(!recentSeals.includes(src)){recentSeals.unshift(src);if(recentSeals.length>5)recentSeals.pop()}showToast('✓ সিল যোগ করা হয়েছে!')}
+        function addSeal(src){if(!currentPageElement){showToast(t('no_seal'),'error');return}toggleSidebar(false);const wrap=document.createElement('div');wrap.className='seal-wrapper';wrap.style.width='120px';wrap.style.height='120px';wrap.style.left='50%';wrap.style.top='50%';wrap.style.transform='translate(-50%,-50%)';wrap.innerHTML=`<img src="${src}" class="seal-img" alt="seal"><span class="seal-edit-icon" onclick="event.stopPropagation();activateSeal(this.parentElement);openSealEditor()"><i class="fas fa-edit"></i></span>`;wrap.addEventListener('touchstart',(e)=>{e.stopPropagation();activateSeal(wrap);startTouchDrag(e,wrap);startLongPress(wrap)},{passive:false});wrap.addEventListener('touchend',cancelLongPress);wrap.addEventListener('touchmove',cancelLongPress);wrap.addEventListener('dblclick',(e)=>{e.stopPropagation();activateSeal(wrap);openSealEditor()});currentPageElement.appendChild(wrap);if(!recentSeals.includes(src)){recentSeals.unshift(src);if(recentSeals.length>5)recentSeals.pop()}showToast(t('seal_added'))}
         function startLongPress(wrap){cancelLongPress();longPressTimer=setTimeout(()=>{activateSeal(wrap);openSealEditor()},500)}
         function cancelLongPress(){if(longPressTimer){clearTimeout(longPressTimer);longPressTimer=null}}
         function startTouchDrag(e,wrap){e.preventDefault();const touch=e.touches[0];const rect=wrap.parentElement.getBoundingClientRect();const pr=wrap.parentElement;let startX=touch.clientX-rect.left,startY=touch.clientY-rect.top;let startLeft=wrap.offsetLeft,startTop=wrap.offsetTop;function move(ev){ev.preventDefault();cancelLongPress();const t=ev.touches[0];let x=t.clientX-rect.left,y=t.clientY-rect.top;let nl=startLeft+(x-startX),nt=startTop+(y-startY);nl=Math.max(0,Math.min(nl,pr.offsetWidth-wrap.offsetWidth));nt=Math.max(0,Math.min(nt,pr.offsetHeight-wrap.offsetHeight));wrap.style.left=nl+'px';wrap.style.top=nt+'px'}function up(){document.removeEventListener('touchmove',move);document.removeEventListener('touchend',up)}document.addEventListener('touchmove',move,{passive:false});document.addEventListener('touchend',up)}
@@ -344,16 +352,16 @@
         function duplicateSeal(){if(!activeSeal)return;const newS=activeSeal.cloneNode(true);newS.style.left=(parseFloat(activeSeal.style.left)+20)+'px';newS.style.top=(parseFloat(activeSeal.style.top)+20)+'px';newS.classList.remove('active-state');const icon=newS.querySelector('.seal-edit-icon');if(icon)icon.style.display='none';newS.addEventListener('touchstart',(e)=>{e.stopPropagation();activateSeal(newS);startTouchDrag(e,newS);startLongPress(newS)},{passive:false});currentPageElement.appendChild(newS)}
         function resetRotation(){if(activeSeal){const img=activeSeal.querySelector('.seal-img');img.style.transform='rotate(0deg)';img.dataset.rotation=0}}
         function rotateSeal(angle){if(activeSeal){const img=activeSeal.querySelector('.seal-img');const cur=parseFloat(img.dataset.rotation||0);const nr=cur+angle;img.style.transform=`rotate(${nr}deg)`;img.dataset.rotation=nr}}
-        function deleteSeal(){if(activeSeal){activeSeal.remove();closeSealEditor();showToast('✓ সিল মুছে ফেলা হয়েছে!')}}
+        function deleteSeal(){if(activeSeal){activeSeal.remove();closeSealEditor();showToast(t('seal_deleted'))}}
         function getPagesWithSeals(){return Array.from(document.querySelectorAll('.page-container')).filter(pc=>pc.querySelectorAll('.seal-wrapper').length>0)}
-        async function downloadCurrentPage(){const pc=currentPageElement?.closest('.page-container');if(!pc||!pc.querySelector('.seal-wrapper')){showToast('এই পেজে কোন সিল নেই!','error');return}closeSealEditor();document.getElementById('loader').style.display='block';try{const canvas=await html2canvas(pc,{scale:3,useCORS:true,backgroundColor:'#ffffff'});const imgData=canvas.toDataURL('image/png');const link=document.createElement('a');link.download=`page-${currentPageNumber}.png`;link.href=imgData;link.click();document.getElementById('loader').style.display='none';showToast('এই পেজ ডাউনলোড হয়েছে!')}catch(e){document.getElementById('loader').style.display='none';showToast('✗ '+e.message,'error')}}
-        async function downloadAllPages(){const pages=getPagesWithSeals();if(pages.length===0){showToast('আগে সিল দিন তারপর ডাউনলোড করুন!','error');return}closeSealEditor();document.getElementById('loader').style.display='block';try{const zip=new JSZip();const folder=zip.folder('sealed_pages');for(let i=0;i<pages.length;i++){const canvas=await html2canvas(pages[i],{scale:3,useCORS:true,backgroundColor:'#ffffff'});const imgData=canvas.toDataURL('image/png');folder.file(`page-${i+1}.png`,imgData.split(',')[1],{base64:true});await new Promise(r=>setTimeout(r,200))}const blob=await zip.generateAsync({type:'blob'});const a=document.createElement('a');a.download='sealed_pages.zip';a.href=URL.createObjectURL(blob);a.click();document.getElementById('loader').style.display='none';showToast('সকল সিল পেজ ডাউনলোড হয়েছে!')}catch(e){document.getElementById('loader').style.display='none';showToast('✗ '+e.message,'error')}}
-        async function downloadPDF(){const pages=getPagesWithSeals();if(pages.length===0){showToast('আগে সিল দিন তারপর ডাউনলোড করুন!','error');return}closeSealEditor();document.getElementById('loader').style.display='block';try{const{jsPDF}=window.jspdf;const pdf=new jsPDF('p','mm','a4');for(let i=0;i<pages.length;i++){const canvas=await html2canvas(pages[i],{scale:2,useCORS:true,backgroundColor:'#ffffff'});const imgData=canvas.toDataURL('image/jpeg',0.95);if(i>0)pdf.addPage();pdf.addImage(imgData,'JPEG',0,0,210,297);await new Promise(r=>setTimeout(r,100))}pdf.save('sealed_document.pdf');document.getElementById('loader').style.display='none';showToast('PDF ডাউনলোড হয়েছে!')}catch(e){document.getElementById('loader').style.display='none';showToast('✗ '+e.message,'error')}}
-        function printAllPages(){const pages=getPagesWithSeals();if(pages.length===0){showToast('আগে সিল দিন তারপর ডাউনলোড করুন!','error');return}closeSealEditor();const printWindow=window.open('','_blank');if(!printWindow){showToast('পপ-আপ ব্লক করা আছে!','error');return}printWindow.document.write('<html><head><title>Print</title><style>@page{size:A4;margin:0}body{margin:0}.page-container{width:210mm;height:297mm;page-break-after:always;position:relative;overflow:hidden;background:#fff}.a4-page{width:100%;height:100%;position:relative}.a4-page canvas,.a4-page img{width:100%!important;height:100%!important;object-fit:contain!important}.seal-wrapper{position:absolute}.seal-img{width:100%;height:100%;object-fit:contain}.seal-edit-icon{display:none!important}</style></head><body>');pages.forEach(pc=>{const clone=pc.cloneNode(true);clone.querySelectorAll('.seal-edit-icon').forEach(icon=>icon.remove());clone.querySelectorAll('.seal-wrapper').forEach(w=>{w.classList.remove('active-state');w.style.outline='none'});printWindow.document.body.appendChild(clone)});printWindow.document.write('</body></html>');printWindow.document.close();showToast('প্রিন্ট করা হচ্ছে...');setTimeout(()=>{printWindow.print();setTimeout(()=>printWindow.close(),1000)},500)}
+        async function downloadCurrentPage(){const pc=currentPageElement?.closest('.page-container');if(!pc||!pc.querySelector('.seal-wrapper')){showToast(t('no_seal_page'),'error');return}closeSealEditor();document.getElementById('loader').style.display='block';try{const canvas=await html2canvas(pc,{scale:3,useCORS:true,backgroundColor:'#ffffff'});const imgData=canvas.toDataURL('image/png');const link=document.createElement('a');link.download=`page-${currentPageNumber}.png`;link.href=imgData;link.click();document.getElementById('loader').style.display='none';showToast(t('download_success'))}catch(e){document.getElementById('loader').style.display='none';showToast('✗ '+e.message,'error')}}
+        async function downloadAllPages(){const pages=getPagesWithSeals();if(pages.length===0){showToast(t('no_seal'),'error');return}closeSealEditor();document.getElementById('loader').style.display='block';try{const zip=new JSZip();const folder=zip.folder('sealed_pages');for(let i=0;i<pages.length;i++){const canvas=await html2canvas(pages[i],{scale:3,useCORS:true,backgroundColor:'#ffffff'});const imgData=canvas.toDataURL('image/png');folder.file(`page-${i+1}.png`,imgData.split(',')[1],{base64:true});await new Promise(r=>setTimeout(r,200))}const blob=await zip.generateAsync({type:'blob'});const a=document.createElement('a');a.download='sealed_pages.zip';a.href=URL.createObjectURL(blob);a.click();document.getElementById('loader').style.display='none';showToast(t('all_sealed'))}catch(e){document.getElementById('loader').style.display='none';showToast('✗ '+e.message,'error')}}
+        async function downloadPDF(){const pages=getPagesWithSeals();if(pages.length===0){showToast(t('no_seal'),'error');return}closeSealEditor();document.getElementById('loader').style.display='block';try{const{jsPDF}=window.jspdf;const pdf=new jsPDF('p','mm','a4');for(let i=0;i<pages.length;i++){const canvas=await html2canvas(pages[i],{scale:2,useCORS:true,backgroundColor:'#ffffff'});const imgData=canvas.toDataURL('image/jpeg',0.95);if(i>0)pdf.addPage();pdf.addImage(imgData,'JPEG',0,0,210,297);await new Promise(r=>setTimeout(r,100))}pdf.save('sealed_document.pdf');document.getElementById('loader').style.display='none';showToast(t('pdf_success'))}catch(e){document.getElementById('loader').style.display='none';showToast('✗ '+e.message,'error')}}
+        function printAllPages(){const pages=getPagesWithSeals();if(pages.length===0){showToast(t('no_seal'),'error');return}closeSealEditor();const printWindow=window.open('','_blank');if(!printWindow){showToast(t('popup_error'),'error');return}printWindow.document.write('<html><head><title>Print</title><style>@page{size:A4;margin:0}body{margin:0}.page-container{width:210mm;height:297mm;page-break-after:always;position:relative;overflow:hidden;background:#fff}.a4-page{width:100%;height:100%;position:relative}.a4-page canvas,.a4-page img{width:100%!important;height:100%!important;object-fit:contain!important}.seal-wrapper{position:absolute}.seal-img{width:100%;height:100%;object-fit:contain}.seal-edit-icon{display:none!important}</style></head><body>');pages.forEach(pc=>{const clone=pc.cloneNode(true);clone.querySelectorAll('.seal-edit-icon').forEach(icon=>icon.remove());clone.querySelectorAll('.seal-wrapper').forEach(w=>{w.classList.remove('active-state');w.style.outline='none'});printWindow.document.body.appendChild(clone)});printWindow.document.write('</body></html>');printWindow.document.close();showToast(t('print_success'));setTimeout(()=>{printWindow.print();setTimeout(()=>printWindow.close(),1000)},500)}
         const editorEl=document.getElementById('seal-editor');editorEl.addEventListener('mousedown',function(e){if(e.target.closest('.editor-btn')||e.target.closest('.editor-section')||e.target.closest('input'))return;editorDrag=true;const rect=editorEl.getBoundingClientRect();editorOffsetX=e.clientX-rect.left;editorOffsetY=e.clientY-rect.top;e.preventDefault()});document.addEventListener('mousemove',function(e){if(!editorDrag)return;editorEl.style.left=e.clientX-editorOffsetX+'px';editorEl.style.top=e.clientY-editorOffsetY+'px';editorEl.style.bottom='auto';editorEl.style.transform='none'});document.addEventListener('mouseup',function(){editorDrag=false});
         document.addEventListener('click',(e)=>{if(!e.target.closest('#export-options')&&!e.target.closest('#export-btn')&&!e.target.closest('#seal-editor')&&!e.target.closest('.seal-wrapper')&&!e.target.closest('#help-modal')&&!e.target.closest('.header-btn')&&!e.target.closest('#settings-panel')&&!e.target.closest('#settings-btn')){document.getElementById('export-options').classList.remove('show');closeSealEditor();closeHelp()}});
         document.addEventListener('keydown',(e)=>{if(e.key==='Delete'&&activeSeal)deleteSeal();if(e.key==='Escape'){toggleSidebar(false);closeSettingsPanel();closeSealEditor();closeHelp()}});
-        window.addEventListener('DOMContentLoaded',()=>{buildMenu()});
+        window.addEventListener('DOMContentLoaded',()=>{buildMenu();updateAllTexts()});
     </script>
 </body>
 </html>
