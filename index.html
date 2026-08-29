@@ -517,7 +517,7 @@
                 container.innerHTML='';
                 if(file.type==='application/pdf'){
                     pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-                    pdfjsLib.getDocument({data:arrayBuffer}).promise.then(pdf=>{
+                    pdfjsLib.getDocument({data:arrayBuffer}).promise.then(async pdf=>{
                         currentPDF=pdf;
                         totalPages=pdf.numPages;
                         currentPageNumber=1;
@@ -526,40 +526,40 @@
                         document.getElementById('page-jump').max=totalPages;
                         document.getElementById('page-jump').value=1;
                         allPages=[];
+                        
+                        // Load all pages sequentially
                         for(let i=1;i<=totalPages;i++){
-                            pdf.getPage(i).then(page=>{
-                                const viewport=page.getViewport({scale:2});
-                                const canvas=document.createElement('canvas');
-                                const ctx=canvas.getContext('2d');
-                                canvas.width=viewport.width;
-                                canvas.height=viewport.height;
-                                page.render({canvasContext:ctx,viewport:viewport}).promise.then(()=>{
-                                    const pc=document.createElement('div');
-                                    pc.className='page-container';
-                                    const pd=document.createElement('div');
-                                    pd.className='a4-page';
-                                    if(i===1){
-                                        pd.classList.add('current-page');
-                                        currentPageElement=pd;
-                                    }
-                                    pd.style.display=(i===1)?'block':'none';
-                                    canvas.style.width='100%';
-                                    canvas.style.height='100%';
-                                    canvas.style.objectFit='contain';
-                                    pd.appendChild(canvas);
-                                    pc.appendChild(pd);
-                                    container.appendChild(pc);
-                                    allPages.push(pd);
-                                    if(allPages.length===totalPages){
-                                        document.getElementById('loader').style.display='none';
-                                        showToast('✓ ফাইল আপলোড হয়েছে!');
-                                    }
-                                });
-                            });
+                            const page=await pdf.getPage(i);
+                            const viewport=page.getViewport({scale:2});
+                            const canvas=document.createElement('canvas');
+                            const ctx=canvas.getContext('2d');
+                            canvas.width=viewport.width;
+                            canvas.height=viewport.height;
+                            await page.render({canvasContext:ctx,viewport:viewport}).promise;
+                            
+                            const pc=document.createElement('div');
+                            pc.className='page-container';
+                            const pd=document.createElement('div');
+                            pd.className='a4-page';
+                            if(i===1){
+                                pd.classList.add('current-page');
+                                currentPageElement=pd;
+                            }
+                            pd.style.display=(i===1)?'block':'none';
+                            canvas.style.width='100%';
+                            canvas.style.height='100%';
+                            canvas.style.objectFit='contain';
+                            pd.appendChild(canvas);
+                            pc.appendChild(pd);
+                            container.appendChild(pc);
+                            allPages.push(pd);
                         }
-                    }).catch(()=>{
+                        
                         document.getElementById('loader').style.display='none';
-                        showToast('✗ PDF লোড ব্যর্থ!','error');
+                        showToast('✓ ফাইল আপলোড হয়েছে!');
+                    }).catch((err)=>{
+                        document.getElementById('loader').style.display='none';
+                        showToast('✗ PDF লোড ব্যর্থ! '+err.message,'error');
                     });
                 } else if(file.type.startsWith('image/')){
                     currentPDF=null;
@@ -1169,55 +1169,103 @@
             }
         }
         
-        function printAllPages(){
+        async function printAllPages(){
             const pages=getPagesWithSeals();
             if(pages.length===0){
                 showToast('আগে সিল দিন','error');
                 return;
             }
             closeSealEditor();
-            const pw=window.open('','_blank');
-            if(!pw){
-                showToast('পপ-আপ ব্লক!','error');
-                return;
-            }
+            document.getElementById('loader').style.display='block';
             
-            pw.document.write('<html><head><title>Print</title><style>');
-            pw.document.write('@page{size:A4;margin:0}');
-            pw.document.write('body{margin:0;padding:0}');
-            pw.document.write('.page-container{width:210mm;height:297mm;page-break-after:always;position:relative;background:#fff;overflow:hidden}');
-            pw.document.write('.a4-page{width:100%;height:100%;position:relative}');
-            pw.document.write('.a4-page canvas,.a4-page img{width:100%!important;height:100%!important;object-fit:contain!important;display:block}');
-            pw.document.write('.seal-wrapper{position:absolute}');
-            pw.document.write('.seal-img{width:100%;height:100%;object-fit:contain}');
-            pw.document.write('.seal-resize-handle{display:none!important}');
-            pw.document.write('.seal-rotate-handle{display:none!important}');
-            pw.document.write('</style></head><body>');
-            
-            pages.forEach(pc=>{
-                const clone=pc.cloneNode(true);
-                clone.querySelectorAll('.seal-resize-handle').forEach(i=>i.remove());
-                clone.querySelectorAll('.seal-rotate-handle').forEach(i=>i.remove());
-                clone.querySelectorAll('.seal-wrapper').forEach(w=>{
-                    w.classList.remove('active-state');
-                    w.style.outline='none';
-                });
-                pw.document.body.appendChild(clone);
-            });
-            
-            pw.document.write('</body></html>');
-            pw.document.close();
-            showToast('✓ প্রিন্ট হচ্ছে...');
-            
-            setTimeout(()=>{
-                try{
-                    pw.focus();
-                    pw.print();
-                    setTimeout(()=>pw.close(),1000);
-                }catch(e){
-                    showToast('প্রিন্ট উইন্ডোতে সমস্যা!','error');
+            try{
+                // Create a hidden container to render all pages
+                const printContainer=document.createElement('div');
+                printContainer.style.position='fixed';
+                printContainer.style.left='-9999px';
+                printContainer.style.top='0';
+                printContainer.style.width='794px';
+                printContainer.style.background='#ffffff';
+                printContainer.style.zIndex='-1';
+                
+                // Clone all pages with seals
+                for(const pc of pages){
+                    const clone=pc.cloneNode(true);
+                    clone.style.maxWidth='794px';
+                    clone.style.margin='0';
+                    clone.style.boxShadow='none';
+                    
+                    // Remove edit handles
+                    clone.querySelectorAll('.seal-resize-handle').forEach(i=>i.remove());
+                    clone.querySelectorAll('.seal-rotate-handle').forEach(i=>i.remove());
+                    
+                    // Remove active states
+                    clone.querySelectorAll('.seal-wrapper').forEach(w=>{
+                        w.classList.remove('active-state');
+                        w.style.outline='none';
+                        w.style.cursor='default';
+                    });
+                    
+                    printContainer.appendChild(clone);
                 }
-            },500);
+                
+                document.body.appendChild(printContainer);
+                
+                // Wait for rendering
+                await new Promise(r=>setTimeout(r,500));
+                
+                // Convert all pages to images
+                const images=[];
+                for(let i=0;i<pages.length;i++){
+                    const canvas=await html2canvas(printContainer.children[i],{scale:2,useCORS:true,backgroundColor:'#ffffff',logging:false});
+                    images.push(canvas.toDataURL('image/jpeg',0.95));
+                }
+                
+                // Remove the print container
+                document.body.removeChild(printContainer);
+                
+                // Open print window
+                const pw=window.open('','_blank');
+                if(!pw){
+                    document.getElementById('loader').style.display='none';
+                    showToast('পপ-আপ ব্লক!','error');
+                    return;
+                }
+                
+                let html='<html><head><title>Print</title><style>';
+                html+='@page{size:A4;margin:0}';
+                html+='body{margin:0;padding:0;background:#fff}';
+                html+='.print-page{width:210mm;height:297mm;page-break-after:always;position:relative;overflow:hidden;background:#fff}';
+                html+='.print-page:last-child{page-break-after:auto}';
+                html+='.print-page img{width:100%;height:100%;object-fit:contain}';
+                html+='</style></head><body>';
+                
+                images.forEach(img=>{
+                    html+=`<div class="print-page"><img src="${img}"></div>`;
+                });
+                
+                html+='</body></html>';
+                
+                pw.document.write(html);
+                pw.document.close();
+                
+                document.getElementById('loader').style.display='none';
+                showToast('✓ প্রিন্ট হচ্ছে...');
+                
+                setTimeout(()=>{
+                    try{
+                        pw.focus();
+                        pw.print();
+                        setTimeout(()=>pw.close(),1000);
+                    }catch(e){
+                        showToast('প্রিন্ট উইন্ডোতে সমস্যা!','error');
+                    }
+                },500);
+                
+            }catch(e){
+                document.getElementById('loader').style.display='none';
+                showToast('✗ '+e.message,'error');
+            }
         }
         
         document.addEventListener('click',(e)=>{
