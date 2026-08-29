@@ -58,72 +58,252 @@
             color: #e2e8f0;
         }
         
-        /* ===== HEADER - Sticky, Always Visible ===== */
+        /* ===== PROFESSIONAL HEADER ===== */
         #header {
-            height: 58px;
+            height: 60px;
             background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #2d3748 100%);
             color: #fff;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0 14px;
+            padding: 0 16px;
             z-index: 2000;
             flex-shrink: 0;
             position: sticky;
             top: 0;
             width: 100%;
-            min-height: 58px;
-            max-height: 58px;
             box-shadow: 0 4px 30px rgba(0,0,0,0.3);
             border-bottom: 2px solid var(--primary);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
         }
         
-        .header-left,
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+        }
+        
         .header-right {
             display: flex;
             align-items: center;
             gap: 8px;
         }
         
-        .brand-icon {
-            width: 36px;
-            height: 36px;
-            background: linear-gradient(135deg, var(--primary), var(--primary-light));
-            border-radius: 10px;
+        .header-btn {
+            background: rgba(255,255,255,0.12);
+            border: none;
+            color: #fff;
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 17px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 16px;
-            box-shadow: 0 4px 15px rgba(99,102,241,0.4);
-            flex-shrink: 0;
-        }
-        
-        .brand-title {
-            font-size: 13px;
-            font-weight: 800;
-            white-space: nowrap;
-            letter-spacing: 0.3px;
-        }
-        
-        .header-btn {
-            background: rgba(255,255,255,0.1);
-            border: 1px solid rgba(255,255,255,0.2);
-            color: #fff;
-            padding: 7px 10px;
-            border-radius: 20px;
-            font-size: 10px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 5px;
             transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header-btn::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.3), transparent);
+            transform: rotate(45deg);
+            animation: shine 2s infinite;
         }
         
         .header-btn:hover {
             background: var(--primary);
-            border-color: var(--primary);
+            transform: scale(1.1);
+            box-shadow: 0 4px 15px rgba(99,102,241,0.4);
+        }
+        
+        .brand-icon {
+            width: 42px;
+            height: 42px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 19px;
+            box-shadow: 0 4px 15px rgba(99,102,241,0.4);
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% {
+                box-shadow: 0 4px 15px rgba(99,102,241,0.4);
+            }
+            50% {
+                box-shadow: 0 4px 30px rgba(99,102,241,0.6);
+            }
+        }
+        
+        .brand-title {
+            font-size: 15px;
+            font-weight: 800;
+            white-space: nowrap;
+            background: linear-gradient(90deg, #fff, #a5b4fc, #fff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            background-size: 200% auto;
+            animation: gradientText 3s linear infinite;
+        }
+        
+        @keyframes gradientText {
+            0% {
+                background-position: 0% center;
+            }
+            100% {
+                background-position: 200% center;
+            }
+        }
+        
+        .header-text-btn {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: #fff;
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 11px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: var(--transition);
+        }
+        
+        .header-text-btn:hover {
+            background: var(--primary);
             transform: translateY(-2px);
             box-shadow: 0 4px 15px rgba(99,102,241,0.4);
+        }
+        
+        @keyframes shine {
+            0% {
+                transform: translateX(-100%) rotate(45deg);
+            }
+            100% {
+                transform: translateX(100%) rotate(45deg);
+            }
+        }
+        
+        /* ===== PROFESSIONAL CONTROLS BAR ===== */
+        #controls-bar {
+            background: linear-gradient(135deg, #f8fafc, #eef2ff);
+            padding: 8px 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 2px solid var(--border);
+            position: sticky;
+            top: 60px;
+            z-index: 1000;
+            flex-wrap: wrap;
+            width: 100%;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+        
+        body.dark-mode #controls-bar {
+            background: linear-gradient(135deg, #111, #1a1a1a);
+            border-color: #334155;
+        }
+        
+        .ctrl-group {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            background: var(--white);
+            border-radius: 12px;
+            padding: 4px;
+            border: 1px solid var(--border);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            transition: var(--transition);
+        }
+        
+        .ctrl-group:hover {
+            border-color: var(--primary);
+            box-shadow: 0 4px 15px rgba(99,102,241,0.1);
+        }
+        
+        body.dark-mode .ctrl-group {
+            background: #1a1a1a;
+            border-color: #334155;
+        }
+        
+        .ctrl-btn {
+            background: transparent;
+            border: none;
+            color: var(--text);
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+            font-weight: 600;
+        }
+        
+        .ctrl-btn:hover {
+            background: var(--primary);
+            color: #fff;
+            transform: scale(1.1);
+            box-shadow: 0 4px 15px rgba(99,102,241,0.3);
+        }
+        
+        .ctrl-btn.active {
+            background: var(--primary);
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(99,102,241,0.3);
+        }
+        
+        .ctrl-input {
+            width: 48px;
+            height: 38px;
+            text-align: center;
+            border: 2px solid var(--border);
+            background: var(--white);
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text);
+            outline: none;
+            transition: var(--transition);
+        }
+        
+        .ctrl-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99,102,241,0.1);
+        }
+        
+        body.dark-mode .ctrl-input {
+            background: #1a1a1a;
+            border-color: #334155;
+            color: #e2e8f0;
+        }
+        
+        .ctrl-label {
+            font-size: 10px;
+            color: var(--text-light);
+            font-weight: 700;
+            padding: 0 4px;
+            white-space: nowrap;
         }
         
         /* ===== SIDEBAR ===== */
@@ -132,7 +312,7 @@
             top: 0;
             left: 0;
             height: 100%;
-            width: 340px;
+            width: 360px;
             max-width: 90%;
             background: var(--white);
             color: var(--text);
@@ -142,7 +322,6 @@
             display: flex;
             flex-direction: column;
             box-shadow: 8px 0 40px rgba(0,0,0,0.2);
-            border-right: 1px solid var(--border);
         }
         
         #sidebar.open {
@@ -151,24 +330,19 @@
         
         body.dark-mode #sidebar {
             background: #0f172a;
-            border-right: 1px solid #334155;
         }
         
         .side-header {
-            padding: 14px;
+            padding: 16px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid var(--border);
             background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: #fff;
         }
         
         .side-header h3 {
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            font-size: 15px;
             font-weight: 700;
         }
         
@@ -176,11 +350,11 @@
             background: rgba(255,255,255,0.2);
             border: none;
             color: #fff;
-            width: 32px;
-            height: 32px;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
             cursor: pointer;
-            font-size: 13px;
+            font-size: 14px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -193,9 +367,9 @@
         }
         
         #sidebar-actions {
-            padding: 10px;
+            padding: 12px;
             display: flex;
-            gap: 6px;
+            gap: 8px;
             border-bottom: 1px solid var(--border);
         }
         
@@ -205,13 +379,13 @@
             color: var(--primary);
             padding: 10px;
             border-radius: 10px;
-            font-size: 10px;
+            font-size: 11px;
             cursor: pointer;
             flex: 1;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 5px;
+            gap: 6px;
             font-weight: 600;
             transition: var(--transition);
         }
@@ -223,25 +397,19 @@
         }
         
         #search-container {
-            padding: 10px;
+            padding: 12px;
         }
         
         #search-input {
             width: 100%;
-            background: #f1f5f9;
+            background: #f8fafc;
             border: 2px solid var(--border);
             color: var(--text);
-            padding: 10px 30px 10px 25px;
+            padding: 12px;
             border-radius: 10px;
-            font-size: 11px;
+            font-size: 13px;
             outline: none;
             transition: var(--transition);
-        }
-        
-        body.dark-mode #search-input {
-            background: #1a1a1a;
-            border-color: #334155;
-            color: #e2e8f0;
         }
         
         #search-input:focus {
@@ -252,7 +420,7 @@
         #menu-tree {
             flex: 1;
             overflow-y: auto;
-            padding: 10px;
+            padding: 12px;
         }
         
         .level-btn {
@@ -260,23 +428,17 @@
             background: #f8fafc;
             border: 1px solid var(--border);
             color: var(--text);
-            padding: 10px;
+            padding: 12px;
             border-radius: 10px;
-            font-size: 11px;
+            font-size: 13px;
             font-weight: 600;
             display: flex;
             justify-content: space-between;
             align-items: center;
             cursor: pointer;
-            margin-bottom: 5px;
+            margin-bottom: 6px;
             text-align: left;
             transition: var(--transition);
-        }
-        
-        body.dark-mode .level-btn {
-            background: #111;
-            border-color: #334155;
-            color: #e2e8f0;
         }
         
         .level-btn:hover {
@@ -285,21 +447,11 @@
             transform: translateX(5px);
         }
         
-        .level-btn i {
-            font-size: 9px;
-            color: var(--primary);
-            transition: transform 0.3s;
-        }
-        
-        .level-btn.active i {
-            transform: rotate(90deg);
-        }
-        
         .nested-container {
             display: none;
-            padding-left: 10px;
+            padding-left: 12px;
             border-left: 2px solid var(--primary);
-            margin-left: 8px;
+            margin-left: 10px;
         }
         
         .nested-container.show {
@@ -309,15 +461,11 @@
         .images-container {
             display: none;
             grid-template-columns: repeat(3, 1fr);
-            gap: 6px;
-            padding: 8px;
+            gap: 8px;
+            padding: 10px;
             background: #f8fafc;
             border-radius: 10px;
-            margin-top: 5px;
-        }
-        
-        body.dark-mode .images-container {
-            background: #0a0a0a;
+            margin-top: 6px;
         }
         
         .images-container.show {
@@ -327,7 +475,7 @@
         .seal-item {
             background: var(--white);
             border-radius: 10px;
-            padding: 6px;
+            padding: 8px;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -335,11 +483,6 @@
             aspect-ratio: 1;
             border: 2px solid var(--border);
             transition: var(--transition);
-        }
-        
-        body.dark-mode .seal-item {
-            background: #111;
-            border-color: #334155;
         }
         
         .seal-item:hover {
@@ -358,15 +501,15 @@
             background: #f8fafc;
             border: 1px solid var(--border);
             color: var(--text);
-            padding: 10px;
+            padding: 12px;
             border-radius: 10px;
-            font-size: 11px;
+            font-size: 12px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 6px;
-            margin: 10px;
+            gap: 8px;
+            margin: 12px;
             transition: var(--transition);
         }
         
@@ -397,108 +540,37 @@
             overflow: hidden;
         }
         
-        /* ===== CONTROLS BAR ===== */
-        #controls-bar {
-            background: var(--white);
-            padding: 5px 8px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 4px;
-            border-bottom: 1px solid var(--border);
-            position: sticky;
-            top: 58px;
-            z-index: 1000;
-            flex-wrap: wrap;
-            width: 100%;
-            min-height: 40px;
-            max-height: 40px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-        }
-        
-        body.dark-mode #controls-bar {
-            background: #111;
-            border-color: #334155;
-        }
-        
-        #controls-bar button {
-            padding: 5px 8px;
-            border: 1px solid var(--border);
-            background: #f8fafc;
-            color: var(--text);
-            border-radius: 6px;
-            font-size: 9px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 3px;
-            transition: var(--transition);
-            font-weight: 500;
-        }
-        
-        body.dark-mode #controls-bar button {
-            background: #1a1a1a;
-            border-color: #334155;
-            color: #e2e8f0;
-        }
-        
-        #controls-bar button:hover {
-            background: var(--primary);
-            color: #fff;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(99,102,241,0.3);
-        }
-        
-        #controls-bar input {
-            width: 36px;
-            text-align: center;
-            border: 2px solid var(--border);
-            border-radius: 6px;
-            padding: 4px;
-            font-size: 9px;
-            background: #f8fafc;
-            font-weight: 600;
-        }
-        
-        body.dark-mode #controls-bar input {
-            background: #1a1a1a;
-            border-color: #334155;
-            color: #e2e8f0;
-        }
-        
-        /* ===== SCROLL AREA ===== */
         #scroll-area {
             flex: 1;
             overflow: auto;
-            padding: 8px;
-            padding-top: 4px;
+            padding: 12px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            background: #f1f5f9;
+            background: linear-gradient(180deg, #f8fafc, #eef2ff);
             overflow-x: auto;
             overflow-y: auto;
         }
         
         body.dark-mode #scroll-area {
-            background: #0a0a0a;
+            background: linear-gradient(180deg, #0a0a0a, #0f172a);
         }
         
         /* ===== UPLOAD BOX ===== */
         .upload-box {
             width: 100%;
             max-width: 600px;
-            height: 300px;
+            min-height: 400px;
             background: var(--white);
-            border-radius: var(--radius-lg);
-            box-shadow: var(--shadow-lg);
+            border-radius: 24px;
+            box-shadow: 0 8px 40px rgba(0,0,0,0.15);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 30px;
+            padding: 40px;
             text-align: center;
-            margin: 15px auto;
+            margin: 20px auto;
             border: 3px dashed var(--border);
             transition: var(--transition);
             cursor: pointer;
@@ -506,9 +578,21 @@
             overflow: hidden;
         }
         
+        .upload-box::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(99,102,241,0.1), transparent);
+            transform: rotate(45deg);
+            animation: shine 2s infinite;
+        }
+        
         .upload-box:hover {
             border-color: var(--primary);
-            box-shadow: 0 8px 40px rgba(99,102,241,0.2);
+            box-shadow: 0 8px 50px rgba(99,102,241,0.2);
             transform: scale(1.02);
         }
         
@@ -518,46 +602,59 @@
         }
         
         .upload-box i {
-            font-size: 50px;
-            margin-bottom: 15px;
+            font-size: 60px;
+            margin-bottom: 20px;
             color: var(--primary);
             animation: bounce 2s infinite;
         }
         
         .upload-box h3 {
-            font-size: 18px;
-            margin-bottom: 10px;
-            color: var(--text);
+            font-size: 20px;
+            margin-bottom: 12px;
         }
         
         .upload-box p {
-            font-size: 13px;
+            font-size: 14px;
             color: var(--text-light);
             line-height: 1.6;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
         
-        .upload-box .upload-btn {
+        .upload-btn {
             background: linear-gradient(135deg, var(--primary), var(--primary-light));
             color: #fff;
             border: none;
-            border-radius: 12px;
-            padding: 12px 24px;
+            border-radius: 14px;
+            padding: 14px 28px;
             font-weight: 700;
-            font-size: 13px;
+            font-size: 14px;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
             box-shadow: 0 4px 15px rgba(99,102,241,0.4);
             transition: var(--transition);
-            max-width: 250px;
+            max-width: 300px;
             margin: 0 auto;
+            position: relative;
+            overflow: hidden;
         }
         
-        .upload-box .upload-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(99,102,241,0.5);
+        .upload-btn::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.3), transparent);
+            transform: rotate(45deg);
+            animation: shine 2s infinite;
+        }
+        
+        .upload-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(99,102,241,0.5);
         }
         
         @keyframes bounce {
@@ -574,10 +671,10 @@
             position: relative;
             width: 100%;
             max-width: 794px;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
             background: var(--white);
-            box-shadow: var(--shadow-lg);
-            border-radius: 8px;
+            box-shadow: 0 8px 40px rgba(0,0,0,0.15);
+            border-radius: 10px;
             overflow: hidden;
             transition: var(--transition);
         }
@@ -597,10 +694,6 @@
             background: var(--white);
             position: relative;
             overflow: hidden;
-        }
-        
-        body.dark-mode .a4-page {
-            background: #111;
         }
         
         .a4-page canvas,
@@ -815,79 +908,94 @@
         /* ===== FLOATING BUTTONS ===== */
         #quick-seal-buttons {
             position: fixed;
-            bottom: 12px;
-            left: 8px;
+            bottom: 15px;
+            left: 10px;
             z-index: 950;
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 8px;
         }
         
         .quick-btn {
-            width: 42px;
-            height: 42px;
-            border-radius: 12px;
+            width: 48px;
+            height: 48px;
+            border-radius: 15px;
             background: linear-gradient(135deg, var(--primary), var(--primary-light));
             border: none;
             color: #fff;
-            font-size: 14px;
+            font-size: 16px;
             cursor: pointer;
             box-shadow: 0 4px 15px rgba(99,102,241,0.4);
             display: flex;
             align-items: center;
             justify-content: center;
             transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .quick-btn::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.3), transparent);
+            transform: rotate(45deg);
+            animation: shine 2s infinite;
         }
         
         .quick-btn:hover {
             transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(99,102,241,0.5);
+            box-shadow: 0 8px 25px rgba(99,102,241,0.5);
         }
         
         #bottom-actions {
             position: fixed;
-            bottom: 12px;
-            right: 8px;
+            bottom: 15px;
+            right: 10px;
             z-index: 950;
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 8px;
         }
         
         #export-btn {
             background: linear-gradient(135deg, var(--primary), var(--primary-light));
             color: #fff;
             border: none;
-            border-radius: 12px;
-            padding: 10px 16px;
-            font-size: 10px;
+            border-radius: 15px;
+            padding: 12px 20px;
+            font-size: 12px;
             font-weight: bold;
             cursor: pointer;
             box-shadow: 0 4px 15px rgba(99,102,241,0.5);
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
             transition: var(--transition);
         }
         
         #export-btn:hover {
             transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(99,102,241,0.6);
+            box-shadow: 0 8px 25px rgba(99,102,241,0.6);
         }
         
         #export-options {
             position: fixed;
-            bottom: 60px;
-            right: 8px;
-            background: var(--dark-2);
-            border-radius: 12px;
-            padding: 8px;
+            bottom: 70px;
+            right: 10px;
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            border-radius: 15px;
+            padding: 10px;
             display: none;
             flex-direction: column;
-            gap: 5px;
+            gap: 6px;
             z-index: 3000;
-            min-width: 150px;
+            min-width: 170px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+            border: 1px solid rgba(255,255,255,0.1);
         }
         
         #export-options.show {
@@ -899,13 +1007,13 @@
             border: none;
             color: #fff;
             text-align: left;
-            padding: 8px 10px;
-            border-radius: 8px;
+            padding: 10px 12px;
+            border-radius: 10px;
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 6px;
-            font-size: 10px;
+            gap: 8px;
+            font-size: 11px;
             transition: var(--transition);
         }
         
@@ -923,16 +1031,11 @@
             right: 0;
             background: var(--white);
             border-radius: 25px 25px 0 0;
-            padding: 20px;
+            padding: 25px;
             z-index: 4000;
             box-shadow: 0 -10px 40px rgba(0,0,0,0.3);
             max-height: 65vh;
             overflow-y: auto;
-        }
-        
-        body.dark-mode #settings-panel {
-            background: #0f172a;
-            border-top: 2px solid #334155;
         }
         
         #settings-panel.show {
@@ -942,42 +1045,37 @@
         .settings-section {
             background: #f8fafc;
             border-radius: 15px;
-            padding: 12px;
-            margin-bottom: 10px;
+            padding: 15px;
+            margin-bottom: 12px;
             border: 1px solid var(--border);
-        }
-        
-        body.dark-mode .settings-section {
-            background: #111;
-            border-color: #334155;
         }
         
         .settings-row {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
         }
         
         .settings-label {
             color: var(--text-light);
-            font-size: 11px;
+            font-size: 12px;
         }
         
         .settings-value {
-            font-size: 11px;
+            font-size: 12px;
             font-weight: 600;
         }
         
         input[type="range"] {
             flex: 1;
-            margin: 0 8px;
+            margin: 0 10px;
             accent-color: var(--primary);
         }
         
         input[type="color"] {
-            width: 35px;
-            height: 28px;
+            width: 40px;
+            height: 32px;
             border: 1px solid var(--border);
             border-radius: 6px;
             cursor: pointer;
@@ -986,23 +1084,22 @@
         /* ===== TOAST ===== */
         #toast {
             position: fixed;
-            top: 15px;
+            top: 20px;
             left: 50%;
             transform: translateX(-50%) translateY(-120px);
-            background: var(--dark-2);
+            background: linear-gradient(135deg, #1e293b, #0f172a);
             color: #fff;
-            padding: 12px 20px;
+            padding: 14px 24px;
             border-radius: 15px;
-            font-size: 12px;
+            font-size: 13px;
             font-weight: 600;
             z-index: 10000;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
             transition: transform 0.4s;
             box-shadow: 0 10px 30px rgba(0,0,0,0.4);
             max-width: 90%;
-            border: 1px solid rgba(255,255,255,0.1);
         }
         
         #toast.show {
@@ -1010,11 +1107,11 @@
         }
         
         #toast.success {
-            border-left: 4px solid var(--secondary);
+            border-left: 4px solid #10b981;
         }
         
         #toast.error {
-            border-left: 4px solid var(--danger);
+            border-left: 4px solid #ef4444;
         }
         
         /* ===== LOADER ===== */
@@ -1025,7 +1122,7 @@
             left: 50%;
             transform: translate(-50%, -50%);
             background: rgba(15,23,42,0.95);
-            padding: 25px;
+            padding: 30px;
             border-radius: 50%;
             z-index: 5000;
             color: var(--primary-light);
@@ -1033,7 +1130,7 @@
         }
         
         #loader i {
-            font-size: 35px;
+            font-size: 40px;
             animation: spin 1s linear infinite;
         }
         
@@ -1050,25 +1147,25 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background: var(--dark-2);
+            background: linear-gradient(135deg, #1e293b, #0f172a);
             border-radius: 20px;
-            padding: 20px;
+            padding: 25px;
             z-index: 6000;
             max-width: 90%;
-            width: 380px;
+            width: 400px;
             box-shadow: 0 20px 60px rgba(0,0,0,0.5);
             border: 2px solid rgba(99,102,241,0.4);
         }
         
         #help-modal h3 {
             color: var(--primary-light);
-            margin-bottom: 12px;
-            font-size: 15px;
+            margin-bottom: 15px;
+            font-size: 16px;
         }
         
         #help-modal p {
             color: #cbd5e1;
-            font-size: 12px;
+            font-size: 13px;
             line-height: 1.8;
         }
         
@@ -1076,120 +1173,116 @@
             background: var(--primary);
             border: none;
             color: #fff;
-            padding: 10px 18px;
+            padding: 12px 20px;
             border-radius: 10px;
             cursor: pointer;
-            font-size: 12px;
-            margin-top: 12px;
+            font-size: 13px;
+            margin-top: 15px;
             width: 100%;
             transition: var(--transition);
         }
         
         #help-modal button:hover {
             background: var(--primary-light);
-            transform: translateY(-2px);
         }
         
-        /* ===== RESPONSIVE ===== */
+        /* ===== MOBILE RESPONSIVE ===== */
         @media (max-width: 768px) {
             #header {
-                height: 54px;
-                padding: 0 10px;
-                min-height: 54px;
-                max-height: 54px;
+                height: 56px;
+                padding: 0 12px;
             }
             
             #controls-bar {
-                top: 54px;
+                top: 56px;
+                padding: 6px 8px;
+                gap: 6px;
             }
             
-            .brand-icon {
-                width: 32px;
-                height: 32px;
-                font-size: 15px;
-                border-radius: 8px;
+            .ctrl-group {
+                padding: 3px;
+                gap: 3px;
             }
             
-            .brand-title {
+            .ctrl-btn {
+                width: 34px;
+                height: 34px;
                 font-size: 12px;
             }
             
-            .header-btn {
-                padding: 6px 8px;
+            .ctrl-input {
+                width: 40px;
+                height: 34px;
+                font-size: 11px;
+            }
+            
+            .ctrl-label {
                 font-size: 9px;
-                border-radius: 15px;
-                gap: 4px;
             }
             
-            .header-btn span {
+            .brand-icon {
+                width: 38px;
+                height: 38px;
+                font-size: 17px;
+            }
+            
+            .brand-title {
+                font-size: 13px;
+            }
+            
+            .header-btn {
+                width: 38px;
+                height: 38px;
+                font-size: 15px;
+                border-radius: 10px;
+            }
+            
+            .header-text-btn {
+                padding: 6px 10px;
+                font-size: 9px;
+            }
+            
+            .header-text-btn span {
                 display: none;
-            }
-            
-            #controls-bar {
-                padding: 4px 6px;
-                gap: 3px;
-                min-height: 36px;
-                max-height: 36px;
-            }
-            
-            #controls-bar button {
-                padding: 5px 7px;
-                font-size: 8px;
-                border-radius: 5px;
-                gap: 3px;
-            }
-            
-            #controls-bar button span {
-                display: none;
-            }
-            
-            #controls-bar input {
-                width: 32px;
-                padding: 4px;
-                font-size: 8px;
-                border-radius: 5px;
             }
             
             #scroll-area {
-                padding: 6px;
-                padding-top: 3px;
+                padding: 8px;
             }
             
             .upload-box {
-                min-height: 250px;
-                padding: 20px;
-                margin: 10px auto;
+                min-height: 300px;
+                padding: 25px;
+                margin: 12px auto;
             }
             
             .upload-box i {
-                font-size: 40px;
-                margin-bottom: 12px;
+                font-size: 45px;
+                margin-bottom: 15px;
             }
             
             .upload-box h3 {
-                font-size: 16px;
-                margin-bottom: 8px;
+                font-size: 17px;
             }
             
             .upload-box p {
                 font-size: 12px;
             }
             
-            .upload-box .upload-btn {
+            .upload-btn {
                 padding: 10px 20px;
                 font-size: 12px;
             }
             
             .page-container {
-                margin-bottom: 12px;
-                border-radius: 6px;
+                margin-bottom: 15px;
+                border-radius: 8px;
             }
             
             #seal-editor {
-                padding: 10px;
+                padding: 12px;
                 border-radius: 15px;
                 max-width: 98%;
-                gap: 6px;
             }
             
             .editor-btn {
@@ -1243,60 +1336,57 @@
             #quick-seal-buttons {
                 left: 5px;
                 bottom: 8px;
-                gap: 5px;
+                gap: 6px;
             }
             
             .quick-btn {
-                width: 40px;
-                height: 40px;
-                font-size: 14px;
-                border-radius: 10px;
+                width: 44px;
+                height: 44px;
+                font-size: 15px;
+                border-radius: 12px;
             }
             
             #bottom-actions {
                 right: 5px;
                 bottom: 8px;
-                gap: 5px;
+                gap: 6px;
             }
             
             #export-btn {
-                padding: 9px 12px;
-                font-size: 9px;
-                border-radius: 8px;
-                gap: 5px;
+                padding: 10px 14px;
+                font-size: 11px;
+                border-radius: 12px;
             }
             
             #export-options {
-                bottom: 55px;
+                bottom: 65px;
                 right: 5px;
-                min-width: 140px;
-                padding: 6px;
-                border-radius: 10px;
+                min-width: 150px;
+                padding: 8px;
+                border-radius: 12px;
             }
             
             #export-options button {
-                padding: 8px 9px;
-                font-size: 9px;
-                border-radius: 6px;
-                gap: 5px;
+                padding: 9px 10px;
+                font-size: 10px;
+                border-radius: 8px;
             }
         }
         
         @media (max-width: 480px) {
             #header {
-                height: 50px;
+                height: 52px;
                 padding: 0 8px;
-                min-height: 50px;
-                max-height: 50px;
             }
             
             #controls-bar {
-                top: 50px;
+                top: 52px;
+                padding: 4px 6px;
             }
             
             .brand-icon {
-                width: 30px;
-                height: 30px;
+                width: 32px;
+                height: 32px;
                 font-size: 14px;
                 border-radius: 8px;
             }
@@ -1306,71 +1396,60 @@
             }
             
             .header-btn {
-                padding: 5px 6px;
+                width: 32px;
+                height: 32px;
+                font-size: 12px;
+            }
+            
+            .header-text-btn {
+                padding: 5px 8px;
                 font-size: 8px;
-                border-radius: 10px;
-                gap: 3px;
             }
             
-            #controls-bar {
-                padding: 3px 4px;
-                gap: 2px;
-                min-height: 34px;
-                max-height: 34px;
-            }
-            
-            #controls-bar button {
-                padding: 4px 6px;
-                font-size: 7px;
-                border-radius: 4px;
-                gap: 2px;
-            }
-            
-            #controls-bar input {
+            .ctrl-btn {
                 width: 30px;
-                padding: 3px;
-                font-size: 7px;
-                border-radius: 4px;
+                height: 30px;
+                font-size: 10px;
+            }
+            
+            .ctrl-input {
+                width: 34px;
+                height: 30px;
+                font-size: 10px;
             }
             
             #scroll-area {
-                padding: 5px;
+                padding: 6px;
             }
             
             .upload-box {
-                min-height: 220px;
-                padding: 15px;
+                min-height: 250px;
+                padding: 20px;
                 margin: 8px auto;
             }
             
             .upload-box i {
                 font-size: 35px;
-                margin-bottom: 8px;
+                margin-bottom: 10px;
             }
             
             .upload-box h3 {
-                font-size: 14px;
-                margin-bottom: 6px;
+                font-size: 15px;
             }
             
             .upload-box p {
                 font-size: 11px;
             }
             
-            .upload-box .upload-btn {
+            .upload-btn {
                 padding: 8px 16px;
                 font-size: 11px;
-            }
-            
-            .page-container {
-                margin-bottom: 10px;
-                border-radius: 4px;
             }
         }
     </style>
 </head>
 <body>
-    <!-- HEADER -->
+    <!-- PROFESSIONAL HEADER -->
     <header id="header">
         <div class="header-left">
             <button class="header-btn" onclick="toggleSidebar(true)">
@@ -1382,11 +1461,11 @@
             <div class="brand-title" id="title-text">নোটারি সিল স্টুডিও</div>
         </div>
         <div class="header-right">
-            <button class="header-btn" onclick="toggleLanguage()">
+            <button class="header-text-btn" onclick="toggleLanguage()">
                 <i class="fas fa-globe"></i>
                 <span id="lang-text">EN</span>
             </button>
-            <button class="header-btn" onclick="showHelp()">
+            <button class="header-text-btn" onclick="showHelp()">
                 <i class="fas fa-question-circle"></i>
                 <span id="help-btn-text">সাহায্য</span>
             </button>
@@ -1397,7 +1476,7 @@
     <div id="sidebar">
         <div class="side-header">
             <h3><i class="fas fa-folder-tree"></i> <span id="sidebar-title">সিল লাইব্রেরি</span></h3>
-            <div style="display:flex;gap:6px">
+            <div style="display:flex;gap:8px">
                 <button class="icon-btn" onclick="toggleDarkMode()"><i class="fas fa-moon" id="dark-icon"></i></button>
                 <button class="icon-btn" onclick="toggleSidebar(false)"><i class="fas fa-times"></i></button>
             </div>
@@ -1431,19 +1510,19 @@
     
     <!-- SETTINGS -->
     <div id="settings-panel">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-            <h3 style="color:var(--primary);font-size:15px"><i class="fas fa-cog"></i> <span id="settings-title">সেটিংস</span></h3>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px">
+            <h3 style="color:var(--primary);font-size:16px"><i class="fas fa-cog"></i> <span id="settings-title">সেটিংস</span></h3>
             <button class="icon-btn" onclick="closeSettingsPanel()"><i class="fas fa-times"></i></button>
         </div>
         <div class="settings-section">
-            <h4 style="font-size:12px;margin-bottom:8px"><i class="fas fa-palette"></i> <span id="theme-color-title">থিম কালার</span></h4>
+            <h4 style="font-size:12px;margin-bottom:10px"><i class="fas fa-palette"></i> <span id="theme-color-title">থিম কালার</span></h4>
             <div class="settings-row">
                 <span class="settings-label" id="primary-color-label">প্রাইমারি</span>
                 <input type="color" id="primary-color" value="#6366f1" onchange="changePrimaryColor(this.value)">
             </div>
         </div>
         <div class="settings-section">
-            <h4 style="font-size:12px;margin-bottom:8px"><i class="fas fa-moon"></i> <span id="dark-mode-title">ডার্ক মোড</span></h4>
+            <h4 style="font-size:12px;margin-bottom:10px"><i class="fas fa-moon"></i> <span id="dark-mode-title">ডার্ক মোড</span></h4>
             <div class="settings-row">
                 <span class="settings-label" id="darkness-label">ডার্কনেস</span>
                 <input type="range" id="darkness-level" min="0" max="100" value="100" oninput="document.getElementById('darkness-value').innerText=this.value+'%'">
@@ -1451,14 +1530,14 @@
             </div>
         </div>
         <div class="settings-section">
-            <h4 style="font-size:12px;margin-bottom:8px"><i class="fas fa-font"></i> <span id="font-size-title">ফন্ট সাইজ</span></h4>
+            <h4 style="font-size:12px;margin-bottom:10px"><i class="fas fa-font"></i> <span id="font-size-title">ফন্ট সাইজ</span></h4>
             <div class="settings-row">
                 <span class="settings-label" id="font-small">ছোট</span>
                 <input type="range" id="font-size" min="10" max="18" value="14" oninput="document.documentElement.style.fontSize=this.value+'px'">
                 <span class="settings-label" id="font-large">বড়</span>
             </div>
         </div>
-        <button class="side-action-btn" style="width:100%;padding:10px" onclick="resetSettings()">
+        <button class="side-action-btn" style="width:100%;padding:12px" onclick="resetSettings()">
             <i class="fas fa-undo"></i>
             <span id="reset-btn-text">ডিফল্ট</span>
         </button>
@@ -1466,17 +1545,27 @@
     
     <!-- MAIN AREA -->
     <div id="main-area">
+        <!-- PROFESSIONAL CONTROLS BAR -->
         <div id="controls-bar" style="display:none;">
-            <button onclick="prevPage()"><i class="fas fa-chevron-left"></i></button>
-            <input type="number" id="page-jump" min="1" value="1" onchange="jumpToPage()">
-            <span id="page-count-display" style="font-size:8px">/ 1</span>
-            <button onclick="nextPage()"><i class="fas fa-chevron-right"></i></button>
-            <button onclick="changeZoom(-0.1)"><i class="fas fa-minus"></i></button>
-            <span id="zoom-value" style="font-size:8px">100%</span>
-            <button onclick="changeZoom(0.1)"><i class="fas fa-plus"></i></button>
-            <button onclick="downloadCurrentPage()"><i class="fas fa-download"></i> <span id="this-page-btn">এই পেজ</span></button>
-            <button onclick="printAllPages()" style="background:#10b981;color:#fff;border-color:#10b981"><i class="fas fa-print"></i> <span id="print-btn">প্রিন্ট</span></button>
+            <div class="ctrl-group">
+                <button class="ctrl-btn" onclick="prevPage()"><i class="fas fa-chevron-left"></i></button>
+                <input type="number" class="ctrl-input" id="page-jump" min="1" value="1" onchange="jumpToPage()">
+                <span class="ctrl-label" id="page-count-display">/ 1</span>
+                <button class="ctrl-btn" onclick="nextPage()"><i class="fas fa-chevron-right"></i></button>
+            </div>
+            <div class="ctrl-group">
+                <button class="ctrl-btn" onclick="changeZoom(-0.1)"><i class="fas fa-minus"></i></button>
+                <span class="ctrl-label" id="zoom-value">100%</span>
+                <button class="ctrl-btn" onclick="changeZoom(0.1)"><i class="fas fa-plus"></i></button>
+            </div>
+            <div class="ctrl-group">
+                <button class="ctrl-btn" onclick="downloadCurrentPage()"><i class="fas fa-download"></i></button>
+            </div>
+            <div class="ctrl-group">
+                <button class="ctrl-btn" style="background:#10b981;color:#fff" onclick="printAllPages()"><i class="fas fa-print"></i></button>
+            </div>
         </div>
+        
         <div id="scroll-area">
             <div id="content-layer">
                 <!-- UPLOAD BOX -->
@@ -1588,7 +1677,7 @@
             el.className=type;
             el.classList.add('show');
             clearTimeout(toastTimeout);
-            toastTimeout=setTimeout(()=>el.classList.remove('show'),2000);
+            toastTimeout=setTimeout(()=>el.classList.remove('show'),2500);
         }
         
         function toggleDarkMode(){
@@ -1757,7 +1846,6 @@
             document.getElementById('loader').style.display='block';
             const container=document.getElementById('content-layer');
             
-            // Hide upload box
             const uploadBox=document.getElementById('upload-box');
             if(uploadBox){
                 uploadBox.style.display='none';
@@ -1835,7 +1923,6 @@
             totalPages=pageContainers.length;
             currentPageNumber=1;
             
-            // Show controls
             document.getElementById('controls-bar').style.display='flex';
             document.getElementById('page-count-display').innerText=`/ ${totalPages}`;
             document.getElementById('page-jump').max=totalPages;
@@ -1929,7 +2016,6 @@
         }
         
         function changeZoom(d){
-            // Correct zoom logic: + for zoom in, - for zoom out
             currentZoom = currentZoom + d;
             if(currentZoom < 0.5) currentZoom = 0.5;
             if(currentZoom > 2.5) currentZoom = 2.5;
@@ -2540,3 +2626,4 @@
     </script>
 </body>
 </html>
+    
