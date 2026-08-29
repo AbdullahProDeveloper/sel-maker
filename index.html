@@ -597,8 +597,8 @@
                 pages.forEach(p=>p.classList.remove('current-page'));
                 pages[currentPageNumber].classList.add('current-page');
                 currentPageElement=pages[currentPageNumber];
-                pages[currentPageNumber-1].style.display='block';
-                pages[currentPageNumber].style.display='block';
+                // Scroll to the current page
+                pages[currentPageNumber].scrollIntoView({behavior:'smooth',block:'start'});
                 currentPageNumber++;
                 document.getElementById('page-jump').value=currentPageNumber;
                 closeSealEditor();
@@ -611,8 +611,8 @@
                 pages.forEach(p=>p.classList.remove('current-page'));
                 pages[currentPageNumber-2].classList.add('current-page');
                 currentPageElement=pages[currentPageNumber-2];
-                pages[currentPageNumber-1].style.display='block';
-                pages[currentPageNumber-2].style.display='block';
+                // Scroll to the current page
+                pages[currentPageNumber-2].scrollIntoView({behavior:'smooth',block:'start'});
                 currentPageNumber--;
                 document.getElementById('page-jump').value=currentPageNumber;
                 closeSealEditor();
@@ -622,6 +622,7 @@
         function jumpToPage(){
             let v=parseInt(document.getElementById('page-jump').value)||1;
             if(v>totalPages)v=totalPages;
+            if(v<1)v=1;
             const pages=document.querySelectorAll('.a4-page');
             pages.forEach((p,i)=>{
                 p.classList.remove('current-page');
@@ -629,6 +630,8 @@
                 if(i===v-1){
                     p.classList.add('current-page');
                     currentPageElement=p;
+                    // Scroll to the current page
+                    p.scrollIntoView({behavior:'smooth',block:'start'});
                 }
             });
             currentPageNumber=v;
