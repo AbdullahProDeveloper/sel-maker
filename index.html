@@ -188,7 +188,7 @@
     
     <div id="quick-upload">
         <label for="file-upload" class="upload-btn"><i class="fas fa-cloud-upload-alt"></i> <span id="quick-upload-text">ডকুমেন্ট আপলোড করুন</span></label>
-        <input id="file-upload" type="file" accept="application/pdf,image/*" onchange="handleFileUpload(event)">
+        <input id="file-upload" type="file" accept="application/pdf,image/*" multiple onchange="handleFileUpload(event)">
     </div>
     
     <div id="sidebar">
@@ -509,102 +509,105 @@
             input.click();
         }
         
-        function handleFileUpload(event){
-            const file=event.target.files[0];
-            if(!file)return;
-            const reader=new FileReader();
+        async function handleFileUpload(event){
+            const files=event.target.files;
+            if(!files || files.length===0) return;
+            
             document.getElementById('loader').style.display='block';
-            reader.onload=function(e){
-                const arrayBuffer=e.target.result;
-                const container=document.getElementById('content-layer');
-                container.innerHTML='';
-                pageContainers=[];
+            const container=document.getElementById('content-layer');
+            
+            // Clear previous content
+            container.innerHTML='';
+            pageContainers=[];
+            allPages=[];
+            
+            // Process all files sequentially
+            for(let fileIndex=0; fileIndex<files.length; fileIndex++){
+                const file=files[fileIndex];
+                
                 if(file.type==='application/pdf'){
-                    pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-                    pdfjsLib.getDocument({data:arrayBuffer}).promise.then(async pdf=>{
-                        currentPDF=pdf;
-                        totalPages=pdf.numPages;
-                        currentPageNumber=1;
-                        document.getElementById('controls-bar').style.display='flex';
-                        document.getElementById('page-count-display').innerText=`/ ${totalPages}`;
-                        document.getElementById('page-jump').max=totalPages;
-                        document.getElementById('page-jump').value=1;
-                        allPages=[];
+                    // Process PDF file
+                    const arrayBuffer=await file.arrayBuffer();
+                    const pdf=await pdfjsLib.getDocument({data:arrayBuffer}).promise;
+                    
+                    for(let pageNum=1; pageNum<=pdf.numPages; pageNum++){
+                        const page=await pdf.getPage(pageNum);
+                        const viewport=page.getViewport({scale:2});
+                        const canvas=document.createElement('canvas');
+                        const ctx=canvas.getContext('2d');
+                        canvas.width=viewport.width;
+                        canvas.height=viewport.height;
+                        await page.render({canvasContext:ctx,viewport:viewport}).promise;
                         
-                        // Load all pages sequentially
-                        for(let i=1;i<=totalPages;i++){
-                            const page=await pdf.getPage(i);
-                            const viewport=page.getViewport({scale:2});
-                            const canvas=document.createElement('canvas');
-                            const ctx=canvas.getContext('2d');
-                            canvas.width=viewport.width;
-                            canvas.height=viewport.height;
-                            await page.render({canvasContext:ctx,viewport:viewport}).promise;
-                            
-                            const pc=document.createElement('div');
-                            pc.className='page-container';
-                            const pd=document.createElement('div');
-                            pd.className='a4-page';
-                            if(i===1){
-                                pd.classList.add('current-page');
-                                currentPageElement=pd;
-                            }
-                            pd.style.display='block'; // Show all pages
-                            canvas.style.width='100%';
-                            canvas.style.height='100%';
-                            canvas.style.objectFit='contain';
-                            pd.appendChild(canvas);
-                            pc.appendChild(pd);
-                            container.appendChild(pc);
-                            pageContainers.push(pc);
-                            allPages.push(pd);
-                        }
-                        
-                        document.getElementById('loader').style.display='none';
-                        showToast('✓ ফাইল আপলোড হয়েছে!');
-                        
-                        // Hide upload button after successful upload
-                        hasUploaded = true;
-                        document.getElementById('quick-upload').style.display = 'none';
-                        
-                        // Setup observer for scroll tracking
-                        setupScrollObserver();
-                    }).catch((err)=>{
-                        document.getElementById('loader').style.display='none';
-                        showToast('✗ PDF লোড ব্যর্থ! '+err.message,'error');
-                    });
-                } else if(file.type.startsWith('image/')){
-                    currentPDF=null;
-                    document.getElementById('controls-bar').style.display='none';
-                    const img=document.createElement('img');
-                    img.src=URL.createObjectURL(file);
-                    img.onload=function(){
                         const pc=document.createElement('div');
                         pc.className='page-container';
                         const pd=document.createElement('div');
-                        pd.className='a4-page current-page';
-                        currentPageElement=pd;
-                        img.style.width='100%';
-                        img.style.height='100%';
-                        img.style.objectFit='contain';
-                        pd.appendChild(img);
+                        pd.className='a4-page';
+                        
+                        if(pageContainers.length===0){
+                            pd.classList.add('current-page');
+                            currentPageElement=pd;
+                        }
+                        
+                        pd.style.display='block';
+                        canvas.style.width='100%';
+                        canvas.style.height='100%';
+                        canvas.style.objectFit='contain';
+                        pd.appendChild(canvas);
                         pc.appendChild(pd);
                         container.appendChild(pc);
                         pageContainers.push(pc);
-                        allPages=[pd];
-                        document.getElementById('loader').style.display='none';
-                        showToast('✓ ফাইল আপলোড হয়েছে!');
-                        
-                        // Hide upload button after successful upload
-                        hasUploaded = true;
-                        document.getElementById('quick-upload').style.display = 'none';
-                        
-                        // Setup observer for scroll tracking
-                        setupScrollObserver();
-                    };
+                        allPages.push(pd);
+                    }
+                } else if(file.type.startsWith('image/')){
+                    // Process image file
+                    const img=document.createElement('img');
+                    img.src=URL.createObjectURL(file);
+                    await new Promise((resolve)=>{
+                        img.onload=resolve;
+                    });
+                    
+                    const pc=document.createElement('div');
+                    pc.className='page-container';
+                    const pd=document.createElement('div');
+                    pd.className='a4-page';
+                    
+                    if(pageContainers.length===0){
+                        pd.classList.add('current-page');
+                        currentPageElement=pd;
+                    }
+                    
+                    pd.style.display='block';
+                    img.style.width='100%';
+                    img.style.height='100%';
+                    img.style.objectFit='contain';
+                    pd.appendChild(img);
+                    pc.appendChild(pd);
+                    container.appendChild(pc);
+                    pageContainers.push(pc);
+                    allPages.push(pd);
                 }
-            };
-            reader.readAsArrayBuffer(file);
+            }
+            
+            // Update total pages
+            totalPages=pageContainers.length;
+            currentPageNumber=1;
+            
+            // Show controls
+            document.getElementById('controls-bar').style.display='flex';
+            document.getElementById('page-count-display').innerText=`/ ${totalPages}`;
+            document.getElementById('page-jump').max=totalPages;
+            document.getElementById('page-jump').value=1;
+            
+            // Hide upload button
+            hasUploaded=true;
+            document.getElementById('quick-upload').style.display='none';
+            
+            document.getElementById('loader').style.display='none';
+            showToast('✓ ফাইল আপলোড হয়েছে!');
+            
+            // Setup observer
+            setupScrollObserver();
         }
         
         function setupScrollObserver(){
