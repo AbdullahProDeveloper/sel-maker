@@ -1101,7 +1101,7 @@
             document.getElementById('loader').style.display='block';
             try{
                 await new Promise(r=>setTimeout(r,200));
-                const canvas=await html2canvas(pc,{scale:3,useCORS:true,backgroundColor:'#ffffff',logging:false});
+                const canvas=await html2canvas(pc,{scale:4,useCORS:true,backgroundColor:'#ffffff',logging:false});
                 const link=document.createElement('a');
                 link.download=`page-${currentPageNumber}.png`;
                 link.href=canvas.toDataURL('image/png');
@@ -1127,7 +1127,7 @@
                 const folder=zip.folder('sealed_pages');
                 for(let i=0;i<pages.length;i++){
                     await new Promise(r=>setTimeout(r,200));
-                    const canvas=await html2canvas(pages[i],{scale:3,useCORS:true,backgroundColor:'#ffffff',logging:false});
+                    const canvas=await html2canvas(pages[i],{scale:4,useCORS:true,backgroundColor:'#ffffff',logging:false});
                     folder.file(`page-${i+1}.png`,canvas.toDataURL('image/png').split(',')[1],{base64:true});
                 }
                 const blob=await zip.generateAsync({type:'blob'});
@@ -1156,9 +1156,9 @@
                 const pdf=new jsPDF('p','mm','a4');
                 for(let i=0;i<pages.length;i++){
                     await new Promise(r=>setTimeout(r,200));
-                    const canvas=await html2canvas(pages[i],{scale:2,useCORS:true,backgroundColor:'#ffffff',logging:false});
+                    const canvas=await html2canvas(pages[i],{scale:3,useCORS:true,backgroundColor:'#ffffff',logging:false});
                     if(i>0)pdf.addPage();
-                    pdf.addImage(canvas.toDataURL('image/jpeg',0.95),'JPEG',0,0,210,297);
+                    pdf.addImage(canvas.toDataURL('image/jpeg',0.98),'JPEG',0,0,210,297);
                 }
                 pdf.save('sealed_document.pdf');
                 document.getElementById('loader').style.display='none';
@@ -1179,12 +1179,12 @@
             document.getElementById('loader').style.display='block';
             
             try{
-                // Convert all pages to images
+                // Convert all pages to HD images
                 const images=[];
                 for(let i=0;i<pages.length;i++){
-                    await new Promise(r=>setTimeout(r,200));
-                    const canvas=await html2canvas(pages[i],{scale:2,useCORS:true,backgroundColor:'#ffffff',logging:false});
-                    images.push(canvas.toDataURL('image/jpeg',0.95));
+                    await new Promise(r=>setTimeout(r,300));
+                    const canvas=await html2canvas(pages[i],{scale:4,useCORS:true,backgroundColor:'#ffffff',logging:false});
+                    images.push(canvas.toDataURL('image/jpeg',1.0));
                 }
                 
                 // Open print window
@@ -1223,7 +1223,7 @@
                     }catch(e){
                         showToast('প্রিন্ট উইন্ডোতে সমস্যা!','error');
                     }
-                },500);
+                },800);
                 
             }catch(e){
                 document.getElementById('loader').style.display='none';
