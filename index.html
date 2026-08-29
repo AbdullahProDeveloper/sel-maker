@@ -19,8 +19,6 @@
     
     <!-- JSZip - ZIP ফাইল তৈরি -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-
-    <script src="data.js"></script>
     
     <!-- ডিফল্ট সিল ডাটা -->
     <script>
@@ -85,12 +83,34 @@
         
         /* ===== বডি ===== */
         body{height:100vh;display:flex;flex-direction:column;overflow:hidden;background:linear-gradient(135deg,#f0f4ff,#e8ecf8);color:var(--text)}
+        
+        /* ===== ডার্ক মোড ===== */
         body.dark-mode{background:#0f172a;color:#e2e8f0}
         body.dark-mode #scroll-area{background:#1e293b}
-        body.dark-mode .page-container{background:#1e293b}
+        body.dark-mode .page-container{background:#1e293b;box-shadow:0 4px 12px rgba(0,0,0,0.5)}
         body.dark-mode .a4-page{background:#1e293b}
         body.dark-mode #controls-bar{background:rgba(15,23,42,0.98);border-color:#334155}
         body.dark-mode #controls-bar button{background:#1e293b;color:#e2e8f0;border-color:#334155}
+        body.dark-mode #controls-bar button:hover{background:var(--primary);color:#fff;border-color:var(--primary)}
+        body.dark-mode #sidebar{background:#000000;border-right:2px solid #334155}
+        body.dark-mode #sidebar .side-header{background:#0a0a0a;border-bottom:1px solid #333}
+        body.dark-mode #sidebar #sidebar-actions{background:#0a0a0a;border-bottom:1px solid #333}
+        body.dark-mode #sidebar #search-container{background:#0a0a0a}
+        body.dark-mode #sidebar #menu-tree{background:#000000}
+        body.dark-mode #sidebar .level-btn{background:rgba(255,255,255,0.03);border-color:rgba(255,255,255,0.05);color:#e2e8f0}
+        body.dark-mode #sidebar .level-btn:hover{background:rgba(99,102,241,0.2);border-color:rgba(99,102,241,0.4)}
+        body.dark-mode #sidebar .nested-container{border-left-color:rgba(99,102,241,0.3)}
+        body.dark-mode #sidebar .images-container{background:#0a0a0a;border-color:rgba(99,102,241,0.3)}
+        body.dark-mode #sidebar .seal-item{background:rgba(255,255,255,0.03)}
+        body.dark-mode #sidebar .seal-item:hover{background:rgba(99,102,241,0.2);border-color:var(--primary)}
+        body.dark-mode #sidebar .side-action-btn{background:rgba(99,102,241,0.15);border-color:rgba(99,102,241,0.3)}
+        body.dark-mode #sidebar .side-action-btn:hover{background:var(--primary)}
+        body.dark-mode #sidebar #search-input{background:rgba(255,255,255,0.05);border-color:rgba(99,102,241,0.3);color:#fff}
+        body.dark-mode #sidebar .search-icon{color:#94a3b8}
+        body.dark-mode #sidebar #search-clear{background:rgba(255,255,255,0.1);color:#94a3b8}
+        body.dark-mode .empty-state{background:#1e293b;color:#94a3b8}
+        body.dark-mode .empty-state h3{color:#cbd5e1}
+        body.dark-mode .empty-state p{color:#94a3b8}
         
         /* ===== হেডার ===== */
         #header{height:56px;background:linear-gradient(135deg,#0f172a,#1e293b);color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 14px;z-index:100;flex-shrink:0;box-shadow:0 4px 20px rgba(0,0,0,0.15)}
@@ -164,6 +184,12 @@
         .a4-page canvas,.a4-page img{width:100%!important;height:100%!important;object-fit:contain!important;display:block}
         .a4-page.current-page{box-shadow:inset 0 0 0 2px var(--primary)}
         
+        /* ===== এম্পটি স্টেট ===== */
+        .empty-state{text-align:center;padding:60px 20px;color:#94a3b8;background:#fff;border-radius:20px;margin:20px;max-width:420px;box-shadow:var(--shadow-md)}
+        .empty-state i{font-size:60px;margin-bottom:20px;color:#cbd5e1}
+        .empty-state h3{font-size:18px;margin-bottom:8px;color:var(--text-light)}
+        .empty-state p{font-size:13px;color:#94a3b8}
+        
         /* ===== সিল ===== */
         .seal-wrapper{position:absolute;z-index:10;user-select:none;cursor:move;touch-action:none;overflow:visible}
         .seal-wrapper.active-state{outline:2px solid var(--primary);outline-offset:2px;animation:glow 1.5s infinite}
@@ -200,6 +226,12 @@
         #export-options button{background:rgba(255,255,255,0.06);border:none;color:#fff;text-align:left;padding:10px 14px;border-radius:var(--radius-sm);cursor:pointer;display:flex;align-items:center;gap:10px;font-size:11px;transition:var(--transition)}
         #export-options button:hover{background:var(--primary);transform:translateX(5px)}
         
+        /* ===== হেল্প মডাল ===== */
+        #help-modal{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:linear-gradient(135deg,#1e293b,#0f172a);border-radius:20px;padding:20px;z-index:600;max-width:90%;width:400px;box-shadow:0 20px 60px rgba(0,0,0,0.5);border:2px solid rgba(99,102,241,0.4)}
+        #help-modal h3{color:#818cf8;margin-bottom:15px}
+        #help-modal p{color:#cbd5e1;font-size:12px;line-height:1.6}
+        #help-modal button{background:#6366f1;border:none;color:#fff;padding:8px 20px;border-radius:8px;cursor:pointer;font-size:12px;margin-top:10px;width:100%}
+        
         /* ===== টোস্ট ===== */
         #toast{position:fixed;top:20px;left:50%;transform:translateX(-50%) translateY(-120px);background:linear-gradient(135deg,#1e293b,#0f172a);color:#fff;padding:14px 24px;border-radius:var(--radius-md);font-size:13px;font-weight:600;z-index:1000;display:flex;align-items:center;gap:10px;transition:transform 0.4s;box-shadow:0 12px 40px rgba(0,0,0,0.4);max-width:90%}
         #toast.show{transform:translateX(-50%) translateY(0)}
@@ -221,6 +253,7 @@
             .header-btn span{display:none}
             #controls-bar{padding:4px 5px;gap:3px}
             #controls-bar button{padding:3px 6px;font-size:7px}
+            #controls-bar button span{display:none}
             #scroll-area{padding:6px;padding-top:42px}
             #seal-editor{padding:8px 10px;gap:4px}
             .editor-btn{width:32px;height:32px;font-size:13px}
@@ -293,10 +326,10 @@
         </div>
         <div id="scroll-area">
             <div id="content-layer">
-                <div style="text-align:center;padding:60px 20px;color:#94a3b8;background:#fff;border-radius:20px;margin:20px;max-width:420px">
-                    <i class="fas fa-file-upload" style="font-size:60px;margin-bottom:20px"></i>
-                    <h3 id="doc-placeholder" style="font-size:18px;margin-bottom:8px">ডকুমেন্ট আপলোড করুন</h3>
-                    <p id="doc-instruction" style="font-size:13px">উপরের বাটনে ক্লিক করে PDF বা ছবি আপলোড করুন</p>
+                <div class="empty-state">
+                    <i class="fas fa-file-upload"></i>
+                    <h3 id="doc-placeholder">ডকুমেন্ট আপলোড করুন</h3>
+                    <p id="doc-instruction">উপরের বাটনে ক্লিক করে PDF বা ছবি আপলোড করুন</p>
                 </div>
             </div>
         </div>
@@ -340,10 +373,10 @@
     </div>
     
     <!-- হেল্প মডাল -->
-    <div id="help-modal" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:linear-gradient(135deg,#1e293b,#0f172a);border-radius:20px;padding:20px;z-index:600;max-width:90%;width:400px;box-shadow:0 20px 60px rgba(0,0,0,0.5);border:2px solid rgba(99,102,241,0.4)">
-        <h3 style="color:#818cf8;margin-bottom:15px"><i class="fas fa-question-circle"></i> <span id="help-title">ব্যবহার টিপস</span></h3>
-        <p id="help-content" style="color:#cbd5e1;font-size:12px;line-height:1.6">১. ডকুমেন্ট আপলোড করুন<br>২. বাম মেনু থেকে সিল বাছুন<br>৩. সিলে চাপ দিয়ে ধরে রাখুন এডিটর খুলতে<br>৪. সিল টেনে সরান<br>৫. ডান বাটন থেকে ডাউনলোড করুন</p>
-        <button onclick="closeHelp()" style="background:#6366f1;border:none;color:#fff;padding:8px 20px;border-radius:8px;cursor:pointer;font-size:12px;margin-top:10px;width:100%"><span>বন্ধ করুন</span></button>
+    <div id="help-modal">
+        <h3><i class="fas fa-question-circle"></i> <span id="help-title">ব্যবহার টিপস</span></h3>
+        <p id="help-content">১. ডকুমেন্ট আপলোড করুন<br>২. বাম মেনু থেকে সিল বাছুন<br>৩. সিলে চাপ দিয়ে ধরে রাখুন এডিটর খুলতে<br>৪. সিল টেনে সরান<br>৫. ডান বাটন থেকে ডাউনলোড করুন</p>
+        <button onclick="closeHelp()"><span>বন্ধ করুন</span></button>
     </div>
     
     <!-- টোস্ট -->
@@ -861,24 +894,79 @@
             }
         }
         
-        /* ===== প্রিন্ট ===== */
+        /* ===== প্রিন্ট ফাংশন (সঠিকভাবে কাজ করে) ===== */
         function printAllPages() {
             const pages = getPagesWithSeals();
             if (pages.length === 0) { showToast(translations[currentLang].no_seal_error, 'error'); return; }
             closeSealEditor();
-            const printWindow = window.open('', '_blank');
-            if (!printWindow) { showToast('পপ-আপ ব্লক করা আছে!', 'error'); return; }
-            printWindow.document.write('<html><head><title>Print Sealed Pages</title><style>@page{size:A4;margin:0}body{margin:0}.page-container{width:210mm;height:297mm;margin:0 auto;page-break-after:always;position:relative;overflow:hidden;background:#fff}.a4-page{width:100%;height:100%;position:relative}.a4-page canvas,.a4-page img{width:100%!important;height:100%!important;object-fit:contain!important}.seal-wrapper{position:absolute}.seal-img{width:100%;height:100%;object-fit:contain}.seal-edit-icon{display:none!important}</style></head><body>');
+            document.getElementById('loader').style.display = 'block';
+            
+            // প্রিন্ট এর জন্য নতুন উইন্ডো খোলা
+            const printWindow = window.open('', '_blank', 'width=800,height=600');
+            if (!printWindow) { 
+                document.getElementById('loader').style.display = 'none';
+                showToast('পপ-আপ ব্লক করা আছে! দয়া করে অনুমতি দিন', 'error'); 
+                return; 
+            }
+            
+            // প্রিন্ট HTML তৈরি
+            let printHTML = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Print Sealed Pages</title>';
+            printHTML += '<style>';
+            printHTML += '@page { size: A4; margin: 0; }';
+            printHTML += 'body { margin: 0; padding: 0; background: #fff; }';
+            printHTML += '.print-page { width: 210mm; height: 297mm; page-break-after: always; position: relative; overflow: hidden; background: #fff; }';
+            printHTML += '.print-page:last-child { page-break-after: auto; }';
+            printHTML += '.print-page canvas, .print-page img { width: 100% !important; height: 100% !important; object-fit: contain !important; display: block; }';
+            printHTML += '.seal-wrapper { position: absolute; }';
+            printHTML += '.seal-img { width: 100%; height: 100%; object-fit: contain; display: block; }';
+            printHTML += '.seal-edit-icon { display: none !important; }';
+            printHTML += '@media print { body { margin: 0; } .print-page { margin: 0; } }';
+            printHTML += '</style></head><body>';
+            
+            // প্রতিটি পেজ ক্লোন করে যোগ করা
             pages.forEach(pc => {
                 const clone = pc.cloneNode(true);
+                clone.className = 'print-page';
+                clone.style.cssText = 'width:210mm;height:297mm;page-break-after:always;position:relative;overflow:hidden;background:#fff;margin:0;box-shadow:none;border-radius:0;max-width:100%;';
+                
+                // এডিট আইকন সরানো
                 clone.querySelectorAll('.seal-edit-icon').forEach(icon => icon.remove());
-                clone.querySelectorAll('.seal-wrapper').forEach(w => { w.classList.remove('active-state'); w.style.outline = 'none'; });
-                printWindow.document.body.appendChild(clone);
+                
+                // সিল র‍্যাপার ক্লিন করা
+                clone.querySelectorAll('.seal-wrapper').forEach(w => {
+                    w.classList.remove('active-state');
+                    w.style.outline = 'none';
+                    w.style.boxShadow = 'none';
+                });
+                
+                // পেজ কন্টেইনার ক্লিন
+                clone.querySelectorAll('.a4-page').forEach(ap => {
+                    ap.classList.remove('current-page');
+                    ap.style.boxShadow = 'none';
+                    ap.style.width = '100%';
+                    ap.style.height = '100%';
+                });
+                
+                printHTML += clone.outerHTML;
             });
-            printWindow.document.write('</body></html>');
+            
+            printHTML += '</body></html>';
+            
+            printWindow.document.write(printHTML);
             printWindow.document.close();
+            
+            // প্রিন্ট উইন্ডো লোড হওয়ার পরে প্রিন্ট করুন
+            setTimeout(() => {
+                document.getElementById('loader').style.display = 'none';
+                printWindow.focus();
+                printWindow.print();
+                // প্রিন্ট শেষে উইন্ডো বন্ধ
+                setTimeout(() => {
+                    printWindow.close();
+                }, 1000);
+            }, 500);
+            
             showToast('প্রিন্ট করা হচ্ছে...');
-            setTimeout(() => { printWindow.print(); setTimeout(() => printWindow.close(), 1000); }, 500);
         }
         
         /* ===== এডিটর ড্র্যাগ ===== */
@@ -936,4 +1024,4 @@
         window.addEventListener('DOMContentLoaded', () => { buildMenu(); });
     </script>
 </body>
-        </html>
+</html>
