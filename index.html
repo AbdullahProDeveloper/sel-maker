@@ -547,7 +547,7 @@
                                 pd.classList.add('current-page');
                                 currentPageElement=pd;
                             }
-                            pd.style.display=(i===1)?'block':'none';
+                            pd.style.display='block'; // Show all pages
                             canvas.style.width='100%';
                             canvas.style.height='100%';
                             canvas.style.objectFit='contain';
@@ -597,7 +597,7 @@
                 pages.forEach(p=>p.classList.remove('current-page'));
                 pages[currentPageNumber].classList.add('current-page');
                 currentPageElement=pages[currentPageNumber];
-                pages[currentPageNumber-1].style.display='none';
+                pages[currentPageNumber-1].style.display='block';
                 pages[currentPageNumber].style.display='block';
                 currentPageNumber++;
                 document.getElementById('page-jump').value=currentPageNumber;
@@ -611,7 +611,7 @@
                 pages.forEach(p=>p.classList.remove('current-page'));
                 pages[currentPageNumber-2].classList.add('current-page');
                 currentPageElement=pages[currentPageNumber-2];
-                pages[currentPageNumber-1].style.display='none';
+                pages[currentPageNumber-1].style.display='block';
                 pages[currentPageNumber-2].style.display='block';
                 currentPageNumber--;
                 document.getElementById('page-jump').value=currentPageNumber;
@@ -625,7 +625,7 @@
             const pages=document.querySelectorAll('.a4-page');
             pages.forEach((p,i)=>{
                 p.classList.remove('current-page');
-                p.style.display=(i===v-1)?'block':'none';
+                p.style.display='block';
                 if(i===v-1){
                     p.classList.add('current-page');
                     currentPageElement=p;
