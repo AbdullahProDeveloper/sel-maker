@@ -9,22 +9,24 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-    <!-- ডাটা ফাইল -->
     <script src="data.js"></script>
     <style>
         :root{--primary:#6366f1;--primary-light:#818cf8;--secondary:#10b981;--danger:#ef4444;--dark:#0f172a;--border:#e2e8f0;--text:#1e293b;--radius:10px;--shadow:0 4px 16px rgba(0,0,0,0.12)}
         *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI','Roboto',sans-serif;-webkit-tap-highlight-color:transparent}
         body{height:100vh;display:flex;flex-direction:column;overflow:hidden;background:#f1f5f9;color:var(--text)}
         body.dark-mode{background:#000;color:#e2e8f0}
+        
         #header{height:55px;background:linear-gradient(135deg,#0f172a,#1e293b);color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 14px;z-index:100;flex-shrink:0}
         .header-left,.header-right{display:flex;align-items:center;gap:8px}
         .brand-icon{width:34px;height:34px;background:linear-gradient(135deg,var(--primary),var(--primary-light));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px}
         .brand-title{font-size:14px;font-weight:800}
         .header-btn{background:rgba(255,255,255,0.1);border:none;color:#fff;padding:8px 12px;border-radius:20px;font-size:10px;cursor:pointer;display:flex;align-items:center;gap:5px;transition:all 0.2s}
         .header-btn:hover{background:var(--primary)}
+        
         #quick-upload{background:#1e293b;padding:10px 14px;flex-shrink:0}
         .upload-btn{background:linear-gradient(135deg,var(--primary),var(--primary-light));color:#fff;border:none;border-radius:10px;padding:12px;font-weight:700;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;width:100%}
         input[type="file"]{display:none}
+        
         #sidebar{position:fixed;top:0;left:0;height:100%;width:320px;max-width:90%;background:#fff;color:var(--text);transform:translateX(-100%);transition:transform 0.3s;z-index:200;display:flex;flex-direction:column;box-shadow:4px 0 25px rgba(0,0,0,0.2)}
         #sidebar.open{transform:translateX(0)}
         body.dark-mode #sidebar{background:#000;border-right:1px solid #333}
@@ -53,9 +55,11 @@
         body.dark-mode .seal-item{background:#111;border-color:#333}
         .seal-item:hover{border-color:var(--primary)}
         .seal-item img{max-width:90%;max-height:90%;object-fit:contain}
+        
         #settings-btn{background:#f1f5f9;border:1px solid var(--border);color:var(--text);padding:10px;border-radius:8px;font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;margin:10px}
         #overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:150;display:none}
         #overlay.show{display:block}
+        
         #main-area{flex:1;display:flex;flex-direction:column;position:relative;overflow:hidden}
         #controls-bar{background:#fff;padding:5px 10px;display:flex;justify-content:center;align-items:center;gap:4px;border-bottom:1px solid var(--border);position:absolute;top:0;left:0;right:0;z-index:90;flex-wrap:wrap}
         body.dark-mode #controls-bar{background:#111;border-color:#333}
@@ -65,73 +69,110 @@
         #controls-bar input{width:35px;text-align:center;border:1px solid var(--border);border-radius:6px;padding:3px;font-size:9px}
         #scroll-area{flex:1;overflow:auto;padding:10px;padding-top:50px;display:flex;flex-direction:column;align-items:center;background:#e8ecf5}
         body.dark-mode #scroll-area{background:#0a0a0a}
+        
         .page-container{position:relative;width:100%;max-width:794px;margin-bottom:15px;background:#fff;box-shadow:var(--shadow);border-radius:4px;overflow:hidden}
         body.dark-mode .page-container{background:#111;border:1px solid #333}
         .a4-page{width:100%;aspect-ratio:210/297;background:#fff;position:relative;overflow:hidden}
         body.dark-mode .a4-page{background:#111}
         .a4-page canvas,.a4-page img{width:100%!important;height:100%!important;object-fit:contain!important;display:block}
         .a4-page.current-page{box-shadow:inset 0 0 0 2px var(--primary)}
+        
         .empty-state{text-align:center;padding:50px 20px;background:#fff;border-radius:15px;margin:20px;max-width:400px;box-shadow:var(--shadow)}
         body.dark-mode .empty-state{background:#111;border:1px solid #333}
         .empty-state i{font-size:50px;margin-bottom:15px;color:#cbd5e1}
         .empty-state h3{font-size:16px;margin-bottom:6px}
         .empty-state p{font-size:12px;color:#94a3b8}
         
-        /* উন্নত সিল কাস্টমাইজেশন স্টাইল */
-        .seal-wrapper{position:absolute;z-index:10;user-select:none;cursor:move;touch-action:none;transition:box-shadow 0.3s ease}
-        .seal-wrapper.active-state{outline:2px solid var(--primary);outline-offset:2px;box-shadow:0 0 20px rgba(99,102,241,0.3)}
+        .seal-wrapper{position:absolute;z-index:10;user-select:none;cursor:move;touch-action:none}
+        .seal-wrapper.active-state{outline:2px dashed var(--primary);outline-offset:2px;box-shadow:0 0 20px rgba(99,102,241,0.3)}
         .seal-img{width:100%;height:100%;object-fit:contain;pointer-events:none;display:block}
-        .seal-edit-icon{position:absolute;top:-12px;right:-12px;width:28px;height:28px;background:linear-gradient(135deg,var(--primary),var(--primary-light));border-radius:50%;border:2px solid #fff;display:none;align-items:center;justify-content:center;color:#fff;font-size:10px;z-index:20;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,0.2);transition:all 0.3s}
-        .seal-wrapper.active-state .seal-edit-icon{display:flex;animation:editPulse 1s ease}
-        @keyframes editPulse{0%{transform:scale(0.5)}50%{transform:scale(1.2)}100%{transform:scale(1)}}
+        .seal-edit-icon{position:absolute;top:-12px;right:-12px;width:30px;height:30px;background:var(--primary);border-radius:50%;border:2px solid #fff;display:none;align-items:center;justify-content:center;color:#fff;font-size:12px;z-index:20;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.3)}
+        .seal-wrapper.active-state .seal-edit-icon{display:flex}
         
-        /* উন্নত সিল এডিটর */
-        #seal-editor{position:fixed;bottom:15px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#1e293b,#0f172a);border-radius:20px;padding:15px;z-index:500;display:none;flex-direction:column;gap:8px;max-width:95%;box-shadow:0 20px 60px rgba(0,0,0,0.5);border:2px solid rgba(99,102,241,0.4);align-items:center}
-        #seal-editor.show{display:flex;animation:slideUp 0.3s ease}
-        @keyframes slideUp{from{transform:translateX(-50%) translateY(100px);opacity:0}to{transform:translateX(-50%) translateY(0);opacity:1}}
+        .seal-resize-handle{position:absolute;bottom:-10px;right:-10px;width:24px;height:24px;background:var(--secondary);border-radius:50%;border:2px solid #fff;display:none;align-items:center;justify-content:center;color:#fff;font-size:10px;z-index:20;cursor:nwse-resize;box-shadow:0 2px 8px rgba(0,0,0,0.3)}
+        .seal-rotate-handle{position:absolute;top:-12px;left:-12px;width:24px;height:24px;background:var(--primary-light);border-radius:50%;border:2px solid #fff;display:none;align-items:center;justify-content:center;color:#fff;font-size:10px;z-index:20;cursor:grab;box-shadow:0 2px 8px rgba(0,0,0,0.3)}
+        .seal-wrapper.active-state .seal-resize-handle,.seal-wrapper.active-state .seal-rotate-handle{display:flex}
         
-        .editor-header{display:flex;align-items:center;justify-content:space-between;width:100%;margin-bottom:5px}
-        .editor-title{color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;gap:8px}
-        .editor-close-btn{background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:#fff;width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:11px;display:flex;align-items:center;justify-content:center;transition:all 0.3s}
-        .editor-close-btn:hover{background:var(--danger)}
+        #seal-editor{position:fixed;bottom:15px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#1e293b,#0f172a);border-radius:20px;padding:15px;z-index:500;display:none;flex-direction:column;gap:8px;max-width:95%;box-shadow:0 20px 60px rgba(0,0,0,0.5);border:2px solid rgba(99,102,241,0.4)}
+        #seal-editor.show{display:flex}
         
-        .editor-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:center;width:100%}
-        .editor-btn{background:linear-gradient(135deg,rgba(255,255,255,0.15),rgba(255,255,255,0.05));border:1px solid rgba(255,255,255,0.2);color:#fff;width:40px;height:40px;border-radius:10px;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;transition:all 0.3s}
-        .editor-btn:hover{background:var(--primary);transform:translateY(-2px);box-shadow:0 4px 15px rgba(99,102,241,0.3)}
-        .editor-btn:active{transform:translateY(0)}
+        .editor-row{display:flex;flex-direction:row;flex-wrap:wrap;gap:5px;align-items:center;justify-content:center}
+        .editor-btn{background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:#fff;width:36px;height:36px;border-radius:8px;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition:all 0.2s}
+        .editor-btn:hover{background:var(--primary);transform:scale(1.1)}
+        .editor-btn:active{transform:scale(0.95)}
+        .editor-section{display:flex;align-items:center;gap:3px;background:rgba(255,255,255,0.1);padding:6px 10px;border-radius:10px}
+        .editor-label{color:#94a3b8;font-size:10px;white-space:nowrap;min-width:40px}
+        input[type="range"].editor-input{width:80px;height:4px;accent-color:var(--primary);cursor:pointer;background:transparent}
         
-        .editor-section{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,0.05);padding:8px;border-radius:12px;flex:1;min-width:150px}
-        .editor-section-label{color:#94a3b8;font-size:8px;white-space:nowrap;display:flex;align-items:center;gap:4px}
+        .editor-header{display:flex;justify-content:space-between;align-items:center;color:#fff;font-size:11px;font-weight:700;padding-bottom:5px;border-bottom:1px solid rgba(255,255,255,0.1)}
+        .editor-close-btn{background:rgba(239,68,68,0.3);border:none;color:#fff;width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center}
         
-        input[type="range"].editor-input{flex:1;height:4px;accent-color:var(--primary);cursor:pointer;min-width:60px}
+        .editor-presets{display:flex;gap:4px;flex-wrap:wrap;justify-content:center}
+        .preset-btn{background:rgba(99,102,241,0.2);border:1px solid rgba(99,102,241,0.3);color:#fff;padding:4px 8px;border-radius:8px;font-size:9px;cursor:pointer}
+        .preset-btn:hover{background:var(--primary)}
         
-        .editor-value{color:#fff;font-size:9px;font-weight:600;min-width:35px;text-align:center}
+        #quick-seal-buttons{position:fixed;bottom:15px;left:10px;z-index:95;display:flex;flex-direction:column;gap:6px}
+        .quick-btn{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,var(--primary),var(--primary-light));border:none;color:#fff;font-size:15px;cursor:pointer;box-shadow:0 4px 12px rgba(99,102,241,0.4);display:flex;align-items:center;justify-content:center}
         
-        .editor-divider{width:1px;height:30px;background:rgba(255,255,255,0.1);margin:0 3px}
+        #bottom-actions{position:fixed;bottom:15px;right:10px;z-index:95;display:flex;flex-direction:column;gap:6px}
+        #export-btn{background:linear-gradient(135deg,var(--primary),var(--primary-light));color:#fff;border:none;border-radius:12px;padding:11px 18px;font-size:11px;font-weight:bold;cursor:pointer;box-shadow:0 4px 15px rgba(99,102,241,0.5);display:flex;align-items:center;gap:6px}
+        #export-options{position:fixed;bottom:65px;right:10px;background:#1e293b;border-radius:12px;padding:8px;display:none;flex-direction:column;gap:4px;z-index:300;min-width:170px;box-shadow:0 10px 30px rgba(0,0,0,0.4)}
+        #export-options.show{display:flex}
+        #export-options button{background:rgba(255,255,255,0.06);border:none;color:#fff;text-align:left;padding:9px 12px;border-radius:8px;cursor:pointer;display:flex;align-items:center;gap:8px;font-size:10px}
+        #export-options button:hover{background:var(--primary)}
         
-        /* প্রিন্ট ও ডাউনলোড উন্নত স্টাইল */
-        .export-quality{background:rgba(255,255,255,0.05);border-radius:8px;padding:3px 8px}
-        .export-quality select{background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:#fff;padding:4px;border-radius:4px;font-size:9px;cursor:pointer}
-        .export-quality select option{background:#1e293b;color:#fff}
+        #settings-panel{display:none;position:fixed;bottom:0;left:0;right:0;background:#fff;border-radius:20px 20px 0 0;padding:20px;z-index:400;box-shadow:0 -10px 40px rgba(0,0,0,0.3);max-height:60vh;overflow-y:auto}
+        body.dark-mode #settings-panel{background:#000;border-top:2px solid #333}
+        #settings-panel.show{display:block}
+        .settings-section{background:#f8fafc;border-radius:10px;padding:12px;margin-bottom:8px;border:1px solid var(--border)}
+        body.dark-mode .settings-section{background:#111;border-color:#333}
+        .settings-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+        .settings-label{color:var(--text-light);font-size:10px}
+        .settings-value{font-size:10px;font-weight:600}
+        input[type="range"]{flex:1;margin:0 8px;accent-color:var(--primary)}
+        input[type="color"]{width:35px;height:28px;border:1px solid var(--border);border-radius:4px;cursor:pointer}
         
-        /* প্রফেশনাল প্রিন্ট স্টাইল */
-        @media print{
-            body{display:none}
-        }
-        
-        /* টোস্ট মেসেজ উন্নত */
-        #toast{position:fixed;top:15px;left:50%;transform:translateX(-50%) translateY(-120px);background:linear-gradient(135deg,#1e293b,#0f172a);color:#fff;padding:15px 25px;border-radius:12px;font-size:13px;font-weight:600;z-index:1000;display:flex;align-items:center;gap:10px;transition:transform 0.4s cubic-bezier(0.68,-0.55,0.265,1.55);box-shadow:0 10px 40px rgba(0,0,0,0.4);max-width:90%;border:2px solid transparent}
+        #toast{position:fixed;top:15px;left:50%;transform:translateX(-50%) translateY(-120px);background:#1e293b;color:#fff;padding:12px 20px;border-radius:10px;font-size:12px;font-weight:600;z-index:1000;display:flex;align-items:center;gap:8px;transition:transform 0.4s;box-shadow:0 10px 30px rgba(0,0,0,0.4);max-width:90%}
         #toast.show{transform:translateX(-50%) translateY(0)}
-        #toast.success{border-left:5px solid var(--secondary);background:linear-gradient(135deg,#0f172a,#1e293b)}
-        #toast.error{border-left:5px solid var(--danger);background:linear-gradient(135deg,#0f172a,#1e293b)}
-        #toast i{font-size:20px}
+        #toast.success{border-left:4px solid var(--secondary)}
+        #toast.error{border-left:4px solid var(--danger)}
         
-        /* লোডার উন্নত */
-        #loader{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:linear-gradient(135deg,#1e293b,#0f172a);padding:30px;border-radius:20px;z-index:500;border:2px solid var(--primary);box-shadow:0 20px 60px rgba(0,0,0,0.5)}
-        #loader i{font-size:40px;color:var(--primary-light);animation:spin 1s linear infinite}
-        #loader-text{color:#fff;font-size:12px;margin-top:10px;text-align:center}
+        #loader{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(15,23,42,0.95);padding:25px;border-radius:50%;z-index:500;color:var(--primary-light)}
+        #loader i{font-size:35px;animation:spin 1s linear infinite}
+        @keyframes spin{100%{transform:rotate(360deg)}}
         
-        @media(max-width:768px){#header{height:50px;padding:0 8px}.brand-icon{width:30px;height:30px;font-size:14px}.brand-title{font-size:12px}.header-btn{padding:6px 8px;font-size:8px}.header-btn span{display:none}#controls-bar{padding:3px 4px;gap:2px}#controls-bar button{padding:3px 5px;font-size:7px}#controls-bar button span{display:none}#scroll-area{padding:5px;padding-top:40px}#seal-editor{padding:10px;gap:6px}.editor-btn{width:35px;height:35px;font-size:13px}.editor-row{flex-wrap:wrap;gap:4px}.editor-section{min-width:100%;flex-direction:column}.editor-section-label{font-size:7px}#quick-seal-buttons{left:5px;bottom:8px}.quick-btn{width:35px;height:35px;font-size:13px}#bottom-actions{right:5px;bottom:8px}#export-btn{padding:9px 13px;font-size:9px}}
+        #help-modal{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#1e293b;border-radius:15px;padding:20px;z-index:600;max-width:90%;width:350px;box-shadow:0 20px 60px rgba(0,0,0,0.5);border:2px solid rgba(99,102,241,0.4)}
+        #help-modal h3{color:#818cf8;margin-bottom:10px;font-size:15px}
+        #help-modal p{color:#cbd5e1;font-size:11px;line-height:1.6}
+        #help-modal button{background:var(--primary);border:none;color:#fff;padding:8px 15px;border-radius:8px;cursor:pointer;font-size:11px;margin-top:10px;width:100%}
+        
+        @media(max-width:768px){
+            #header{height:50px;padding:0 8px}
+            .brand-icon{width:30px;height:30px;font-size:14px}
+            .brand-title{font-size:12px}
+            .header-btn{padding:6px 8px;font-size:8px}
+            .header-btn span{display:none}
+            #controls-bar{padding:3px 4px;gap:2px}
+            #controls-bar button{padding:3px 5px;font-size:7px}
+            #controls-bar button span{display:none}
+            #scroll-area{padding:5px;padding-top:40px}
+            
+            #seal-editor{padding:10px;border-radius:15px;bottom:10px;max-width:98%}
+            .editor-btn{width:32px;height:32px;font-size:12px}
+            .editor-section{padding:4px 8px}
+            .editor-label{font-size:8px;min-width:30px}
+            input[type="range"].editor-input{width:60px}
+            .editor-presets{gap:3px}
+            .preset-btn{padding:3px 6px;font-size:8px}
+            
+            .seal-resize-handle{width:20px;height:20px;bottom:-8px;right:-8px;font-size:8px}
+            .seal-rotate-handle{width:20px;height:20px;top:-8px;left:-8px;font-size:8px}
+            
+            #quick-seal-buttons{left:5px;bottom:8px}
+            .quick-btn{width:38px;height:38px;font-size:13px}
+            #bottom-actions{right:5px;bottom:8px}
+            #export-btn{padding:9px 13px;font-size:9px}
+        }
     </style>
 </head>
 <body>
@@ -146,10 +187,12 @@
             <button class="header-btn" onclick="showHelp()"><i class="fas fa-question-circle"></i> <span id="help-btn-text">সাহায্য</span></button>
         </div>
     </header>
+    
     <div id="quick-upload">
         <label for="file-upload" class="upload-btn"><i class="fas fa-cloud-upload-alt"></i> <span id="quick-upload-text">ডকুমেন্ট আপলোড করুন</span></label>
         <input id="file-upload" type="file" accept="application/pdf,image/*" onchange="handleFileUpload(event)">
     </div>
+    
     <div id="sidebar">
         <div class="side-header">
             <h3><i class="fas fa-folder-tree"></i> <span id="sidebar-title">সিল লাইব্রেরি</span></h3>
@@ -169,7 +212,9 @@
         <div id="menu-tree"></div>
         <button id="settings-btn" onclick="toggleSettingsPanel()"><i class="fas fa-cog"></i> <span id="settings-btn-text">সেটিংস</span></button>
     </div>
+    
     <div id="overlay" onclick="toggleSidebar(false);closeSettingsPanel()"></div>
+    
     <div id="settings-panel">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
             <h3 style="color:var(--primary);font-size:15px"><i class="fas fa-cog"></i> <span id="settings-title">সেটিংস</span></h3>
@@ -200,6 +245,7 @@
         </div>
         <button class="side-action-btn" style="width:100%;padding:10px" onclick="resetSettings()"><i class="fas fa-undo"></i> <span id="reset-btn-text">ডিফল্ট</span></button>
     </div>
+    
     <div id="main-area">
         <div id="controls-bar" style="display:none;">
             <button onclick="prevPage()"><i class="fas fa-chevron-left"></i></button>
@@ -223,12 +269,19 @@
         </div>
     </div>
     
-    <!-- উন্নত সিল এডিটর -->
     <div id="seal-editor">
         <div class="editor-header">
-            <span class="editor-title"><i class="fas fa-stamp"></i> <span id="editor-title-text">সিল এডিটর</span></span>
+            <span><i class="fas fa-edit"></i> <span id="editor-title">সিল এডিটর</span></span>
             <button class="editor-close-btn" onclick="closeSealEditor()"><i class="fas fa-times"></i></button>
         </div>
+        
+        <div class="editor-presets">
+            <button class="preset-btn" onclick="applyPreset(60)">S</button>
+            <button class="preset-btn" onclick="applyPreset(100)">M</button>
+            <button class="preset-btn" onclick="applyPreset(150)">L</button>
+            <button class="preset-btn" onclick="applyPreset(200)">XL</button>
+        </div>
+        
         <div class="editor-row">
             <button class="editor-btn" onclick="moveSeal(0,-20)"><i class="fas fa-arrow-up"></i></button>
             <button class="editor-btn" onclick="moveSeal(-20,0)"><i class="fas fa-arrow-left"></i></button>
@@ -236,24 +289,33 @@
             <button class="editor-btn" onclick="moveSeal(20,0)"><i class="fas fa-arrow-right"></i></button>
             <button class="editor-btn" onclick="moveSeal(0,20)"><i class="fas fa-arrow-down"></i></button>
         </div>
+        
         <div class="editor-row">
             <div class="editor-section">
-                <span class="editor-section-label"><i class="fas fa-expand"></i></span>
-                <input type="range" class="editor-input" id="editor-size" min="30" max="300" value="120" oninput="editorSizeChange(this.value)">
-                <span class="editor-value" id="editor-size-value">120</span>
+                <span class="editor-label">আকার</span>
+                <input type="range" id="editor-size" min="30" max="300" value="120" oninput="editorSizeChange(this.value)">
+                <span id="size-display" style="color:#94a3b8;font-size:10px;min-width:40px;text-align:center">120px</span>
             </div>
-            <div class="editor-divider"></div>
             <div class="editor-section">
-                <span class="editor-section-label"><i class="fas fa-sun"></i></span>
-                <input type="range" class="editor-input" id="editor-opacity" min="10" max="100" value="100" oninput="editorOpacityChange(this.value)">
-                <span class="editor-value" id="editor-opacity-value">100</span>
+                <span class="editor-label">ঘুরান</span>
+                <input type="range" id="editor-rotation" min="0" max="360" value="0" oninput="editorRotationChange(this.value)">
+                <span id="rotation-display" style="color:#94a3b8;font-size:10px;min-width:40px;text-align:center">0°</span>
             </div>
         </div>
+        
         <div class="editor-row">
-            <button class="editor-btn" onclick="rotateSeal(-15)"><i class="fas fa-undo"></i></button>
-            <button class="editor-btn" onclick="rotateSeal(15)"><i class="fas fa-redo"></i></button>
-            <button class="editor-btn" onclick="duplicateSeal()"><i class="fas fa-copy"></i></button>
+            <div class="editor-section">
+                <span class="editor-label">অপাসিটি</span>
+                <input type="range" id="editor-opacity" min="10" max="100" value="100" oninput="editorOpacityChange(this.value)">
+                <span id="opacity-display" style="color:#94a3b8;font-size:10px;min-width:40px;text-align:center">100%</span>
+            </div>
+            <button class="editor-btn" onclick="rotateSealBy(15)"><i class="fas fa-redo"></i></button>
+            <button class="editor-btn" onclick="rotateSealBy(-15)"><i class="fas fa-undo"></i></button>
+        </div>
+        
+        <div class="editor-row">
             <button class="editor-btn" style="background:rgba(239,68,68,0.3)" onclick="deleteSeal()"><i class="fas fa-trash"></i></button>
+            <button class="editor-btn" style="background:rgba(99,102,241,0.3)" onclick="duplicateSeal()"><i class="fas fa-copy"></i></button>
             <button class="editor-btn" style="background:rgba(16,185,129,0.3)" onclick="closeSealEditor()"><i class="fas fa-check"></i></button>
         </div>
     </div>
@@ -261,24 +323,25 @@
     <div id="quick-seal-buttons">
         <button class="quick-btn" onclick="toggleSidebar(true)"><i class="fas fa-th"></i></button>
     </div>
+    
     <div id="bottom-actions">
         <button id="export-btn" onclick="toggleExportMenu()"><i class="fas fa-download"></i> <span id="export-text">ডাউনলোড</span></button>
     </div>
+    
     <div id="export-options">
         <button onclick="downloadAllPages()"><i class="fas fa-file-export"></i> <span id="all-pages-btn">সকল পেজ</span></button>
         <button onclick="downloadPDF()"><i class="fas fa-file-pdf"></i> <span id="pdf-download-btn">PDF</span></button>
         <button onclick="printAllPages()"><i class="fas fa-print"></i> <span id="print-all-btn">প্রিন্ট</span></button>
     </div>
+    
     <div id="help-modal">
         <h3><i class="fas fa-question-circle"></i> <span id="help-title">ব্যবহার টিপস</span></h3>
-        <p id="help-content">১. ডকুমেন্ট আপলোড করুন<br>২. সিল বাছুন<br>৩. সিলে চাপ দিয়ে এডিটর খুলুন<br>৪. টেনে সরান<br>৫. ডাউনলোড করুন</p>
+        <p id="help-content">১. ডকুমেন্ট আপলোড করুন<br>২. সিল বাছুন<br>৩. সিলে চাপ দিয়ে এডিটর খুলুন<br>৪. টেনে সরান, রিসাইজ করুন, ঘুরান<br>৫. ডাউনলোড করুন</p>
         <button onclick="closeHelp()"><span id="close-btn-text">বন্ধ করুন</span></button>
     </div>
+    
     <div id="toast"><i class="fas fa-check-circle"></i> <span id="toast-message"></span></div>
-    <div id="loader">
-        <i class="fas fa-circle-notch"></i>
-        <div id="loader-text">প্রসেসিং...</div>
-    </div>
+    <div id="loader"><i class="fas fa-circle-notch"></i></div>
     
     <script>
         let currentPDF=null,currentLang='bn',toastTimeout,currentZoom=1.0,currentPageNumber=1,totalPages=1,currentPageElement=null,recentSeals=[],activeSeal=null,allPages=[],longPressTimer=null,isDarkMode=false;
@@ -290,7 +353,7 @@
             el.className=type;
             el.classList.add('show');
             clearTimeout(toastTimeout);
-            toastTimeout=setTimeout(()=>el.classList.remove('show'),3000);
+            toastTimeout=setTimeout(()=>el.classList.remove('show'),2000);
         }
         
         function toggleDarkMode(){
@@ -325,7 +388,7 @@
             document.getElementById('pdf-download-btn').innerText=bn?'PDF':'PDF';
             document.getElementById('close-btn-text').innerText=bn?'বন্ধ করুন':'Close';
             document.getElementById('search-input').placeholder=bn?'সিল খুঁজুন...':'Search seals...';
-            document.getElementById('editor-title-text').innerText=bn?'সিল এডিটর':'Seal Editor';
+            document.getElementById('editor-title').innerText=bn?'সিল এডিটর':'Seal Editor';
         }
         
         function toggleSidebar(show){
@@ -450,13 +513,10 @@
             if(!file)return;
             const reader=new FileReader();
             document.getElementById('loader').style.display='block';
-            document.getElementById('loader-text').innerText='ডকুমেন্ট প্রসেস হচ্ছে...';
-            
             reader.onload=function(e){
                 const arrayBuffer=e.target.result;
                 const container=document.getElementById('content-layer');
                 container.innerHTML='';
-                
                 if(file.type==='application/pdf'){
                     pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
                     pdfjsLib.getDocument({data:arrayBuffer}).promise.then(pdf=>{
@@ -468,7 +528,6 @@
                         document.getElementById('page-jump').max=totalPages;
                         document.getElementById('page-jump').value=1;
                         allPages=[];
-                        
                         for(let i=1;i<=totalPages;i++){
                             pdf.getPage(i).then(page=>{
                                 const viewport=page.getViewport({scale:2});
@@ -493,7 +552,6 @@
                                     pc.appendChild(pd);
                                     container.appendChild(pc);
                                     allPages.push(pd);
-                                    
                                     if(allPages.length===totalPages){
                                         document.getElementById('loader').style.display='none';
                                         showToast('✓ ফাইল আপলোড হয়েছে!');
@@ -594,23 +652,30 @@
             wrap.style.left='50%';
             wrap.style.top='50%';
             wrap.style.transform='translate(-50%,-50%)';
-            wrap.innerHTML=`<img src="${src}" class="seal-img"><span class="seal-edit-icon" onclick="event.stopPropagation();activateSeal(this.parentElement);openSealEditor()"><i class="fas fa-edit"></i></span>`;
-            
+            wrap.innerHTML=`
+                <img src="${src}" class="seal-img">
+                <span class="seal-edit-icon" onclick="event.stopPropagation();activateSeal(this.parentElement);openSealEditor()"><i class="fas fa-edit"></i></span>
+                <span class="seal-resize-handle" onmousedown="startResize(event, this.parentElement)" ontouchstart="startTouchResize(event, this.parentElement)"><i class="fas fa-expand-arrows-alt"></i></span>
+                <span class="seal-rotate-handle" onmousedown="startRotate(event, this.parentElement)" ontouchstart="startTouchRotate(event, this.parentElement)"><i class="fas fa-sync-alt"></i></span>
+            `;
             wrap.addEventListener('touchstart',(e)=>{
                 e.stopPropagation();
                 activateSeal(wrap);
                 startTouchDrag(e,wrap);
                 startLongPress(wrap);
             },{passive:false});
-            
             wrap.addEventListener('touchend',cancelLongPress);
             wrap.addEventListener('touchmove',cancelLongPress);
+            wrap.addEventListener('mousedown',(e)=>{
+                e.stopPropagation();
+                activateSeal(wrap);
+                startMouseDrag(e,wrap);
+            });
             wrap.addEventListener('dblclick',(e)=>{
                 e.stopPropagation();
                 activateSeal(wrap);
                 openSealEditor();
             });
-            
             currentPageElement.appendChild(wrap);
             showToast('✓ সিল যোগ হয়েছে!');
         }
@@ -663,23 +728,178 @@
             document.addEventListener('touchend',up);
         }
         
+        function startMouseDrag(e,wrap){
+            e.preventDefault();
+            const rect=wrap.parentElement.getBoundingClientRect();
+            const pr=wrap.parentElement;
+            let startX=e.clientX-rect.left;
+            let startY=e.clientY-rect.top;
+            let startLeft=wrap.offsetLeft;
+            let startTop=wrap.offsetTop;
+            
+            function move(ev){
+                ev.preventDefault();
+                let x=ev.clientX-rect.left;
+                let y=ev.clientY-rect.top;
+                let nl=startLeft+(x-startX);
+                let nt=startTop+(y-startY);
+                nl=Math.max(0,Math.min(nl,pr.offsetWidth-wrap.offsetWidth));
+                nt=Math.max(0,Math.min(nt,pr.offsetHeight-wrap.offsetHeight));
+                wrap.style.left=nl+'px';
+                wrap.style.top=nt+'px';
+            }
+            
+            function up(){
+                document.removeEventListener('mousemove',move);
+                document.removeEventListener('mouseup',up);
+            }
+            
+            document.addEventListener('mousemove',move);
+            document.addEventListener('mouseup',up);
+        }
+        
+        function startResize(e,wrap){
+            e.preventDefault();
+            e.stopPropagation();
+            const rect=wrap.parentElement.getBoundingClientRect();
+            const startW=parseInt(wrap.style.width)||120;
+            const startH=parseInt(wrap.style.height)||120;
+            let startX=e.clientX;
+            let startY=e.clientY;
+            
+            function move(ev){
+                ev.preventDefault();
+                let dx=ev.clientX-startX;
+                let dy=ev.clientY-startY;
+                let newSize=Math.max(30,Math.min(300,startW+dx));
+                wrap.style.width=newSize+'px';
+                wrap.style.height=newSize+'px';
+                document.getElementById('editor-size').value=newSize;
+                document.getElementById('size-display').innerText=newSize+'px';
+            }
+            
+            function up(){
+                document.removeEventListener('mousemove',move);
+                document.removeEventListener('mouseup',up);
+            }
+            
+            document.addEventListener('mousemove',move);
+            document.addEventListener('mouseup',up);
+        }
+        
+        function startTouchResize(e,wrap){
+            e.preventDefault();
+            e.stopPropagation();
+            const touch=e.touches[0];
+            const startW=parseInt(wrap.style.width)||120;
+            let startX=touch.clientX;
+            
+            function move(ev){
+                ev.preventDefault();
+                let dx=ev.touches[0].clientX-startX;
+                let newSize=Math.max(30,Math.min(300,startW+dx));
+                wrap.style.width=newSize+'px';
+                wrap.style.height=newSize+'px';
+                document.getElementById('editor-size').value=newSize;
+                document.getElementById('size-display').innerText=newSize+'px';
+            }
+            
+            function up(){
+                document.removeEventListener('touchmove',move);
+                document.removeEventListener('touchend',up);
+            }
+            
+            document.addEventListener('touchmove',move,{passive:false});
+            document.addEventListener('touchend',up);
+        }
+        
+        function startRotate(e,wrap){
+            e.preventDefault();
+            e.stopPropagation();
+            const rect=wrap.getBoundingClientRect();
+            const centerX=rect.left+rect.width/2;
+            const centerY=rect.top+rect.height/2;
+            let startAngle=Math.atan2(e.clientY-centerY,e.clientX-centerX)*180/Math.PI;
+            let currentRotation=parseFloat(wrap.querySelector('.seal-img').dataset.rotation||0);
+            
+            function move(ev){
+                ev.preventDefault();
+                let angle=Math.atan2(ev.clientY-centerY,ev.clientX-centerX)*180/Math.PI;
+                let diff=angle-startAngle;
+                let newRotation=currentRotation+diff;
+                const img=wrap.querySelector('.seal-img');
+                img.style.transform=`rotate(${newRotation}deg)`;
+                img.dataset.rotation=newRotation;
+                document.getElementById('editor-rotation').value=newRotation;
+                document.getElementById('rotation-display').innerText=Math.round(newRotation)+'°';
+            }
+            
+            function up(){
+                document.removeEventListener('mousemove',move);
+                document.removeEventListener('mouseup',up);
+            }
+            
+            document.addEventListener('mousemove',move);
+            document.addEventListener('mouseup',up);
+        }
+        
+        function startTouchRotate(e,wrap){
+            e.preventDefault();
+            e.stopPropagation();
+            const touch=e.touches[0];
+            const rect=wrap.getBoundingClientRect();
+            const centerX=rect.left+rect.width/2;
+            const centerY=rect.top+rect.height/2;
+            let startAngle=Math.atan2(touch.clientY-centerY,touch.clientX-centerX)*180/Math.PI;
+            let currentRotation=parseFloat(wrap.querySelector('.seal-img').dataset.rotation||0);
+            
+            function move(ev){
+                ev.preventDefault();
+                let angle=Math.atan2(ev.touches[0].clientY-centerY,ev.touches[0].clientX-centerX)*180/Math.PI;
+                let diff=angle-startAngle;
+                let newRotation=currentRotation+diff;
+                const img=wrap.querySelector('.seal-img');
+                img.style.transform=`rotate(${newRotation}deg)`;
+                img.dataset.rotation=newRotation;
+                document.getElementById('editor-rotation').value=newRotation;
+                document.getElementById('rotation-display').innerText=Math.round(newRotation)+'°';
+            }
+            
+            function up(){
+                document.removeEventListener('touchmove',move);
+                document.removeEventListener('touchend',up);
+            }
+            
+            document.addEventListener('touchmove',move,{passive:false});
+            document.addEventListener('touchend',up);
+        }
+        
         function activateSeal(el){
             document.querySelectorAll('.seal-wrapper').forEach(w=>{
                 w.classList.remove('active-state');
                 w.querySelector('.seal-edit-icon').style.display='none';
+                w.querySelector('.seal-resize-handle').style.display='none';
+                w.querySelector('.seal-rotate-handle').style.display='none';
             });
             el.classList.add('active-state');
             el.querySelector('.seal-edit-icon').style.display='flex';
+            el.querySelector('.seal-resize-handle').style.display='flex';
+            el.querySelector('.seal-rotate-handle').style.display='flex';
             activeSeal=el;
         }
         
         function openSealEditor(){
             document.getElementById('seal-editor').classList.add('show');
             if(activeSeal){
-                document.getElementById('editor-size').value=parseInt(activeSeal.style.width)||120;
-                document.getElementById('editor-opacity').value=parseFloat(activeSeal.style.opacity||1)*100;
-                document.getElementById('editor-size-value').innerText=document.getElementById('editor-size').value;
-                document.getElementById('editor-opacity-value').innerText=document.getElementById('editor-opacity').value;
+                const size=parseInt(activeSeal.style.width)||120;
+                const opacity=parseFloat(activeSeal.style.opacity||1)*100;
+                const rotation=parseFloat(activeSeal.querySelector('.seal-img').dataset.rotation||0);
+                document.getElementById('editor-size').value=size;
+                document.getElementById('editor-opacity').value=opacity;
+                document.getElementById('editor-rotation').value=rotation;
+                document.getElementById('size-display').innerText=size+'px';
+                document.getElementById('opacity-display').innerText=Math.round(opacity)+'%';
+                document.getElementById('rotation-display').innerText=Math.round(rotation)+'°';
             }
         }
         
@@ -688,6 +908,8 @@
             if(activeSeal){
                 activeSeal.classList.remove('active-state');
                 activeSeal.querySelector('.seal-edit-icon').style.display='none';
+                activeSeal.querySelector('.seal-resize-handle').style.display='none';
+                activeSeal.querySelector('.seal-rotate-handle').style.display='none';
                 activeSeal=null;
             }
         }
@@ -696,14 +918,44 @@
             if(activeSeal){
                 activeSeal.style.width=v+'px';
                 activeSeal.style.height=v+'px';
-                document.getElementById('editor-size-value').innerText=v;
+                document.getElementById('size-display').innerText=v+'px';
             }
         }
         
         function editorOpacityChange(v){
             if(activeSeal){
                 activeSeal.style.opacity=v/100;
-                document.getElementById('editor-opacity-value').innerText=v;
+                document.getElementById('opacity-display').innerText=Math.round(v)+'%';
+            }
+        }
+        
+        function editorRotationChange(v){
+            if(activeSeal){
+                const img=activeSeal.querySelector('.seal-img');
+                img.style.transform=`rotate(${v}deg)`;
+                img.dataset.rotation=v;
+                document.getElementById('rotation-display').innerText=Math.round(v)+'°';
+            }
+        }
+        
+        function applyPreset(size){
+            if(activeSeal){
+                activeSeal.style.width=size+'px';
+                activeSeal.style.height=size+'px';
+                document.getElementById('editor-size').value=size;
+                document.getElementById('size-display').innerText=size+'px';
+            }
+        }
+        
+        function rotateSealBy(angle){
+            if(activeSeal){
+                const img=activeSeal.querySelector('.seal-img');
+                const cur=parseFloat(img.dataset.rotation||0);
+                const nr=cur+angle;
+                img.style.transform=`rotate(${nr}deg)`;
+                img.dataset.rotation=nr;
+                document.getElementById('editor-rotation').value=nr;
+                document.getElementById('rotation-display').innerText=Math.round(nr)+'°';
             }
         }
         
@@ -729,17 +981,9 @@
             newS.style.top=(parseFloat(activeSeal.style.top)+20)+'px';
             newS.classList.remove('active-state');
             newS.querySelector('.seal-edit-icon').style.display='none';
+            newS.querySelector('.seal-resize-handle').style.display='none';
+            newS.querySelector('.seal-rotate-handle').style.display='none';
             currentPageElement.appendChild(newS);
-        }
-        
-        function rotateSeal(angle){
-            if(activeSeal){
-                const img=activeSeal.querySelector('.seal-img');
-                const cur=parseFloat(img.dataset.rotation||0);
-                const nr=cur+angle;
-                img.style.transform=`rotate(${nr}deg)`;
-                img.dataset.rotation=nr;
-            }
         }
         
         function deleteSeal(){
@@ -762,27 +1006,9 @@
             }
             closeSealEditor();
             document.getElementById('loader').style.display='block';
-            document.getElementById('loader-text').innerText='পেজ ডাউনলোড হচ্ছে...';
-            
             try{
-                await new Promise(r=>setTimeout(r,300));
-                const canvas=await html2canvas(pc,{
-                    scale:3,
-                    useCORS:true,
-                    backgroundColor:'#ffffff',
-                    logging:false,
-                    onclone:function(clonedDoc){
-                        const clonedElements=clonedDoc.querySelectorAll('.seal-edit-icon');
-                        clonedElements.forEach(el=>el.style.display='none');
-                        const activeElements=clonedDoc.querySelectorAll('.seal-wrapper.active-state');
-                        activeElements.forEach(el=>{
-                            el.classList.remove('active-state');
-                            el.style.outline='none';
-                            el.style.boxShadow='none';
-                        });
-                    }
-                });
-                
+                await new Promise(r=>setTimeout(r,200));
+                const canvas=await html2canvas(pc,{scale:3,useCORS:true,backgroundColor:'#ffffff',logging:false});
                 const link=document.createElement('a');
                 link.download=`page-${currentPageNumber}.png`;
                 link.href=canvas.toDataURL('image/png');
@@ -803,33 +1029,14 @@
             }
             closeSealEditor();
             document.getElementById('loader').style.display='block';
-            document.getElementById('loader-text').innerText='সকল পেজ প্রসেস হচ্ছে...';
-            
             try{
                 const zip=new JSZip();
                 const folder=zip.folder('sealed_pages');
-                
                 for(let i=0;i<pages.length;i++){
-                    await new Promise(r=>setTimeout(r,300));
-                    const canvas=await html2canvas(pages[i],{
-                        scale:3,
-                        useCORS:true,
-                        backgroundColor:'#ffffff',
-                        logging:false,
-                        onclone:function(clonedDoc){
-                            const clonedElements=clonedDoc.querySelectorAll('.seal-edit-icon');
-                            clonedElements.forEach(el=>el.style.display='none');
-                            const activeElements=clonedDoc.querySelectorAll('.seal-wrapper.active-state');
-                            activeElements.forEach(el=>{
-                                el.classList.remove('active-state');
-                                el.style.outline='none';
-                                el.style.boxShadow='none';
-                            });
-                        }
-                    });
+                    await new Promise(r=>setTimeout(r,200));
+                    const canvas=await html2canvas(pages[i],{scale:3,useCORS:true,backgroundColor:'#ffffff',logging:false});
                     folder.file(`page-${i+1}.png`,canvas.toDataURL('image/png').split(',')[1],{base64:true});
                 }
-                
                 const blob=await zip.generateAsync({type:'blob'});
                 const a=document.createElement('a');
                 a.download='sealed_pages.zip';
@@ -851,35 +1058,15 @@
             }
             closeSealEditor();
             document.getElementById('loader').style.display='block';
-            document.getElementById('loader-text').innerText='PDF তৈরি হচ্ছে...';
-            
             try{
                 const{jsPDF}=window.jspdf;
                 const pdf=new jsPDF('p','mm','a4');
-                
                 for(let i=0;i<pages.length;i++){
-                    await new Promise(r=>setTimeout(r,300));
-                    const canvas=await html2canvas(pages[i],{
-                        scale:2,
-                        useCORS:true,
-                        backgroundColor:'#ffffff',
-                        logging:false,
-                        onclone:function(clonedDoc){
-                            const clonedElements=clonedDoc.querySelectorAll('.seal-edit-icon');
-                            clonedElements.forEach(el=>el.style.display='none');
-                            const activeElements=clonedDoc.querySelectorAll('.seal-wrapper.active-state');
-                            activeElements.forEach(el=>{
-                                el.classList.remove('active-state');
-                                el.style.outline='none';
-                                el.style.boxShadow='none';
-                            });
-                        }
-                    });
-                    
+                    await new Promise(r=>setTimeout(r,200));
+                    const canvas=await html2canvas(pages[i],{scale:2,useCORS:true,backgroundColor:'#ffffff',logging:false});
                     if(i>0)pdf.addPage();
                     pdf.addImage(canvas.toDataURL('image/jpeg',0.95),'JPEG',0,0,210,297);
                 }
-                
                 pdf.save('sealed_document.pdf');
                 document.getElementById('loader').style.display='none';
                 showToast('✓ PDF ডাউনলোড!');
@@ -896,7 +1083,6 @@
                 return;
             }
             closeSealEditor();
-            
             const pw=window.open('','_blank');
             if(!pw){
                 showToast('পপ-আপ ব্লক!','error');
@@ -912,17 +1098,18 @@
             pw.document.write('.seal-wrapper{position:absolute}');
             pw.document.write('.seal-img{width:100%;height:100%;object-fit:contain}');
             pw.document.write('.seal-edit-icon{display:none!important}');
+            pw.document.write('.seal-resize-handle{display:none!important}');
+            pw.document.write('.seal-rotate-handle{display:none!important}');
             pw.document.write('</style></head><body>');
             
             pages.forEach(pc=>{
                 const clone=pc.cloneNode(true);
                 clone.querySelectorAll('.seal-edit-icon').forEach(i=>i.remove());
+                clone.querySelectorAll('.seal-resize-handle').forEach(i=>i.remove());
+                clone.querySelectorAll('.seal-rotate-handle').forEach(i=>i.remove());
                 clone.querySelectorAll('.seal-wrapper').forEach(w=>{
                     w.classList.remove('active-state');
                     w.style.outline='none';
-                    w.style.boxShadow='none';
-                    const newWrapper=w.cloneNode(true);
-                    w.replaceWith(newWrapper);
                 });
                 pw.document.body.appendChild(clone);
             });
@@ -939,7 +1126,7 @@
                 }catch(e){
                     showToast('প্রিন্ট উইন্ডোতে সমস্যা!','error');
                 }
-            },800);
+            },500);
         }
         
         document.addEventListener('click',(e)=>{
