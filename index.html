@@ -1087,14 +1087,14 @@
             }
         }
         
-        function getPagesWithSeals(){
-            return Array.from(document.querySelectorAll('.page-container')).filter(pc=>pc.querySelectorAll('.seal-wrapper').length>0);
+        function getAllPageContainers(){
+            return Array.from(document.querySelectorAll('.page-container'));
         }
         
         async function downloadCurrentPage(){
             const pc=currentPageElement?.closest('.page-container');
-            if(!pc||!pc.querySelector('.seal-wrapper')){
-                showToast('এই পেজে সিল নেই!','error');
+            if(!pc){
+                showToast('কোনো পেজ নেই!','error');
                 return;
             }
             closeSealEditor();
@@ -1115,9 +1115,9 @@
         }
         
         async function downloadAllPages(){
-            const pages=getPagesWithSeals();
+            const pages=getAllPageContainers();
             if(pages.length===0){
-                showToast('আগে সিল দিন','error');
+                showToast('কোনো পেজ নেই!','error');
                 return;
             }
             closeSealEditor();
@@ -1144,9 +1144,9 @@
         }
         
         async function downloadPDF(){
-            const pages=getPagesWithSeals();
+            const pages=getAllPageContainers();
             if(pages.length===0){
-                showToast('আগে সিল দিন','error');
+                showToast('কোনো পেজ নেই!','error');
                 return;
             }
             closeSealEditor();
@@ -1170,9 +1170,9 @@
         }
         
         async function printAllPages(){
-            const pages=getPagesWithSeals();
+            const pages=getAllPageContainers();
             if(pages.length===0){
-                showToast('আগে সিল দিন','error');
+                showToast('কোনো পেজ নেই!','error');
                 return;
             }
             closeSealEditor();
