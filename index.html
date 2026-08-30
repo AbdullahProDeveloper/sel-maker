@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="theme-color" content="#6366f1">
-    <meta name="description" content="প্রফেশনাল নোটারি সিল স্টুডিও - ডকুমেন্টে সিল বসান">
-    <title>Pro Notary Seal Studio - প্রফেশনাল নোটারি সিল স্টুডিও</title>
+    <meta name="description" content="প্রফেশনাল নোটারি সিল স্টুডিও">
+    <title>Pro Notary Seal Studio</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
@@ -275,7 +275,7 @@
             overflow: hidden;
             position: relative;
             background: linear-gradient(135deg, #e8ecf1, #f0f4ff);
-            padding: 8px;
+            padding: 10px;
         }
         
         body.dark-mode #preview-wrapper {
@@ -289,19 +289,23 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 12px;
-            border-radius: 10px;
+            justify-content: flex-start;
+            padding: 15px;
+            border-radius: 12px;
             background: var(--white);
             box-shadow: 0 4px 20px rgba(0,0,0,0.1);
             -webkit-overflow-scrolling: touch;
             overscroll-behavior: contain;
             scrollbar-width: thin;
             scrollbar-color: var(--primary) transparent;
+            /* This ensures horizontal scrolling works properly */
+            overflow-x: auto;
+            overflow-y: auto;
         }
         
         #preview-container::-webkit-scrollbar {
-            width: 5px;
-            height: 5px;
+            width: 6px;
+            height: 6px;
         }
         
         #preview-container::-webkit-scrollbar-track {
@@ -318,6 +322,16 @@
             border: 1px solid #334155;
         }
         
+        /* ===== CONTENT LAYER - CENTERED ===== */
+        #content-layer {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            min-height: 100%;
+            padding: 10px 0;
+        }
+        
         /* ===== UPLOAD BOX ===== */
         .upload-box {
             width: 100%;
@@ -331,7 +345,7 @@
             justify-content: center;
             padding: 20px;
             text-align: center;
-            margin: 15px auto;
+            margin: 20px auto;
             border: 2px dashed var(--border);
             transition: all 0.3s;
             cursor: pointer;
@@ -404,17 +418,18 @@
             box-shadow: 0 8px 25px rgba(99,102,241,0.4);
         }
         
-        /* ===== PAGE CONTAINER ===== */
+        /* ===== PAGE CONTAINER - IMPORTANT FIX ===== */
         .page-container {
-            width: 100%;
-            max-width: 794px;
-            margin: 8px auto;
+            width: 794px;
+            max-width: none;
+            margin: 10px auto;
             background: var(--white);
-            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
-            border-radius: 6px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.15);
+            border-radius: 8px;
             overflow: hidden;
             flex-shrink: 0;
             transition: all 0.3s;
+            position: relative;
         }
         
         body.dark-mode .page-container {
@@ -508,12 +523,6 @@
         .seal-wrapper.active-state .seal-resize-handle,
         .seal-wrapper.active-state .seal-rotate-handle {
             display: flex;
-            animation: popIn 0.3s ease;
-        }
-        
-        @keyframes popIn {
-            0% { transform: scale(0); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
         }
         
         /* ===== SEAL EDITOR ===== */
@@ -536,12 +545,6 @@
         
         #seal-editor.show {
             display: flex;
-            animation: editorIn 0.3s ease;
-        }
-        
-        @keyframes editorIn {
-            0% { transform: scale(0.8); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
         }
         
         .editor-header {
@@ -944,12 +947,6 @@
         
         #settings-panel.show {
             display: block;
-            animation: settingsIn 0.3s ease;
-        }
-        
-        @keyframes settingsIn {
-            0% { transform: translateY(100%); }
-            100% { transform: translateY(0); }
         }
         
         .settings-header {
@@ -1281,12 +1278,6 @@
         
         #export-options.show {
             display: flex;
-            animation: exportIn 0.3s ease;
-        }
-        
-        @keyframes exportIn {
-            0% { transform: translateY(20px); opacity: 0; }
-            100% { transform: translateY(0); opacity: 1; }
         }
         
         #export-options button {
@@ -1375,7 +1366,7 @@
             }
             
             .upload-box {
-                min-height: 220px;
+                min-height: 200px;
                 padding: 15px;
                 margin: 8px auto;
                 border-radius: 10px;
@@ -1405,7 +1396,6 @@
             }
             
             .page-container {
-                margin: 6px auto;
                 border-radius: 4px;
             }
             
@@ -1545,7 +1535,7 @@
             }
             
             .upload-box {
-                min-height: 200px;
+                min-height: 180px;
                 padding: 12px;
                 margin: 6px auto;
                 border-radius: 8px;
@@ -1916,7 +1906,7 @@
         let pageContainers=[];
         let observer=null;
         
-        // Toast notification - slides from right to left
+        // Toast notification
         function showToast(msg,type='success'){
             const container=document.getElementById('toast-container');
             const toast=document.getElementById('toast');
@@ -2066,7 +2056,7 @@
             }
         }
         
-        // Build menu tree - Fixed
+        // Build menu tree
         function buildMenu(){
             const tree=document.getElementById('menu-tree');
             tree.innerHTML='';
@@ -2352,6 +2342,7 @@
             closeSealEditor();
         }
         
+        // Zoom function - FIXED to properly scale pages
         function changeZoom(d){
             currentZoom = currentZoom + d;
             if(currentZoom < 0.05) currentZoom = 0.05;
@@ -2359,13 +2350,21 @@
             
             document.getElementById('zoom-value').innerText = Math.round(currentZoom * 100) + '%';
             
+            // Apply zoom to all page containers
             pageContainers.forEach(pc => {
                 const width = 794 * currentZoom;
                 pc.style.width = width + 'px';
-                pc.style.maxWidth = width + 'px';
+                pc.style.maxWidth = 'none';
                 pc.style.minWidth = width + 'px';
                 pc.style.flexShrink = '0';
             });
+            
+            // After zooming, scroll to center current page
+            if(currentPageElement){
+                setTimeout(()=>{
+                    currentPageElement.scrollIntoView({behavior:'smooth',block:'center'});
+                },100);
+            }
         }
         
         // Add seal
