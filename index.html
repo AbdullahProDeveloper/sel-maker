@@ -29,9 +29,10 @@
             --text-light: #64748b;
             --bg: #f8fafc;
             --white: #ffffff;
-            --header-height: 64px;
-            --controls-height: 56px;
+            --header-height: 60px;
+            --controls-height: 50px;
             --sidebar-width: 340px;
+            --toast-width: 320px;
         }
         
         * {
@@ -67,17 +68,17 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0 16px;
+            padding: 0 12px;
             z-index: 2000;
             flex-shrink: 0;
             box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-            border-bottom: 3px solid var(--primary);
+            border-bottom: 2px solid var(--primary);
         }
         
         .header-left {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
             flex: 1;
             min-width: 0;
         }
@@ -85,7 +86,7 @@
         .header-right {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             flex-shrink: 0;
         }
         
@@ -93,84 +94,54 @@
             background: rgba(255,255,255,0.1);
             border: 1px solid rgba(255,255,255,0.2);
             color: #fff;
-            width: 44px;
-            height: 44px;
-            border-radius: 12px;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
             cursor: pointer;
-            font-size: 18px;
+            font-size: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
             transition: all 0.3s;
             flex-shrink: 0;
             position: relative;
-            overflow: hidden;
-        }
-        
-        .header-btn::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.2), transparent);
-            transform: rotate(45deg);
-            transition: 0.5s;
-        }
-        
-        .header-btn:hover::before {
-            transform: translateX(100%) rotate(45deg);
         }
         
         .header-btn:hover {
             background: var(--primary);
             border-color: var(--primary);
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(99,102,241,0.4);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(99,102,241,0.4);
         }
         
         .header-btn:active {
             transform: scale(0.95);
         }
         
-        .header-btn .btn-label {
-            font-size: 11px;
-            font-weight: 700;
-            position: absolute;
-            bottom: -20px;
-            opacity: 0;
-            transition: all 0.3s;
-            white-space: nowrap;
+        .header-btn.active {
             background: var(--primary);
-            padding: 4px 8px;
-            border-radius: 6px;
-        }
-        
-        .header-btn:hover .btn-label {
-            bottom: -25px;
-            opacity: 1;
+            border-color: var(--primary);
         }
         
         .brand-icon {
-            width: 42px;
-            height: 42px;
+            width: 38px;
+            height: 38px;
             background: linear-gradient(135deg, var(--primary), var(--primary-light));
-            border-radius: 12px;
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 20px;
+            font-size: 18px;
             box-shadow: 0 4px 15px rgba(99,102,241,0.3);
         }
         
         .brand-title {
-            font-size: 15px;
+            font-size: 14px;
             font-weight: 800;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            max-width: 200px;
+            max-width: 180px;
             letter-spacing: 0.5px;
         }
         
@@ -178,9 +149,9 @@
             background: rgba(255,255,255,0.1);
             border: 1px solid rgba(255,255,255,0.2);
             color: #fff;
-            padding: 8px 14px;
-            border-radius: 20px;
-            font-size: 13px;
+            padding: 8px 12px;
+            border-radius: 16px;
+            font-size: 12px;
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -192,27 +163,24 @@
         .header-text-btn:hover {
             background: var(--primary);
             border-color: var(--primary);
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(99,102,241,0.3);
         }
         
         .header-text-btn span {
             display: none;
         }
         
-        /* ===== CONTROLS BAR ===== */
+        /* ===== CONTROLS BAR - COMPACT ===== */
         #controls-bar {
             height: var(--controls-height);
             background: linear-gradient(135deg, #f8fafc, #eef2ff);
-            padding: 8px 12px;
+            padding: 5px 10px;
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 10px;
-            border-bottom: 2px solid var(--border);
+            gap: 6px;
+            border-bottom: 1px solid var(--border);
             z-index: 1900;
             flex-shrink: 0;
-            box-shadow: 0 2px 15px rgba(0,0,0,0.05);
         }
         
         body.dark-mode #controls-bar {
@@ -223,12 +191,12 @@
         .ctrl-group {
             display: flex;
             align-items: center;
-            gap: 4px;
+            gap: 3px;
             background: var(--white);
-            border-radius: 12px;
-            padding: 5px;
+            border-radius: 8px;
+            padding: 3px;
             border: 1px solid var(--border);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            box-shadow: 0 1px 5px rgba(0,0,0,0.05);
             flex-shrink: 0;
         }
         
@@ -241,32 +209,31 @@
             background: transparent;
             border: none;
             color: var(--text);
-            width: 38px;
-            height: 38px;
-            border-radius: 10px;
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.3s;
+            transition: all 0.2s;
             flex-shrink: 0;
         }
         
         .ctrl-btn:hover {
             background: var(--primary);
             color: #fff;
-            transform: scale(1.05);
         }
         
         .ctrl-input {
-            width: 48px;
-            height: 38px;
+            width: 40px;
+            height: 32px;
             text-align: center;
             border: 1px solid var(--border);
             background: var(--white);
-            border-radius: 10px;
-            font-size: 14px;
+            border-radius: 6px;
+            font-size: 12px;
             font-weight: 700;
             color: var(--text);
             outline: none;
@@ -279,10 +246,10 @@
         }
         
         .ctrl-label {
-            font-size: 12px;
+            font-size: 10px;
             color: var(--text-light);
             font-weight: 600;
-            padding: 0 4px;
+            padding: 0 3px;
             white-space: nowrap;
         }
         
@@ -313,7 +280,7 @@
         }
         
         .side-header {
-            padding: 16px;
+            padding: 14px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -323,7 +290,7 @@
         }
         
         .side-header h3 {
-            font-size: 15px;
+            font-size: 14px;
             font-weight: 700;
         }
         
@@ -331,11 +298,11 @@
             background: rgba(255,255,255,0.2);
             border: none;
             color: #fff;
-            width: 36px;
-            height: 36px;
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -348,9 +315,9 @@
         }
         
         #sidebar-actions {
-            padding: 12px;
+            padding: 10px;
             display: flex;
-            gap: 8px;
+            gap: 6px;
             border-bottom: 1px solid var(--border);
             flex-shrink: 0;
         }
@@ -359,15 +326,15 @@
             background: rgba(99,102,241,0.1);
             border: 1px solid rgba(99,102,241,0.3);
             color: var(--primary);
-            padding: 10px;
-            border-radius: 10px;
-            font-size: 12px;
+            padding: 8px;
+            border-radius: 8px;
+            font-size: 11px;
             cursor: pointer;
             flex: 1;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 6px;
+            gap: 5px;
             font-weight: 600;
             transition: all 0.3s;
         }
@@ -380,18 +347,18 @@
         }
         
         #search-container {
-            padding: 12px;
+            padding: 10px;
             flex-shrink: 0;
         }
         
         #search-input {
             width: 100%;
             background: #f8fafc;
-            border: 2px solid var(--border);
+            border: 1px solid var(--border);
             color: var(--text);
-            padding: 12px;
-            border-radius: 12px;
-            font-size: 14px;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 13px;
             outline: none;
             transition: all 0.3s;
         }
@@ -410,7 +377,7 @@
         #menu-tree {
             flex: 1;
             overflow-y: auto;
-            padding: 12px;
+            padding: 10px;
         }
         
         .level-btn {
@@ -418,15 +385,15 @@
             background: #f8fafc;
             border: 1px solid var(--border);
             color: var(--text);
-            padding: 12px;
-            border-radius: 10px;
-            font-size: 14px;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 13px;
             font-weight: 600;
             display: flex;
             justify-content: space-between;
             align-items: center;
             cursor: pointer;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             text-align: left;
             transition: all 0.3s;
         }
@@ -440,15 +407,14 @@
         .level-btn:hover {
             background: #f0f4ff;
             border-color: var(--primary);
-            transform: translateX(5px);
-            box-shadow: 0 4px 15px rgba(99,102,241,0.15);
+            transform: translateX(3px);
         }
         
         .nested-container {
             display: none;
-            padding-left: 12px;
+            padding-left: 10px;
             border-left: 2px solid var(--primary);
-            margin-left: 10px;
+            margin-left: 8px;
         }
         
         .nested-container.show {
@@ -458,11 +424,11 @@
         .images-container {
             display: none;
             grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-            padding: 12px;
+            gap: 6px;
+            padding: 8px;
             background: #f8fafc;
-            border-radius: 12px;
-            margin-top: 8px;
+            border-radius: 8px;
+            margin-top: 6px;
         }
         
         body.dark-mode .images-container {
@@ -475,14 +441,14 @@
         
         .seal-item {
             background: var(--white);
-            border-radius: 10px;
-            padding: 8px;
+            border-radius: 8px;
+            padding: 6px;
             display: flex;
             justify-content: center;
             align-items: center;
             cursor: pointer;
             aspect-ratio: 1;
-            border: 2px solid var(--border);
+            border: 1px solid var(--border);
             transition: all 0.3s;
         }
         
@@ -507,15 +473,15 @@
             background: #f8fafc;
             border: 1px solid var(--border);
             color: var(--text);
-            padding: 12px;
-            border-radius: 10px;
-            font-size: 13px;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 12px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
-            margin: 12px;
+            margin: 10px;
             transition: all 0.3s;
             flex-shrink: 0;
             font-weight: 600;
@@ -563,7 +529,7 @@
         #scroll-area {
             flex: 1;
             overflow: auto;
-            padding: 20px;
+            padding: 15px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -578,26 +544,25 @@
         .upload-box {
             width: 100%;
             max-width: 600px;
-            min-height: 400px;
+            min-height: 350px;
             background: var(--white);
-            border-radius: 24px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            border-radius: 20px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.1);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 40px;
+            padding: 30px;
             text-align: center;
-            margin: 20px auto;
-            border: 3px dashed var(--border);
+            margin: 15px auto;
+            border: 2px dashed var(--border);
             transition: all 0.3s;
             cursor: pointer;
         }
         
         .upload-box:hover {
             border-color: var(--primary);
-            box-shadow: 0 10px 50px rgba(99,102,241,0.2);
-            transform: scale(1.02);
+            box-shadow: 0 8px 40px rgba(99,102,241,0.2);
         }
         
         body.dark-mode .upload-box {
@@ -606,63 +571,53 @@
         }
         
         .upload-box-icon {
-            width: 90px;
-            height: 90px;
+            width: 70px;
+            height: 70px;
             background: linear-gradient(135deg, var(--primary), var(--primary-light));
-            border-radius: 24px;
+            border-radius: 20px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 35px;
+            font-size: 28px;
             color: #fff;
-            box-shadow: 0 8px 30px rgba(99,102,241,0.3);
-            margin-bottom: 20px;
-            animation: bounce 2s infinite;
-        }
-        
-        @keyframes bounce {
-            0%, 100% {
-                transform: translateY(0);
-            }
-            50% {
-                transform: translateY(-10px);
-            }
+            box-shadow: 0 6px 20px rgba(99,102,241,0.3);
+            margin-bottom: 15px;
         }
         
         .upload-box h3 {
-            font-size: 20px;
-            margin-bottom: 12px;
+            font-size: 18px;
+            margin-bottom: 10px;
             font-weight: 800;
         }
         
         .upload-box p {
-            font-size: 14px;
+            font-size: 13px;
             color: var(--text-light);
             line-height: 1.6;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
         
         .upload-btn {
             background: linear-gradient(135deg, var(--primary), var(--primary-light));
             color: #fff;
             border: none;
-            border-radius: 16px;
-            padding: 16px 32px;
+            border-radius: 12px;
+            padding: 14px 28px;
             font-weight: 700;
-            font-size: 14px;
+            font-size: 13px;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
-            gap: 10px;
-            box-shadow: 0 6px 25px rgba(99,102,241,0.3);
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(99,102,241,0.3);
             transition: all 0.3s;
-            max-width: 300px;
+            max-width: 280px;
             margin: 0 auto;
         }
         
         .upload-btn:hover {
             transform: translateY(-3px);
-            box-shadow: 0 10px 35px rgba(99,102,241,0.4);
+            box-shadow: 0 8px 25px rgba(99,102,241,0.4);
         }
         
         /* ===== PAGE CONTAINER ===== */
@@ -670,10 +625,10 @@
             position: relative;
             width: 100%;
             max-width: 794px;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             background: var(--white);
-            box-shadow: 0 8px 40px rgba(0,0,0,0.1);
-            border-radius: 10px;
+            box-shadow: 0 5px 30px rgba(0,0,0,0.1);
+            border-radius: 8px;
             overflow: hidden;
         }
         
@@ -714,7 +669,7 @@
         .seal-wrapper.active-state {
             outline: 2px dashed var(--primary);
             outline-offset: 3px;
-            box-shadow: 0 0 25px rgba(99,102,241,0.3);
+            box-shadow: 0 0 20px rgba(99,102,241,0.3);
             border-radius: 8px;
         }
         
@@ -728,40 +683,40 @@
         
         .seal-resize-handle {
             position: absolute;
-            bottom: -10px;
-            right: -10px;
-            width: 24px;
-            height: 24px;
+            bottom: -8px;
+            right: -8px;
+            width: 20px;
+            height: 20px;
             background: var(--secondary);
             border-radius: 50%;
-            border: 3px solid var(--white);
+            border: 2px solid var(--white);
             display: none;
             align-items: center;
             justify-content: center;
             color: #fff;
-            font-size: 10px;
+            font-size: 8px;
             z-index: 20;
             cursor: nwse-resize;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
         }
         
         .seal-rotate-handle {
             position: absolute;
-            top: -10px;
-            left: -10px;
-            width: 24px;
-            height: 24px;
+            top: -8px;
+            left: -8px;
+            width: 20px;
+            height: 20px;
             background: var(--primary-light);
             border-radius: 50%;
-            border: 3px solid var(--white);
+            border: 2px solid var(--white);
             display: none;
             align-items: center;
             justify-content: center;
             color: #fff;
-            font-size: 10px;
+            font-size: 8px;
             z-index: 20;
             cursor: grab;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
         }
         
         .seal-wrapper.active-state .seal-resize-handle,
@@ -769,18 +724,18 @@
             display: flex;
         }
         
-        /* ===== SEAL EDITOR ===== */
+        /* ===== SEAL EDITOR - COMPACT FOR MOBILE ===== */
         #seal-editor {
             position: fixed;
             background: linear-gradient(135deg, #1e293b, #0f172a);
-            border-radius: 16px;
-            padding: 14px;
+            border-radius: 12px;
+            padding: 10px;
             z-index: 5000;
             display: none;
             flex-direction: column;
-            gap: 8px;
-            max-width: 90%;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            gap: 6px;
+            max-width: 92%;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.5);
             border: 2px solid rgba(99,102,241,0.4);
             cursor: move;
             user-select: none;
@@ -796,9 +751,9 @@
             justify-content: space-between;
             align-items: center;
             color: #fff;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 700;
-            padding-bottom: 8px;
+            padding-bottom: 6px;
             border-bottom: 1px solid rgba(255,255,255,0.1);
             cursor: move;
         }
@@ -807,11 +762,11 @@
             background: rgba(239,68,68,0.3);
             border: none;
             color: #fff;
-            width: 28px;
-            height: 28px;
+            width: 24px;
+            height: 24px;
             border-radius: 50%;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -827,7 +782,7 @@
             display: flex;
             flex-direction: row;
             flex-wrap: wrap;
-            gap: 6px;
+            gap: 4px;
             align-items: center;
             justify-content: center;
         }
@@ -836,11 +791,11 @@
             background: rgba(255,255,255,0.1);
             border: 1px solid rgba(255,255,255,0.2);
             color: #fff;
-            width: 36px;
-            height: 36px;
-            border-radius: 10px;
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -856,21 +811,21 @@
         .editor-section {
             display: flex;
             align-items: center;
-            gap: 4px;
+            gap: 3px;
             background: rgba(255,255,255,0.1);
-            padding: 6px 8px;
-            border-radius: 10px;
+            padding: 4px 6px;
+            border-radius: 8px;
         }
         
         .editor-label {
             color: #94a3b8;
-            font-size: 10px;
+            font-size: 9px;
             white-space: nowrap;
-            min-width: 35px;
+            min-width: 30px;
         }
         
         input[type="range"].editor-input {
-            width: 70px;
+            width: 55px;
             height: 4px;
             accent-color: var(--primary);
             cursor: pointer;
@@ -878,7 +833,7 @@
         
         .editor-presets {
             display: flex;
-            gap: 6px;
+            gap: 4px;
             flex-wrap: wrap;
             justify-content: center;
         }
@@ -887,9 +842,9 @@
             background: rgba(99,102,241,0.2);
             border: 1px solid rgba(99,102,241,0.3);
             color: #fff;
-            padding: 6px 12px;
-            border-radius: 10px;
-            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: 8px;
+            font-size: 10px;
             cursor: pointer;
             transition: all 0.3s;
             font-weight: 600;
@@ -903,72 +858,55 @@
         /* ===== FLOATING BUTTONS ===== */
         #quick-seal-buttons {
             position: fixed;
-            bottom: 20px;
-            left: 10px;
+            bottom: 15px;
+            left: 8px;
             z-index: 950;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 8px;
         }
         
         .quick-btn {
-            width: 52px;
-            height: 52px;
-            border-radius: 16px;
+            width: 46px;
+            height: 46px;
+            border-radius: 14px;
             background: linear-gradient(135deg, var(--primary), var(--primary-light));
             border: none;
             color: #fff;
-            font-size: 18px;
+            font-size: 16px;
             cursor: pointer;
-            box-shadow: 0 6px 20px rgba(99,102,241,0.4);
+            box-shadow: 0 4px 15px rgba(99,102,241,0.4);
             display: flex;
             align-items: center;
             justify-content: center;
             transition: all 0.3s;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .quick-btn::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.3), transparent);
-            transform: rotate(45deg);
         }
         
         .quick-btn:hover {
-            transform: translateY(-4px) scale(1.08);
-            box-shadow: 0 10px 30px rgba(99,102,241,0.5);
-        }
-        
-        .quick-btn:active {
-            transform: scale(0.95);
+            transform: translateY(-3px) scale(1.08);
+            box-shadow: 0 8px 25px rgba(99,102,241,0.5);
         }
         
         #bottom-actions {
             position: fixed;
-            bottom: 20px;
-            right: 10px;
+            bottom: 15px;
+            right: 8px;
             z-index: 950;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 8px;
         }
         
         #export-btn {
             background: linear-gradient(135deg, var(--primary), var(--primary-light));
             color: #fff;
             border: none;
-            border-radius: 16px;
-            padding: 14px 20px;
-            font-size: 13px;
+            border-radius: 14px;
+            padding: 12px 18px;
+            font-size: 12px;
             font-weight: 700;
             cursor: pointer;
-            box-shadow: 0 6px 20px rgba(99,102,241,0.4);
+            box-shadow: 0 4px 15px rgba(99,102,241,0.4);
             display: flex;
             align-items: center;
             gap: 8px;
@@ -976,23 +914,23 @@
         }
         
         #export-btn:hover {
-            transform: translateY(-4px) scale(1.05);
-            box-shadow: 0 10px 35px rgba(99,102,241,0.5);
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 30px rgba(99,102,241,0.5);
         }
         
         #export-options {
             position: fixed;
-            bottom: 80px;
-            right: 10px;
+            bottom: 70px;
+            right: 8px;
             background: linear-gradient(135deg, #1e293b, #0f172a);
-            border-radius: 14px;
-            padding: 10px;
+            border-radius: 12px;
+            padding: 8px;
             display: none;
             flex-direction: column;
-            gap: 6px;
+            gap: 5px;
             z-index: 3000;
-            min-width: 160px;
-            box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+            min-width: 140px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
             border: 1px solid rgba(255,255,255,0.1);
         }
         
@@ -1005,13 +943,13 @@
             border: none;
             color: #fff;
             text-align: left;
-            padding: 12px;
-            border-radius: 10px;
+            padding: 10px;
+            border-radius: 8px;
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 8px;
-            font-size: 13px;
+            gap: 6px;
+            font-size: 12px;
             transition: all 0.3s;
         }
         
@@ -1020,7 +958,7 @@
             transform: translateX(5px);
         }
         
-        /* ===== SETTINGS ===== */
+        /* ===== SETTINGS - PROFESSIONAL ===== */
         #settings-panel {
             display: none;
             position: fixed;
@@ -1029,7 +967,7 @@
             right: 0;
             background: var(--white);
             border-radius: 20px 20px 0 0;
-            padding: 24px;
+            padding: 20px;
             z-index: 4000;
             box-shadow: 0 -10px 30px rgba(0,0,0,0.3);
             max-height: 65vh;
@@ -1044,9 +982,43 @@
             display: block;
         }
         
+        .settings-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--border);
+        }
+        
+        .settings-header h3 {
+            font-size: 16px;
+            font-weight: 800;
+            color: var(--primary);
+        }
+        
+        .settings-close-btn {
+            background: var(--danger);
+            border: none;
+            color: #fff;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+        
+        .settings-close-btn:hover {
+            transform: scale(1.1) rotate(90deg);
+        }
+        
         .settings-section {
             background: #f8fafc;
-            border-radius: 14px;
+            border-radius: 12px;
             padding: 14px;
             margin-bottom: 12px;
             border: 1px solid var(--border);
@@ -1055,6 +1027,20 @@
         body.dark-mode .settings-section {
             background: #1a1a1a;
             border-color: #334155;
+        }
+        
+        .settings-section-title {
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text);
+        }
+        
+        .settings-section-title i {
+            color: var(--primary);
         }
         
         .settings-row {
@@ -1080,6 +1066,8 @@
             flex: 1;
             margin: 0 10px;
             accent-color: var(--primary);
+            height: 6px;
+            border-radius: 10px;
         }
         
         input[type="color"] {
@@ -1090,42 +1078,74 @@
             cursor: pointer;
         }
         
-        /* ===== TOAST ===== */
-        #toast {
+        .settings-reset-btn {
+            background: linear-gradient(135deg, var(--danger), #dc2626);
+            color: #fff;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+        
+        .settings-reset-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(239,68,68,0.3);
+        }
+        
+        /* ===== TOAST - SLIDING NOTIFICATION ===== */
+        #toast-container {
             position: fixed;
-            top: calc(var(--header-height) + var(--controls-height) + 10px);
-            left: 50%;
-            transform: translateX(-50%) translateY(-100px);
+            top: var(--header-height);
+            right: -500px;
+            z-index: 10000;
+            width: var(--toast-width);
+            max-width: 95vw;
+            transition: right 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        #toast-container.show {
+            right: 10px;
+        }
+        
+        #toast {
             background: linear-gradient(135deg, #1e293b, #0f172a);
             color: #fff;
-            padding: 12px 20px;
+            padding: 12px 16px;
             border-radius: 12px;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 600;
-            z-index: 10000;
             display: flex;
             align-items: center;
             gap: 10px;
-            transition: transform 0.3s;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
-            max-width: 90%;
-            border: 2px solid rgba(255,255,255,0.1);
-        }
-        
-        #toast.show {
-            transform: translateX(-50%) translateY(0);
-        }
-        
-        #toast.success {
+            box-shadow: 0 8px 30px rgba(0,0,0,0.3);
             border-left: 4px solid var(--secondary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            backdrop-filter: blur(10px);
         }
         
         #toast.error {
-            border-left: 4px solid var(--danger);
+            border-left-color: var(--danger);
+        }
+        
+        #toast.warning {
+            border-left-color: var(--warning);
         }
         
         #toast i {
             font-size: 16px;
+            flex-shrink: 0;
+        }
+        
+        #toast-message {
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         
         /* ===== LOADER ===== */
@@ -1136,7 +1156,7 @@
             left: 50%;
             transform: translate(-50%, -50%);
             background: rgba(15,23,42,0.95);
-            padding: 30px;
+            padding: 25px;
             border-radius: 50%;
             z-index: 5000;
             color: var(--primary-light);
@@ -1144,7 +1164,7 @@
         }
         
         #loader i {
-            font-size: 40px;
+            font-size: 35px;
             animation: spin 1s linear infinite;
         }
         
@@ -1162,37 +1182,37 @@
             left: 50%;
             transform: translate(-50%, -50%);
             background: linear-gradient(135deg, #1e293b, #0f172a);
-            border-radius: 20px;
-            padding: 24px;
+            border-radius: 16px;
+            padding: 20px;
             z-index: 6000;
             max-width: 90%;
-            width: 380px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            width: 350px;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.5);
             border: 2px solid rgba(99,102,241,0.4);
         }
         
         #help-modal h3 {
             color: var(--primary-light);
-            margin-bottom: 16px;
-            font-size: 16px;
+            margin-bottom: 12px;
+            font-size: 15px;
             font-weight: 700;
         }
         
         #help-modal p {
             color: #cbd5e1;
-            font-size: 14px;
+            font-size: 13px;
             line-height: 1.8;
-            margin-bottom: 16px;
+            margin-bottom: 12px;
         }
         
         #help-modal button {
             background: var(--primary);
             border: none;
             color: #fff;
-            padding: 14px 20px;
-            border-radius: 12px;
+            padding: 12px 20px;
+            border-radius: 10px;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 600;
             width: 100%;
             transition: all 0.3s;
@@ -1206,173 +1226,10 @@
         /* ===== MEDIA QUERIES ===== */
         @media (max-width: 768px) {
             :root {
-                --header-height: 56px;
-                --controls-height: 50px;
-                --sidebar-width: 300px;
-            }
-            
-            #header {
-                padding: 0 10px;
-            }
-            
-            .header-btn {
-                width: 38px;
-                height: 38px;
-                font-size: 15px;
-                border-radius: 10px;
-            }
-            
-            .brand-icon {
-                width: 36px;
-                height: 36px;
-                font-size: 17px;
-                border-radius: 10px;
-            }
-            
-            .brand-title {
-                font-size: 13px;
-                max-width: 150px;
-            }
-            
-            .header-text-btn {
-                padding: 7px 12px;
-                font-size: 12px;
-                border-radius: 16px;
-            }
-            
-            .ctrl-btn {
-                width: 34px;
-                height: 34px;
-                font-size: 13px;
-            }
-            
-            .ctrl-input {
-                width: 40px;
-                height: 34px;
-                font-size: 12px;
-            }
-            
-            .ctrl-label {
-                font-size: 10px;
-            }
-            
-            #scroll-area {
-                padding: 12px;
-            }
-            
-            .upload-box {
-                min-height: 350px;
-                padding: 30px;
-                margin: 15px auto;
-                border-radius: 20px;
-            }
-            
-            .upload-box-icon {
-                width: 80px;
-                height: 80px;
-                font-size: 28px;
-                border-radius: 20px;
-                margin-bottom: 16px;
-            }
-            
-            .upload-box h3 {
-                font-size: 18px;
-            }
-            
-            .upload-box p {
-                font-size: 13px;
-            }
-            
-            .upload-btn {
-                padding: 14px 28px;
-                font-size: 13px;
-                border-radius: 14px;
-            }
-            
-            .page-container {
-                margin-bottom: 15px;
-                border-radius: 8px;
-            }
-            
-            #seal-editor {
-                padding: 12px;
-                border-radius: 14px;
-            }
-            
-            .editor-btn {
-                width: 32px;
-                height: 32px;
-                font-size: 13px;
-                border-radius: 8px;
-            }
-            
-            .editor-section {
-                padding: 5px 6px;
-                gap: 3px;
-            }
-            
-            .editor-label {
-                font-size: 9px;
-                min-width: 32px;
-            }
-            
-            input[type="range"].editor-input {
-                width: 55px;
-            }
-            
-            .preset-btn {
-                padding: 5px 10px;
-                font-size: 10px;
-            }
-            
-            .seal-resize-handle {
-                width: 20px;
-                height: 20px;
-                bottom: -8px;
-                right: -8px;
-                font-size: 9px;
-            }
-            
-            .seal-rotate-handle {
-                width: 20px;
-                height: 20px;
-                top: -8px;
-                left: -8px;
-                font-size: 9px;
-            }
-            
-            .quick-btn {
-                width: 46px;
-                height: 46px;
-                font-size: 16px;
-                border-radius: 14px;
-            }
-            
-            #export-btn {
-                padding: 12px 18px;
-                font-size: 12px;
-                border-radius: 14px;
-            }
-            
-            #export-options {
-                bottom: 75px;
-                right: 8px;
-                min-width: 140px;
-                padding: 8px;
-                border-radius: 12px;
-            }
-            
-            #export-options button {
-                padding: 10px;
-                font-size: 12px;
-                border-radius: 8px;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            :root {
-                --header-height: 52px;
+                --header-height: 54px;
                 --controls-height: 46px;
+                --sidebar-width: 300px;
+                --toast-width: 280px;
             }
             
             #header {
@@ -1380,22 +1237,22 @@
             }
             
             .header-btn {
-                width: 34px;
-                height: 34px;
+                width: 36px;
+                height: 36px;
                 font-size: 14px;
                 border-radius: 8px;
             }
             
             .brand-icon {
-                width: 32px;
-                height: 32px;
-                font-size: 15px;
+                width: 34px;
+                height: 34px;
+                font-size: 16px;
                 border-radius: 8px;
             }
             
             .brand-title {
                 font-size: 12px;
-                max-width: 120px;
+                max-width: 130px;
             }
             
             .header-text-btn {
@@ -1404,8 +1261,30 @@
                 border-radius: 12px;
             }
             
+            #controls-bar {
+                padding: 4px 8px;
+                gap: 4px;
+            }
+            
+            .ctrl-btn {
+                width: 28px;
+                height: 28px;
+                font-size: 11px;
+            }
+            
+            .ctrl-input {
+                width: 36px;
+                height: 28px;
+                font-size: 11px;
+            }
+            
+            .ctrl-label {
+                font-size: 9px;
+                padding: 0 2px;
+            }
+            
             #scroll-area {
-                padding: 8px;
+                padding: 10px;
             }
             
             .upload-box {
@@ -1416,10 +1295,10 @@
             }
             
             .upload-box-icon {
-                width: 70px;
-                height: 70px;
-                font-size: 24px;
-                border-radius: 18px;
+                width: 60px;
+                height: 60px;
+                font-size: 22px;
+                border-radius: 16px;
                 margin-bottom: 12px;
             }
             
@@ -1429,12 +1308,163 @@
             
             .upload-box p {
                 font-size: 12px;
+                margin-bottom: 12px;
             }
             
             .upload-btn {
                 padding: 12px 24px;
                 font-size: 12px;
+                border-radius: 10px;
+            }
+            
+            .page-container {
+                margin-bottom: 12px;
+                border-radius: 6px;
+            }
+            
+            #seal-editor {
+                padding: 8px;
+                border-radius: 10px;
+            }
+            
+            .editor-btn {
+                width: 28px;
+                height: 28px;
+                font-size: 11px;
+                border-radius: 6px;
+            }
+            
+            .editor-section {
+                padding: 3px 5px;
+                gap: 2px;
+            }
+            
+            .editor-label {
+                font-size: 8px;
+                min-width: 25px;
+            }
+            
+            input[type="range"].editor-input {
+                width: 45px;
+            }
+            
+            .preset-btn {
+                padding: 3px 6px;
+                font-size: 9px;
+            }
+            
+            .seal-resize-handle {
+                width: 16px;
+                height: 16px;
+                bottom: -6px;
+                right: -6px;
+                font-size: 7px;
+            }
+            
+            .seal-rotate-handle {
+                width: 16px;
+                height: 16px;
+                top: -6px;
+                left: -6px;
+                font-size: 7px;
+            }
+            
+            .quick-btn {
+                width: 42px;
+                height: 42px;
+                font-size: 14px;
                 border-radius: 12px;
+            }
+            
+            #export-btn {
+                padding: 10px 15px;
+                font-size: 11px;
+                border-radius: 12px;
+            }
+            
+            #export-options {
+                bottom: 65px;
+                right: 6px;
+                min-width: 130px;
+                padding: 6px;
+                border-radius: 10px;
+            }
+            
+            #export-options button {
+                padding: 8px;
+                font-size: 11px;
+                border-radius: 6px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            :root {
+                --header-height: 50px;
+                --controls-height: 44px;
+                --toast-width: 260px;
+            }
+            
+            #header {
+                padding: 0 6px;
+            }
+            
+            .header-btn {
+                width: 32px;
+                height: 32px;
+                font-size: 13px;
+                border-radius: 6px;
+            }
+            
+            .brand-icon {
+                width: 30px;
+                height: 30px;
+                font-size: 14px;
+                border-radius: 6px;
+            }
+            
+            .brand-title {
+                font-size: 11px;
+                max-width: 110px;
+            }
+            
+            .header-text-btn {
+                padding: 5px 8px;
+                font-size: 10px;
+                border-radius: 10px;
+            }
+            
+            #scroll-area {
+                padding: 8px;
+            }
+            
+            .upload-box {
+                min-height: 250px;
+                padding: 20px;
+                margin: 8px auto;
+                border-radius: 12px;
+            }
+            
+            .upload-box-icon {
+                width: 50px;
+                height: 50px;
+                font-size: 18px;
+                border-radius: 12px;
+                margin-bottom: 10px;
+            }
+            
+            .upload-box h3 {
+                font-size: 14px;
+            }
+            
+            .upload-box p {
+                font-size: 11px;
+                margin-bottom: 10px;
+            }
+            
+            .upload-btn {
+                padding: 10px 20px;
+                font-size: 11px;
+                border-radius: 8px;
             }
         }
     </style>
@@ -1452,8 +1482,8 @@
             <div class="brand-title" id="title-text">নোটারি সিল স্টুডিও</div>
         </div>
         <div class="header-right">
-            <button class="header-btn" onclick="toggleLanguage()" title="ভাষা পরিবর্তন">
-                <i class="fas fa-globe"></i>
+            <button class="header-btn" onclick="toggleLanguage()" title="ভাষা">
+                <i class="fas fa-globe" id="lang-icon"></i>
             </button>
             <button class="header-btn" onclick="showHelp()" title="সাহায্য">
                 <i class="fas fa-question-circle"></i>
@@ -1461,10 +1491,13 @@
             <button class="header-btn" onclick="toggleDarkMode()" title="ডার্ক মোড">
                 <i class="fas fa-moon" id="dark-icon"></i>
             </button>
+            <button class="header-btn" onclick="toggleSettingsPanel()" title="সেটিংস">
+                <i class="fas fa-cog"></i>
+            </button>
         </div>
     </header>
     
-    <!-- CONTROLS BAR -->
+    <!-- CONTROLS BAR - COMPACT -->
     <div id="controls-bar" style="display:none;">
         <div class="ctrl-group">
             <button class="ctrl-btn" onclick="prevPage()"><i class="fas fa-chevron-left"></i></button>
@@ -1537,15 +1570,18 @@
     <!-- OVERLAY -->
     <div id="overlay" onclick="toggleSidebar(false);closeSettingsPanel()"></div>
     
-    <!-- SETTINGS -->
+    <!-- SETTINGS PANEL -->
     <div id="settings-panel">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
-            <h3 style="color:var(--primary);font-size:16px"><i class="fas fa-cog"></i> <span id="settings-title">সেটিংস</span></h3>
-            <button class="icon-btn" style="background:var(--danger);color:#fff" onclick="closeSettingsPanel()"><i class="fas fa-times"></i></button>
+        <div class="settings-header">
+            <h3><i class="fas fa-cog"></i> <span id="settings-title">সেটিংস</span></h3>
+            <button class="settings-close-btn" onclick="closeSettingsPanel()"><i class="fas fa-times"></i></button>
         </div>
         
         <div class="settings-section">
-            <h4 style="font-size:13px;margin-bottom:10px"><i class="fas fa-palette"></i> <span id="theme-color-title">থিম কালার</span></h4>
+            <div class="settings-section-title">
+                <i class="fas fa-palette"></i>
+                <span id="theme-color-title">থিম কালার</span>
+            </div>
             <div class="settings-row">
                 <span class="settings-label" id="primary-color-label">প্রাইমারি</span>
                 <input type="color" id="primary-color" value="#6366f1" onchange="changePrimaryColor(this.value)">
@@ -1554,7 +1590,10 @@
         </div>
         
         <div class="settings-section">
-            <h4 style="font-size:13px;margin-bottom:10px"><i class="fas fa-moon"></i> <span id="dark-mode-title">ডার্ক মোড</span></h4>
+            <div class="settings-section-title">
+                <i class="fas fa-moon"></i>
+                <span id="dark-mode-title">ডার্ক মোড</span>
+            </div>
             <div class="settings-row">
                 <span class="settings-label" id="darkness-label">ডার্কনেস</span>
                 <input type="range" id="darkness-level" min="0" max="100" value="100" oninput="document.getElementById('darkness-value').innerText=this.value+'%'">
@@ -1563,7 +1602,10 @@
         </div>
         
         <div class="settings-section">
-            <h4 style="font-size:13px;margin-bottom:10px"><i class="fas fa-font"></i> <span id="font-size-title">ফন্ট সাইজ</span></h4>
+            <div class="settings-section-title">
+                <i class="fas fa-font"></i>
+                <span id="font-size-title">ফন্ট সাইজ</span>
+            </div>
             <div class="settings-row">
                 <span class="settings-label" id="font-small">ছোট</span>
                 <input type="range" id="font-size" min="10" max="18" value="14" oninput="document.documentElement.style.fontSize=this.value+'px'; document.getElementById('font-size-value').innerText=this.value+'px'">
@@ -1571,7 +1613,21 @@
             </div>
         </div>
         
-        <button class="side-action-btn" style="width:100%;padding:14px" onclick="resetSettings()">
+        <div class="settings-section">
+            <div class="settings-section-title">
+                <i class="fas fa-language"></i>
+                <span id="language-title">ভাষা</span>
+            </div>
+            <div class="settings-row">
+                <span class="settings-label">বাংলা / English</span>
+                <button class="side-action-btn" style="width:auto;padding:8px 16px" onclick="toggleLanguage()">
+                    <i class="fas fa-globe"></i>
+                    <span id="lang-btn-text">English</span>
+                </button>
+            </div>
+        </div>
+        
+        <button class="settings-reset-btn" onclick="resetSettings()">
             <i class="fas fa-undo"></i>
             <span id="reset-btn-text">ডিফল্ট সেটিংস</span>
         </button>
@@ -1603,12 +1659,12 @@
             <div class="editor-section">
                 <span class="editor-label">আকার</span>
                 <input type="range" id="editor-size" min="30" max="300" value="120" oninput="editorSizeChange(this.value)">
-                <span id="size-display" style="color:#94a3b8;font-size:10px;min-width:35px;text-align:center">120</span>
+                <span id="size-display" style="color:#94a3b8;font-size:9px;min-width:30px;text-align:center">120</span>
             </div>
             <div class="editor-section">
                 <span class="editor-label">ঘুরান</span>
                 <input type="range" id="editor-rotation" min="0" max="360" value="0" oninput="editorRotationChange(this.value)">
-                <span id="rotation-display" style="color:#94a3b8;font-size:10px;min-width:35px;text-align:center">0°</span>
+                <span id="rotation-display" style="color:#94a3b8;font-size:9px;min-width:30px;text-align:center">0°</span>
             </div>
         </div>
         
@@ -1616,7 +1672,7 @@
             <div class="editor-section">
                 <span class="editor-label">অপাসিটি</span>
                 <input type="range" id="editor-opacity" min="10" max="100" value="100" oninput="editorOpacityChange(this.value)">
-                <span id="opacity-display" style="color:#94a3b8;font-size:10px;min-width:35px;text-align:center">100%</span>
+                <span id="opacity-display" style="color:#94a3b8;font-size:9px;min-width:30px;text-align:center">100%</span>
             </div>
             <button class="editor-btn" style="background:linear-gradient(135deg,var(--warning),#d97706)" onclick="rotateSealBy(15)"><i class="fas fa-redo"></i></button>
             <button class="editor-btn" style="background:linear-gradient(135deg,var(--warning),#d97706)" onclick="rotateSealBy(-15)"><i class="fas fa-undo"></i></button>
@@ -1654,12 +1710,21 @@
         <button onclick="closeHelp()"><span id="close-btn-text">বন্ধ করুন</span></button>
     </div>
     
-    <!-- TOAST & LOADER -->
-    <div id="toast"><i class="fas fa-check-circle"></i> <span id="toast-message"></span></div>
-    <div id="loader"><i class="fas fa-circle-notch"></i></div>
+    <!-- TOAST - SLIDING NOTIFICATION -->
+    <div id="toast-container">
+        <div id="toast">
+            <i class="fas fa-check-circle"></i>
+            <span id="toast-message"></span>
+        </div>
+    </div>
+    
+    <!-- LOADER -->
+    <div id="loader">
+        <i class="fas fa-circle-notch"></i>
+    </div>
     
     <script>
-        // Data from data.js - inline for demonstration
+        // Data from data.js
         const sealData = [
             {
                 id: "notary",
@@ -1708,26 +1773,37 @@
         let pageContainers=[];
         let observer=null;
         
-        // Toast notification - compact single line
+        // Toast notification - slides from right to left
         function showToast(msg,type='success'){
-            const el=document.getElementById('toast');
-            const icon=el.querySelector('i');
-            document.getElementById('toast-message').innerText=msg;
+            const container=document.getElementById('toast-container');
+            const toast=document.getElementById('toast');
+            const icon=toast.querySelector('i');
+            const message=document.getElementById('toast-message');
+            
+            message.innerText=msg;
             
             if(type==='success'){
                 icon.className='fas fa-check-circle';
-                el.className='success';
+                toast.style.borderLeftColor='var(--secondary)';
             } else if(type==='error'){
                 icon.className='fas fa-exclamation-circle';
-                el.className='error';
+                toast.style.borderLeftColor='var(--danger)';
+            } else if(type==='warning'){
+                icon.className='fas fa-exclamation-triangle';
+                toast.style.borderLeftColor='var(--warning)';
             } else {
                 icon.className='fas fa-info-circle';
-                el.className='';
+                toast.style.borderLeftColor='var(--primary)';
             }
             
-            el.classList.add('show');
+            // Show toast
+            container.classList.add('show');
+            
+            // Auto hide after 3 seconds
             clearTimeout(toastTimeout);
-            toastTimeout=setTimeout(()=>el.classList.remove('show'),2500);
+            toastTimeout=setTimeout(()=>{
+                container.classList.remove('show');
+            },3000);
         }
         
         // Dark mode toggle
@@ -1736,20 +1812,26 @@
             document.body.classList.toggle('dark-mode',isDarkMode);
             document.getElementById('dark-icon').className=isDarkMode?'fas fa-sun':'fas fa-moon';
             localStorage.setItem('darkMode',isDarkMode);
-            showToast(isDarkMode?'ডার্ক মোড চালু হয়েছে':'লাইট মোড চালু হয়েছে');
+            showToast(isDarkMode?'ডার্ক মোড চালু হয়েছে':'Dark mode enabled');
         }
         
-        // Language toggle - properly works with all texts
+        // Language toggle - fixed
         function toggleLanguage(){
             currentLang=currentLang==='bn'?'en':'bn';
-            document.getElementById('lang-text').innerText=currentLang==='bn'?'EN':'বাং';
-            buildMenu();
+            document.getElementById('lang-icon').className=currentLang==='bn'?'fas fa-globe':'fas fa-globe-americas';
+            
+            // Update all texts
             updateTexts();
+            buildMenu();
+            
+            // Update language button in settings
+            document.getElementById('lang-btn-text').innerText=currentLang==='bn'?'English':'বাংলা';
+            
             localStorage.setItem('lang',currentLang);
             showToast(currentLang==='bn'?'বাংলা ভাষা চালু হয়েছে':'English language enabled');
         }
         
-        // Update UI texts - complete bilingual support
+        // Update UI texts
         function updateTexts(){
             const bn=currentLang==='bn';
             
@@ -1768,7 +1850,7 @@
             document.getElementById('doc-placeholder').innerText=bn?'ডকুমেন্ট আপলোড করুন':'Upload Document';
             document.getElementById('doc-instruction').innerText=bn?'এখানে যেকোনো জায়গায় চাপ দিন অথবা ফাইল নির্বাচন করুন':'Click anywhere or select file';
             
-            // Buttons
+            // Export buttons
             document.getElementById('export-text').innerText=bn?'ডাউনলোড':'Download';
             document.getElementById('all-pages-btn').innerText=bn?'সকল পেজ':'All Pages';
             document.getElementById('pdf-download-btn').innerText=bn?'PDF':'PDF';
@@ -1784,6 +1866,7 @@
             document.getElementById('dark-mode-title').innerText=bn?'ডার্ক মোড':'Dark Mode';
             document.getElementById('darkness-label').innerText=bn?'ডার্কনেস':'Darkness';
             document.getElementById('font-size-title').innerText=bn?'ফন্ট সাইজ':'Font Size';
+            document.getElementById('language-title').innerText=bn?'ভাষা':'Language';
             document.getElementById('reset-btn-text').innerText=bn?'ডিফল্ট সেটিংস':'Default Settings';
             
             // Help
@@ -1842,6 +1925,7 @@
             document.getElementById('font-size').value=14;
             document.documentElement.style.fontSize='14px';
             if(isDarkMode) toggleDarkMode();
+            if(currentLang!=='bn') toggleLanguage();
             showToast('সেটিংস ডিফল্ট হয়েছে!');
         }
         
@@ -1858,7 +1942,7 @@
             }
         }
         
-        // Build menu tree - fixed to work with data.js
+        // Build menu tree - FIXED
         function buildMenu(){
             const tree=document.getElementById('menu-tree');
             tree.innerHTML='';
@@ -1894,7 +1978,7 @@
                                         const item=document.createElement('div');
                                         item.className='seal-item';
                                         item.onclick=()=>addSeal(src);
-                                        item.innerHTML=`<img src="${src}" alt="seal" loading="lazy" onerror="this.style.display='none'">`;
+                                        item.innerHTML=`<img src="${src}" alt="seal" loading="lazy" onerror="this.parentElement.style.display='none'">`;
                                         imgC.appendChild(item);
                                     });
                                 } else {
@@ -2412,7 +2496,7 @@
             activeSeal=el;
         }
         
-        // Open seal editor - compact for mobile
+        // Open seal editor
         function openSealEditor(){
             const editor=document.getElementById('seal-editor');
             editor.classList.add('show');
@@ -2422,19 +2506,18 @@
                 const windowWidth=window.innerWidth;
                 const windowHeight=window.innerHeight;
                 
-                // Position editor near seal but within viewport
                 let editorX=rect.right+10;
-                if(editorX+280>windowWidth){
-                    editorX=rect.left-290;
+                if(editorX+250>windowWidth){
+                    editorX=rect.left-260;
                 }
                 
                 if(editorX<0){
-                    editorX=Math.max(5,(windowWidth-280)/2);
+                    editorX=Math.max(5,(windowWidth-250)/2);
                 }
                 
                 let editorY=rect.top;
-                if(editorY+250>windowHeight){
-                    editorY=windowHeight-260;
+                if(editorY+220>windowHeight){
+                    editorY=windowHeight-230;
                 }
                 
                 editor.style.left=editorX+'px';
