@@ -298,7 +298,6 @@
             overscroll-behavior: contain;
             scrollbar-width: thin;
             scrollbar-color: var(--primary) transparent;
-            /* This ensures horizontal scrolling works properly */
             overflow-x: auto;
             overflow-y: auto;
         }
@@ -322,7 +321,7 @@
             border: 1px solid #334155;
         }
         
-        /* ===== CONTENT LAYER - CENTERED ===== */
+        /* ===== CONTENT LAYER ===== */
         #content-layer {
             display: flex;
             flex-direction: column;
@@ -418,7 +417,7 @@
             box-shadow: 0 8px 25px rgba(99,102,241,0.4);
         }
         
-        /* ===== PAGE CONTAINER - IMPORTANT FIX ===== */
+        /* ===== PAGE CONTAINER ===== */
         .page-container {
             width: 794px;
             max-width: none;
@@ -430,6 +429,12 @@
             flex-shrink: 0;
             transition: all 0.3s;
             position: relative;
+            cursor: pointer;
+        }
+        
+        .page-container.active-page {
+            box-shadow: 0 4px 25px rgba(99,102,241,0.3);
+            border: 2px solid var(--primary);
         }
         
         body.dark-mode .page-container {
@@ -2199,6 +2204,14 @@
                         
                         const pc=document.createElement('div');
                         pc.className='page-container';
+                        pc.dataset.pageNumber = pageNum;
+                        
+                        // Add click handler to set current page
+                        pc.addEventListener('click', function(e) {
+                            if(!e.target.closest('.seal-wrapper') && !e.target.closest('.seal-resize-handle') && !e.target.closest('.seal-rotate-handle')){
+                                setCurrentPage(parseInt(this.dataset.pageNumber));
+                            }
+                        });
                         
                         const pd=document.createElement('div');
                         pd.className='a4-page';
@@ -2227,6 +2240,14 @@
                     
                     const pc=document.createElement('div');
                     pc.className='page-container';
+                    pc.dataset.pageNumber = fileIndex + 1;
+                    
+                    // Add click handler to set current page
+                    pc.addEventListener('click', function(e) {
+                        if(!e.target.closest('.seal-wrapper') && !e.target.closest('.seal-resize-handle') && !e.target.closest('.seal-rotate-handle')){
+                            setCurrentPage(parseInt(this.dataset.pageNumber));
+                        }
+                    });
                     
                     const pd=document.createElement('div');
                     pd.className='a4-page';
@@ -2262,7 +2283,38 @@
             setupScrollObserver();
         }
         
-        // Scroll observer
+        // Set current page - IMPORTANT FIX
+        function setCurrentPage(pageNum){
+            currentPageNumber = pageNum;
+            document.getElementById('page-jump').value = currentPageNumber;
+            
+            // Update all pages
+            document.querySelectorAll('.page-container').forEach((pc, index) => {
+                const pd = pc.querySelector('.a4-page');
+                if(pd){
+                    pd.classList.remove('current-page');
+                }
+                pc.classList.remove('active-page');
+                
+                if(index === currentPageNumber - 1){
+                    if(pd){
+                        pd.classList.add('current-page');
+                    }
+                    pc.classList.add('active-page');
+                    currentPageElement = pd;
+                }
+            });
+            
+            // Scroll to current page
+            const targetPage = document.querySelectorAll('.page-container')[currentPageNumber - 1];
+            if(targetPage){
+                targetPage.scrollIntoView({behavior:'smooth', block:'center'});
+            }
+            
+            closeSealEditor();
+        }
+        
+        // Scroll observer with page tracking
         function setupScrollObserver(){
             if(observer) observer.disconnect();
             
@@ -2274,7 +2326,15 @@
                             currentPageNumber = index + 1;
                             document.getElementById('page-jump').value = currentPageNumber;
                             
-                            document.querySelectorAll('.a4-page').forEach(p=>p.classList.remove('current-page'));
+                            document.querySelectorAll('.page-container').forEach(pc=>{
+                                pc.classList.remove('active-page');
+                                const pd = pc.querySelector('.a4-page');
+                                if(pd){
+                                    pd.classList.remove('current-page');
+                                }
+                            });
+                            
+                            entry.target.classList.add('active-page');
                             const pd = entry.target.querySelector('.a4-page');
                             if(pd){
                                 pd.classList.add('current-page');
@@ -2287,7 +2347,7 @@
                 });
             }, {
                 root: document.getElementById('preview-container'),
-                threshold: 0.5,
+                threshold: 0.6,
                 rootMargin: '0px'
             });
             
@@ -2299,27 +2359,13 @@
         // Navigation functions
         function nextPage(){
             if(currentPageNumber<totalPages){
-                const pages=document.querySelectorAll('.a4-page');
-                pages.forEach(p=>p.classList.remove('current-page'));
-                pages[currentPageNumber].classList.add('current-page');
-                currentPageElement=pages[currentPageNumber];
-                pages[currentPageNumber].scrollIntoView({behavior:'smooth',block:'start'});
-                currentPageNumber++;
-                document.getElementById('page-jump').value=currentPageNumber;
-                closeSealEditor();
+                setCurrentPage(currentPageNumber + 1);
             }
         }
         
         function prevPage(){
             if(currentPageNumber>1){
-                const pages=document.querySelectorAll('.a4-page');
-                pages.forEach(p=>p.classList.remove('current-page'));
-                pages[currentPageNumber-2].classList.add('current-page');
-                currentPageElement=pages[currentPageNumber-2];
-                pages[currentPageNumber-2].scrollIntoView({behavior:'smooth',block:'start'});
-                currentPageNumber--;
-                document.getElementById('page-jump').value=currentPageNumber;
-                closeSealEditor();
+                setCurrentPage(currentPageNumber - 1);
             }
         }
         
@@ -2328,21 +2374,10 @@
             if(isNaN(v) || v < 1) v = 1;
             if(v > totalPages) v = totalPages;
             document.getElementById('page-jump').value = v;
-            
-            const pages=document.querySelectorAll('.a4-page');
-            pages.forEach((p,i)=>{
-                p.classList.remove('current-page');
-                if(i===v-1){
-                    p.classList.add('current-page');
-                    currentPageElement=p;
-                    p.scrollIntoView({behavior:'smooth',block:'start'});
-                }
-            });
-            currentPageNumber=v;
-            closeSealEditor();
+            setCurrentPage(v);
         }
         
-        // Zoom function - FIXED to properly scale pages
+        // Zoom function - keeps current page
         function changeZoom(d){
             currentZoom = currentZoom + d;
             if(currentZoom < 0.05) currentZoom = 0.05;
@@ -2359,11 +2394,14 @@
                 pc.style.flexShrink = '0';
             });
             
-            // After zooming, scroll to center current page
+            // Keep current page centered after zoom
             if(currentPageElement){
-                setTimeout(()=>{
-                    currentPageElement.scrollIntoView({behavior:'smooth',block:'center'});
-                },100);
+                const currentContainer = currentPageElement.closest('.page-container');
+                if(currentContainer){
+                    setTimeout(()=>{
+                        currentContainer.scrollIntoView({behavior:'smooth', block:'center'});
+                    },100);
+                }
             }
         }
         
@@ -2976,4 +3014,3 @@
     </script>
 </body>
 </html>
-    
