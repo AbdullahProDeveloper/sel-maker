@@ -517,27 +517,46 @@
             display: block;
         }
         
-        /* ===== MAIN AREA ===== */
+        /* ===== MAIN AREA - PROFESSIONAL PREVIEW ===== */
         #main-area {
             flex: 1;
             display: flex;
             flex-direction: column;
             position: relative;
             overflow: hidden;
+            background: linear-gradient(135deg, #f0f4ff 0%, #e8edff 50%, #f5f7ff 100%);
+        }
+        
+        body.dark-mode #main-area {
+            background: linear-gradient(135deg, #0a0a0a 0%, #0f172a 100%);
         }
         
         #scroll-area {
             flex: 1;
             overflow: auto;
-            padding: 15px;
+            padding: 20px 15px 80px 15px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            background: linear-gradient(180deg, #f8fafc, #eef2ff);
+            -webkit-overflow-scrolling: touch;
+            overscroll-behavior: contain;
         }
         
-        body.dark-mode #scroll-area {
-            background: linear-gradient(180deg, #0a0a0a, #0f172a);
+        /* Professional Preview Container */
+        .preview-container {
+            width: 100%;
+            max-width: 900px;
+            margin: 0 auto;
+            background: linear-gradient(135deg, #f8fafc, #eef2ff);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            border: 1px solid var(--border);
+        }
+        
+        body.dark-mode .preview-container {
+            background: linear-gradient(135deg, #1a1a1a, #0f172a);
+            border-color: #334155;
         }
         
         /* ===== UPLOAD BOX ===== */
@@ -554,7 +573,7 @@
             justify-content: center;
             padding: 30px;
             text-align: center;
-            margin: 15px auto;
+            margin: 20px auto;
             border: 2px dashed var(--border);
             transition: all 0.3s;
             cursor: pointer;
@@ -620,21 +639,73 @@
             box-shadow: 0 8px 25px rgba(99,102,241,0.4);
         }
         
-        /* ===== PAGE CONTAINER ===== */
+        /* ===== PAGE CONTAINER - PROFESSIONAL ===== */
         .page-container {
             position: relative;
             width: 100%;
             max-width: 794px;
-            margin-bottom: 15px;
+            margin: 0 auto 20px auto;
             background: var(--white);
-            box-shadow: 0 5px 30px rgba(0,0,0,0.1);
-            border-radius: 8px;
+            box-shadow: 0 8px 40px rgba(0,0,0,0.12), 0 2px 10px rgba(0,0,0,0.05);
+            border-radius: 12px;
             overflow: hidden;
+            transition: all 0.3s;
+            border: 1px solid rgba(99,102,241,0.1);
+        }
+        
+        .page-container:hover {
+            box-shadow: 0 12px 50px rgba(99,102,241,0.15), 0 4px 15px rgba(0,0,0,0.08);
+            transform: translateY(-2px);
         }
         
         body.dark-mode .page-container {
             background: #111;
-            border: 1px solid #334155;
+            border-color: #334155;
+            box-shadow: 0 8px 40px rgba(0,0,0,0.3);
+        }
+        
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 15px;
+            background: linear-gradient(135deg, rgba(99,102,241,0.05), rgba(99,102,241,0.02));
+            border-bottom: 1px solid var(--border);
+        }
+        
+        body.dark-mode .page-header {
+            background: linear-gradient(135deg, rgba(30,41,59,0.5), rgba(51,65,85,0.5));
+            border-color: #334155;
+        }
+        
+        .page-title {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-light);
+        }
+        
+        .page-actions {
+            display: flex;
+            gap: 6px;
+        }
+        
+        .page-action-btn {
+            background: rgba(99,102,241,0.1);
+            border: 1px solid rgba(99,102,241,0.2);
+            color: var(--primary);
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .page-action-btn:hover {
+            background: var(--primary);
+            color: #fff;
         }
         
         .a4-page {
@@ -654,7 +725,7 @@
         }
         
         .a4-page.current-page {
-            box-shadow: inset 0 0 0 3px var(--primary);
+            box-shadow: inset 0 0 0 3px var(--primary), 0 0 20px rgba(99,102,241,0.2);
         }
         
         /* ===== SEAL WRAPPER ===== */
@@ -1097,19 +1168,24 @@
             box-shadow: 0 4px 15px rgba(239,68,68,0.3);
         }
         
-        /* ===== TOAST - SLIDING NOTIFICATION ===== */
+        /* ===== TOAST - SLIDING FROM RIGHT TO LEFT ===== */
         #toast-container {
             position: fixed;
-            top: var(--header-height);
+            top: calc(var(--header-height) + 10px);
             right: -500px;
             z-index: 10000;
             width: var(--toast-width);
             max-width: 95vw;
-            transition: right 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
         
         #toast-container.show {
             right: 10px;
+        }
+        
+        #toast-container.hide {
+            right: -500px;
+            transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
         
         #toast {
@@ -1128,14 +1204,18 @@
             overflow: hidden;
             text-overflow: ellipsis;
             backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 2px solid rgba(255,255,255,0.1);
         }
         
         #toast.error {
             border-left-color: var(--danger);
+            border-left-width: 4px;
         }
         
         #toast.warning {
             border-left-color: var(--warning);
+            border-left-width: 4px;
         }
         
         #toast i {
@@ -1146,6 +1226,7 @@
         #toast-message {
             overflow: hidden;
             text-overflow: ellipsis;
+            white-space: nowrap;
         }
         
         /* ===== LOADER ===== */
@@ -1284,7 +1365,12 @@
             }
             
             #scroll-area {
-                padding: 10px;
+                padding: 12px 10px 70px 10px;
+            }
+            
+            .preview-container {
+                padding: 12px;
+                border-radius: 12px;
             }
             
             .upload-box {
@@ -1318,8 +1404,21 @@
             }
             
             .page-container {
-                margin-bottom: 12px;
-                border-radius: 6px;
+                margin-bottom: 15px;
+                border-radius: 8px;
+            }
+            
+            .page-header {
+                padding: 8px 12px;
+            }
+            
+            .page-title {
+                font-size: 11px;
+            }
+            
+            .page-action-btn {
+                padding: 5px 8px;
+                font-size: 10px;
             }
             
             #seal-editor {
@@ -1434,7 +1533,12 @@
             }
             
             #scroll-area {
+                padding: 8px 6px 60px 6px;
+            }
+            
+            .preview-container {
                 padding: 8px;
+                border-radius: 10px;
             }
             
             .upload-box {
@@ -1710,7 +1814,7 @@
         <button onclick="closeHelp()"><span id="close-btn-text">বন্ধ করুন</span></button>
     </div>
     
-    <!-- TOAST - SLIDING NOTIFICATION -->
+    <!-- TOAST - SLIDING FROM RIGHT TO LEFT -->
     <div id="toast-container">
         <div id="toast">
             <i class="fas fa-check-circle"></i>
@@ -1796,13 +1900,15 @@
                 toast.style.borderLeftColor='var(--primary)';
             }
             
-            // Show toast
+            // Show toast - slide in from right
+            container.classList.remove('hide');
             container.classList.add('show');
             
-            // Auto hide after 3 seconds
+            // Auto hide after 3 seconds - slide out to left
             clearTimeout(toastTimeout);
             toastTimeout=setTimeout(()=>{
                 container.classList.remove('show');
+                container.classList.add('hide');
             },3000);
         }
         
@@ -2085,6 +2191,13 @@
                         
                         const pc=document.createElement('div');
                         pc.className='page-container';
+                        
+                        // Add page header
+                        const ph=document.createElement('div');
+                        ph.className='page-header';
+                        ph.innerHTML=`<span class="page-title">পেজ ${pageNum}</span>`;
+                        pc.appendChild(ph);
+                        
                         const pd=document.createElement('div');
                         pd.className='a4-page';
                         
@@ -2112,6 +2225,13 @@
                     
                     const pc=document.createElement('div');
                     pc.className='page-container';
+                    
+                    // Add page header
+                    const ph=document.createElement('div');
+                    ph.className='page-header';
+                    ph.innerHTML=`<span class="page-title">পেজ ${fileIndex+1}</span>`;
+                    pc.appendChild(ph);
+                    
                     const pd=document.createElement('div');
                     pd.className='a4-page';
                     
