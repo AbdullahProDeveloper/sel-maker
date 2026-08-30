@@ -118,28 +118,6 @@
             transform: scale(0.95);
         }
         
-        .header-btn .tooltip {
-            position: absolute;
-            bottom: -30px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: var(--dark);
-            color: #fff;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 10px;
-            white-space: nowrap;
-            opacity: 0;
-            transition: all 0.3s;
-            pointer-events: none;
-            z-index: 100;
-        }
-        
-        .header-btn:hover .tooltip {
-            opacity: 1;
-            bottom: -35px;
-        }
-        
         .brand-icon {
             width: 36px;
             height: 36px;
@@ -323,7 +301,7 @@
             align-items: center;
             width: 100%;
             min-height: 100%;
-            padding: 20px 0;
+            padding: 20px;
             gap: 20px;
         }
         
@@ -465,19 +443,19 @@
             box-shadow: inset 0 0 0 2px var(--primary);
         }
         
-        /* ===== SEAL WRAPPER - FIXED POSITION ===== */
+        /* ===== SEAL WRAPPER - ABSOLUTE POSITION ===== */
         .seal-wrapper {
             position: absolute;
             z-index: 10;
             user-select: none;
             cursor: move;
             touch-action: none;
-            /* Use percentage based positioning for better scaling */
+            /* This ensures the seal stays at exact position */
             left: 50%;
             top: 50%;
+            width: 100px;
+            height: 100px;
             transform: translate(-50%, -50%);
-            /* Keep position relative to page */
-            will-change: left, top, width, height;
         }
         
         .seal-wrapper.active-state {
@@ -1620,7 +1598,6 @@
         <div class="header-left">
             <button class="header-btn" onclick="toggleSidebar(true)">
                 <i class="fas fa-bars"></i>
-                <span class="tooltip">মেনু</span>
             </button>
             <div class="brand-icon">
                 <i class="fas fa-stamp"></i>
@@ -1630,19 +1607,15 @@
         <div class="header-right">
             <button class="header-btn" onclick="toggleLanguage()">
                 <i class="fas fa-globe" id="lang-icon"></i>
-                <span class="tooltip">ভাষা</span>
             </button>
             <button class="header-btn" onclick="showHelp()">
                 <i class="fas fa-question-circle"></i>
-                <span class="tooltip">সাহায্য</span>
             </button>
             <button class="header-btn" onclick="toggleDarkMode()">
                 <i class="fas fa-moon" id="dark-icon"></i>
-                <span class="tooltip">ডার্ক মোড</span>
             </button>
             <button class="header-btn" onclick="toggleSettingsPanel()">
                 <i class="fas fa-cog"></i>
-                <span class="tooltip">সেটিংস</span>
             </button>
         </div>
     </header>
@@ -2424,14 +2397,9 @@
             wrap.className='seal-wrapper';
             wrap.style.width='100px';
             wrap.style.height='100px';
-            // Store position as percentage for better scaling
-            wrap.dataset.leftPercent = '50';
-            wrap.dataset.topPercent = '50';
-            wrap.dataset.width = '100';
-            wrap.dataset.height = '100';
-            wrap.style.left = '50%';
-            wrap.style.top = '50%';
-            wrap.style.transform = 'translate(-50%, -50%)';
+            wrap.style.left='50%';
+            wrap.style.top='50%';
+            wrap.style.transform='translate(-50%, -50%)';
             wrap.innerHTML=`
                 <img src="${src}" class="seal-img" onerror="this.parentElement.remove()">
                 <span class="seal-resize-handle" onmousedown="startResize(event, this.parentElement)" ontouchstart="startTouchResize(event, this.parentElement)"><i class="fas fa-expand-arrows-alt"></i></span>
@@ -2499,15 +2467,12 @@
                 let y=t.clientY-rect.top;
                 let nl=startLeft+(x-startX);
                 let nt=startTop+(y-startY);
-                // Convert to percentage
                 let leftPercent = (nl / rect.width) * 100;
                 let topPercent = (nt / rect.height) * 100;
                 leftPercent = Math.max(0, Math.min(100, leftPercent));
                 topPercent = Math.max(0, Math.min(100, topPercent));
                 wrap.style.left = leftPercent + '%';
                 wrap.style.top = topPercent + '%';
-                wrap.dataset.leftPercent = leftPercent;
-                wrap.dataset.topPercent = topPercent;
             }
             
             function up(){
@@ -2535,15 +2500,12 @@
                 let y=ev.clientY-rect.top;
                 let nl=startLeft+(x-startX);
                 let nt=startTop+(y-startY);
-                // Convert to percentage
                 let leftPercent = (nl / rect.width) * 100;
                 let topPercent = (nt / rect.height) * 100;
                 leftPercent = Math.max(0, Math.min(100, leftPercent));
                 topPercent = Math.max(0, Math.min(100, topPercent));
                 wrap.style.left = leftPercent + '%';
                 wrap.style.top = topPercent + '%';
-                wrap.dataset.leftPercent = leftPercent;
-                wrap.dataset.topPercent = topPercent;
             }
             
             function up(){
@@ -2568,8 +2530,6 @@
                 let newSize=Math.max(30,Math.min(500,startW+dx));
                 wrap.style.width=newSize+'px';
                 wrap.style.height=newSize+'px';
-                wrap.dataset.width = newSize;
-                wrap.dataset.height = newSize;
                 document.getElementById('editor-size').value=newSize;
                 document.getElementById('size-display').innerText=newSize+'px';
             }
@@ -2596,8 +2556,6 @@
                 let newSize=Math.max(30,Math.min(500,startW+dx));
                 wrap.style.width=newSize+'px';
                 wrap.style.height=newSize+'px';
-                wrap.dataset.width = newSize;
-                wrap.dataset.height = newSize;
                 document.getElementById('editor-size').value=newSize;
                 document.getElementById('size-display').innerText=newSize+'px';
             }
@@ -2803,8 +2761,6 @@
             if(activeSeal){
                 activeSeal.style.width=v+'px';
                 activeSeal.style.height=v+'px';
-                activeSeal.dataset.width = v;
-                activeSeal.dataset.height = v;
                 document.getElementById('size-display').innerText=v+'px';
             }
         }
@@ -2829,8 +2785,6 @@
             if(activeSeal){
                 activeSeal.style.width=size+'px';
                 activeSeal.style.height=size+'px';
-                activeSeal.dataset.width = size;
-                activeSeal.dataset.height = size;
                 document.getElementById('editor-size').value=size;
                 document.getElementById('size-display').innerText=size+'px';
             }
@@ -2853,8 +2807,6 @@
                 activeSeal.style.left='50%';
                 activeSeal.style.top='50%';
                 activeSeal.style.transform='translate(-50%,-50%)';
-                activeSeal.dataset.leftPercent = '50';
-                activeSeal.dataset.topPercent = '50';
             }
         }
         
@@ -2862,10 +2814,9 @@
             if(activeSeal){
                 const pr = activeSeal.parentElement;
                 const rect = pr.getBoundingClientRect();
-                let leftPercent = parseFloat(activeSeal.dataset.leftPercent || 50);
-                let topPercent = parseFloat(activeSeal.dataset.topPercent || 50);
+                let leftPercent = parseFloat(activeSeal.style.left) || 50;
+                let topPercent = parseFloat(activeSeal.style.top) || 50;
                 
-                // Convert pixel movement to percentage
                 leftPercent += (dx / rect.width) * 100;
                 topPercent += (dy / rect.height) * 100;
                 
@@ -2874,24 +2825,20 @@
                 
                 activeSeal.style.left = leftPercent + '%';
                 activeSeal.style.top = topPercent + '%';
-                activeSeal.dataset.leftPercent = leftPercent;
-                activeSeal.dataset.topPercent = topPercent;
             }
         }
         
         function duplicateSeal(){
             if(!activeSeal)return;
             const newS=activeSeal.cloneNode(true);
-            let leftPercent = parseFloat(activeSeal.dataset.leftPercent || 50) + 5;
-            let topPercent = parseFloat(activeSeal.dataset.topPercent || 50) + 5;
+            let leftPercent = parseFloat(activeSeal.style.left) || 50;
+            let topPercent = parseFloat(activeSeal.style.top) || 50;
             
-            leftPercent = Math.max(0, Math.min(100, leftPercent));
-            topPercent = Math.max(0, Math.min(100, topPercent));
+            leftPercent = Math.max(0, Math.min(100, leftPercent + 5));
+            topPercent = Math.max(0, Math.min(100, topPercent + 5));
             
             newS.style.left = leftPercent + '%';
             newS.style.top = topPercent + '%';
-            newS.dataset.leftPercent = leftPercent;
-            newS.dataset.topPercent = topPercent;
             newS.classList.remove('active-state');
             newS.querySelector('.seal-resize-handle').style.display='none';
             newS.querySelector('.seal-rotate-handle').style.display='none';
@@ -2906,7 +2853,7 @@
             }
         }
         
-        // Download functions - Fix print position
+        // Download functions
         async function downloadCurrentPage(){
             const pc=currentPageElement?.closest('.page-container');
             if(!pc){
