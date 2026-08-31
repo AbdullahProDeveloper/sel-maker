@@ -429,7 +429,7 @@
             box-shadow: 0 10px 35px rgba(99,102,241,0.5);
         }
         
-        /* ===== PAGE CONTAINER - FIXED A4 ===== */
+        /* ===== PAGE CONTAINER ===== */
         .page-container {
             width: 100%;
             max-width: 794px;
@@ -483,7 +483,7 @@
             box-shadow: inset 0 0 0 2px var(--primary);
         }
         
-        /* ===== SEAL WRAPPER - OPTIMIZED FOR MOBILE ===== */
+        /* ===== SEAL WRAPPER ===== */
         .seal-wrapper {
             position: absolute;
             z-index: 10;
@@ -617,7 +617,46 @@
             display: block;
         }
         
-        /* ===== SEAL EDITOR - IMPROVED & COMPACT ===== */
+        /* ===== ZOOM CONTROLS ===== */
+        .zoom-controls {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            background: var(--white);
+            border-radius: 6px;
+            padding: 2px;
+            border: 1px solid var(--border);
+        }
+        
+        .zoom-btn {
+            background: transparent;
+            border: none;
+            color: var(--text);
+            width: 26px;
+            height: 26px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 11px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        
+        .zoom-btn:hover {
+            background: var(--primary);
+            color: #fff;
+        }
+        
+        .zoom-display {
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--text-light);
+            min-width: 45px;
+            text-align: center;
+        }
+        
+        /* ===== SEAL EDITOR - COMPACT ===== */
         #seal-editor {
             position: fixed;
             background: linear-gradient(135deg, #1e293b, #0f172a);
@@ -2130,6 +2169,21 @@
                 font-size: 9px;
                 border-radius: 5px;
             }
+            
+            .zoom-controls {
+                padding: 2px;
+            }
+            
+            .zoom-btn {
+                width: 24px;
+                height: 24px;
+                font-size: 10px;
+            }
+            
+            .zoom-display {
+                font-size: 9px;
+                min-width: 40px;
+            }
         }
         
         @media (max-width: 480px) {
@@ -2302,6 +2356,21 @@
                 font-size: 8px;
                 border-radius: 4px;
             }
+            
+            .zoom-controls {
+                padding: 1px;
+            }
+            
+            .zoom-btn {
+                width: 22px;
+                height: 22px;
+                font-size: 9px;
+            }
+            
+            .zoom-display {
+                font-size: 8px;
+                min-width: 36px;
+            }
         }
     </style>
 </head>
@@ -2360,6 +2429,12 @@
             <button class="ctrl-btn" onclick="toggleGrid()" id="grid-btn"><i class="fas fa-th"></i></button>
             <button class="ctrl-btn" onclick="downloadCurrentPage()"><i class="fas fa-download"></i></button>
             <button class="ctrl-btn" style="background:linear-gradient(135deg,var(--secondary),#059669);color:#fff" onclick="printAllPages()"><i class="fas fa-print"></i></button>
+        </div>
+        <div class="ctrl-group zoom-controls">
+            <button class="zoom-btn" onclick="zoomOut()"><i class="fas fa-minus"></i></button>
+            <span class="zoom-display" id="zoom-display">100%</span>
+            <button class="zoom-btn" onclick="zoomIn()"><i class="fas fa-plus"></i></button>
+            <button class="zoom-btn" onclick="resetZoom()"><i class="fas fa-expand-arrows-alt"></i></button>
         </div>
     </div>
     
@@ -3577,6 +3652,34 @@
             setCurrentPage(v);
         }
         
+        // Zoom functions
+        function zoomIn(){
+            if(currentZoom < 3){
+                currentZoom += 0.1;
+                applyZoom();
+            }
+        }
+        
+        function zoomOut(){
+            if(currentZoom > 0.5){
+                currentZoom -= 0.1;
+                applyZoom();
+            }
+        }
+        
+        function resetZoom(){
+            currentZoom = 1.0;
+            applyZoom();
+        }
+        
+        function applyZoom(){
+            document.getElementById('zoom-display').innerText = Math.round(currentZoom * 100) + '%';
+            pageContainers.forEach(pc=>{
+                pc.style.width = (794 * currentZoom) + 'px';
+                pc.style.maxWidth = (794 * currentZoom) + 'px';
+            });
+        }
+        
         // Add recent seal
         function addRecentSeal(){
             if(recentSeals.length===0){
@@ -4504,6 +4607,127 @@
             }
         }
         
+        // Download project from list
+        async function downloadProject(index){
+            const project=projectList[index];
+            if(!project) return;
+            
+            document.getElementById('loader').style.display='block';
+            
+            try{
+                // Create temp container
+                const tempContainer=document.createElement('div');
+                tempContainer.style.cssText='position:fixed;left:-9999px;top:0;z-index:-9999;background:#fff';
+                document.body.appendChild(tempContainer);
+                
+                const zip=new JSZip();
+                const folder=zip.folder('project_'+(index+1));
+                
+                for(let i=0;i<project.pages.length;i++){
+                    await new Promise(r=>setTimeout(r,100));
+                    
+                    // Create temp page
+                    const tempPage=document.createElement('div');
+                    tempPage.innerHTML=project.pages[i];
+                    const cleanClone=cleanPageForExport(tempPage.firstChild);
+                    cleanClone.style.cssText='width:794px;margin:0;border:none;box-shadow:none;border-radius:0';
+                    
+                    tempContainer.innerHTML='';
+                    tempContainer.appendChild(cleanClone);
+                    
+                    const canvas=await html2canvas(cleanClone,{scale:4,useCORS:true,backgroundColor:'#ffffff',logging:false});
+                    
+                    folder.file(`page-${i+1}.png`,canvas.toDataURL('image/png').split(',')[1],{base64:true});
+                }
+                
+                document.body.removeChild(tempContainer);
+                
+                const blob=await zip.generateAsync({type:'blob'});
+                const a=document.createElement('a');
+                a.download=(project.name||'project')+'.zip';
+                a.href=URL.createObjectURL(blob);
+                a.click();
+                
+                document.getElementById('loader').style.display='none';
+                showToast('✓ ডাউনলোড সম্পন্ন');
+            }catch(e){
+                document.getElementById('loader').style.display='none';
+                showToast('✗ '+e.message,'error');
+            }
+        }
+        
+        // Print project from list
+        async function printProject(index){
+            const project=projectList[index];
+            if(!project) return;
+            
+            document.getElementById('loader').style.display='block';
+            
+            try{
+                const images=[];
+                for(let i=0;i<project.pages.length;i++){
+                    await new Promise(r=>setTimeout(r,200));
+                    
+                    // Create temp page
+                    const tempPage=document.createElement('div');
+                    tempPage.innerHTML=project.pages[i];
+                    const cleanClone=cleanPageForExport(tempPage.firstChild);
+                    cleanClone.style.cssText='width:794px;margin:0;border:none;box-shadow:none;border-radius:0';
+                    
+                    const tempContainer=document.createElement('div');
+                    tempContainer.style.cssText='position:fixed;left:-9999px;top:0;z-index:-9999;background:#fff';
+                    tempContainer.appendChild(cleanClone);
+                    document.body.appendChild(tempContainer);
+                    
+                    const canvas=await html2canvas(cleanClone,{scale:4,useCORS:true,backgroundColor:'#ffffff',logging:false});
+                    document.body.removeChild(tempContainer);
+                    
+                    images.push(canvas.toDataURL('image/jpeg',1.0));
+                }
+                
+                const pw=window.open('','_blank');
+                if(!pw){
+                    document.getElementById('loader').style.display='none';
+                    showToast('পপ-আপ ব্লক!','error');
+                    return;
+                }
+                
+                let html='<html><head><title>Print</title><style>';
+                html+='@page{size:A4;margin:0}';
+                html+='body{margin:0;padding:0;background:#fff}';
+                html+='.print-page{width:210mm;height:297mm;page-break-after:always;position:relative;overflow:hidden;background:#fff}';
+                html+='.print-page:last-child{page-break-after:auto}';
+                html+='.print-page img{width:100%;height:100%;object-fit:contain}';
+                html+='</style></head><body>';
+                
+                images.forEach(img=>{
+                    html+=`<div class="print-page"><img src="${img}"></div>`;
+                });
+                
+                html+='</body></html>';
+                
+                pw.document.write(html);
+                pw.document.close();
+                
+                document.getElementById('loader').style.display='none';
+                showToast('✓ প্রিন্ট হচ্ছে...');
+                
+                setTimeout(()=>{
+                    try{
+                        pw.focus();
+                        pw.print();
+                        setTimeout(()=>pw.close(),1000);
+                    }catch(e){
+                        showToast('প্রিন্ট উইন্ডোতে সমস্যা!','error');
+                    }
+                },800);
+                
+            }catch(e){
+                document.getElementById('loader').style.display='none';
+                showToast('✗ '+e.message,'error');
+            }
+        }
+        
         // Delete project from list
         function deleteProject(index){
             if(confirm('প্রজেক্টটি মুছে ফেলতে চান?')){
@@ -4590,7 +4814,7 @@
                 cleanClone.style.cssText='width:794px;margin:0;border:none;box-shadow:none;border-radius:0';
                 
                 const tempContainer=document.createElement('div');
-                tempContainer.style.cssText='position:fixed;left:-9999px;top:0;z-index:-9999';
+                tempContainer.style.cssText='position:fixed;left:-9999px;top:0;z-index:-9999;background:#fff';
                 tempContainer.appendChild(cleanClone);
                 document.body.appendChild(tempContainer);
                 
@@ -4627,7 +4851,7 @@
                     cleanClone.style.cssText='width:794px;margin:0;border:none;box-shadow:none;border-radius:0';
                     
                     const tempContainer=document.createElement('div');
-                    tempContainer.style.cssText='position:fixed;left:-9999px;top:0;z-index:-9999';
+                    tempContainer.style.cssText='position:fixed;left:-9999px;top:0;z-index:-9999;background:#fff';
                     tempContainer.appendChild(cleanClone);
                     document.body.appendChild(tempContainer);
                     
@@ -4668,7 +4892,7 @@
                     cleanClone.style.cssText='width:794px;margin:0;border:none;box-shadow:none;border-radius:0';
                     
                     const tempContainer=document.createElement('div');
-                    tempContainer.style.cssText='position:fixed;left:-9999px;top:0;z-index:-9999';
+                    tempContainer.style.cssText='position:fixed;left:-9999px;top:0;z-index:-9999;background:#fff';
                     tempContainer.appendChild(cleanClone);
                     document.body.appendChild(tempContainer);
                     
@@ -4705,7 +4929,7 @@
                     cleanClone.style.cssText='width:794px;margin:0;border:none;box-shadow:none;border-radius:0';
                     
                     const tempContainer=document.createElement('div');
-                    tempContainer.style.cssText='position:fixed;left:-9999px;top:0;z-index:-9999';
+                    tempContainer.style.cssText='position:fixed;left:-9999px;top:0;z-index:-9999;background:#fff';
                     tempContainer.appendChild(cleanClone);
                     document.body.appendChild(tempContainer);
                     
@@ -4821,4 +5045,3 @@
     </script>
 </body>
 </html>
-    
