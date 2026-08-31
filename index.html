@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="theme-color" content="#6366f1">
-    <meta name="description" content="প্রফেশনাল নোটারি সিল স্টুডিও">
-    <title>Pro Notary Seal Studio</title>
+    <meta name="description" content="প্রফেশনাল নোটারি সিল স্টুডিও - অ্যাডভান্সড ভার্সন">
+    <title>Pro Notary Seal Studio - Advanced</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
@@ -33,6 +33,8 @@
             --controls-height: 46px;
             --sidebar-width: 300px;
             --toast-width: 280px;
+            --layer-panel-width: 260px;
+            --template-panel-width: 320px;
         }
         
         * {
@@ -53,6 +55,8 @@
             flex-direction: column;
             background: #f1f5f9;
             color: var(--text);
+            user-select: none;
+            -webkit-user-select: none;
         }
         
         body.dark-mode {
@@ -118,6 +122,22 @@
             transform: scale(0.95);
         }
         
+        .header-btn .badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--danger);
+            color: #fff;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+        }
+        
         .brand-icon {
             width: 36px;
             height: 36px;
@@ -152,6 +172,7 @@
             border-bottom: 1px solid var(--border);
             z-index: 1900;
             flex-shrink: 0;
+            flex-wrap: wrap;
         }
         
         body.dark-mode #controls-bar {
@@ -189,6 +210,7 @@
             justify-content: center;
             transition: all 0.2s;
             flex-shrink: 0;
+            position: relative;
         }
         
         .ctrl-btn:hover {
@@ -199,6 +221,11 @@
         
         .ctrl-btn:active {
             transform: scale(0.95);
+        }
+        
+        .ctrl-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
         }
         
         .ctrl-input {
@@ -273,6 +300,7 @@
             scrollbar-color: var(--primary) transparent;
             overflow-x: auto;
             overflow-y: auto;
+            position: relative;
         }
         
         #preview-container::-webkit-scrollbar {
@@ -391,7 +419,7 @@
             box-shadow: 0 10px 35px rgba(99,102,241,0.5);
         }
         
-        /* ===== PAGE CONTAINER ===== */
+        /* ===== PAGE CONTAINER - FIXED A4 ===== */
         .page-container {
             width: 794px;
             max-width: none;
@@ -417,6 +445,11 @@
             border: 2px solid var(--primary);
         }
         
+        .page-container.selected {
+            border: 3px solid var(--secondary);
+            box-shadow: 0 0 40px rgba(16,185,129,0.3);
+        }
+        
         body.dark-mode .page-container {
             background: #111;
             border: 1px solid #334155;
@@ -429,7 +462,6 @@
             background: var(--white);
             position: relative;
             overflow: hidden;
-            transform-origin: top left;
         }
         
         .a4-page canvas,
@@ -451,7 +483,6 @@
             user-select: none;
             cursor: move;
             touch-action: none;
-            /* This ensures the seal stays at exact position */
             transform: translate(-50%, -50%);
             transition: width 0.2s, height 0.2s;
         }
@@ -463,6 +494,13 @@
             border-radius: 8px;
         }
         
+        .seal-wrapper.multi-selected {
+            outline: 2px solid var(--secondary);
+            outline-offset: 3px;
+            box-shadow: 0 0 25px rgba(16,185,129,0.5);
+            border-radius: 8px;
+        }
+        
         .seal-img {
             width: 100%;
             height: 100%;
@@ -470,6 +508,7 @@
             pointer-events: none;
             display: block;
             filter: drop-shadow(0 4px 15px rgba(0,0,0,0.2));
+            transition: filter 0.3s, opacity 0.3s, transform 0.3s;
         }
         
         .seal-resize-handle {
@@ -521,7 +560,47 @@
             100% { transform: scale(1); opacity: 1; }
         }
         
-        /* ===== SEAL EDITOR ===== */
+        /* ===== ALIGNMENT GUIDES ===== */
+        .alignment-guide {
+            position: absolute;
+            background: var(--primary);
+            z-index: 100;
+            pointer-events: none;
+        }
+        
+        .alignment-guide.vertical {
+            width: 1px;
+            height: 100%;
+            top: 0;
+        }
+        
+        .alignment-guide.horizontal {
+            height: 1px;
+            width: 100%;
+            left: 0;
+        }
+        
+        /* ===== GRID OVERLAY ===== */
+        .grid-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 5;
+            display: none;
+            background-image: 
+                linear-gradient(to right, rgba(99,102,241,0.1) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(99,102,241,0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+        }
+        
+        .grid-overlay.active {
+            display: block;
+        }
+        
+        /* ===== SEAL EDITOR - MOBILE FRIENDLY ===== */
         #seal-editor {
             position: fixed;
             background: linear-gradient(135deg, #1e293b, #0f172a);
@@ -541,6 +620,12 @@
         
         #seal-editor.show {
             display: flex;
+            animation: editorIn 0.3s ease;
+        }
+        
+        @keyframes editorIn {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
         }
         
         .editor-header {
@@ -650,6 +735,371 @@
         .preset-btn:hover {
             background: var(--primary);
             transform: scale(1.05);
+        }
+        
+        /* ===== TEMPLATE PANEL ===== */
+        #template-panel {
+            position: fixed;
+            top: calc(var(--header-height) + var(--controls-height));
+            right: 0;
+            height: calc(100% - var(--header-height) - var(--controls-height));
+            width: var(--template-panel-width);
+            max-width: 90%;
+            background: var(--white);
+            color: var(--text);
+            transform: translateX(100%);
+            transition: transform 0.3s;
+            z-index: 3000;
+            display: flex;
+            flex-direction: column;
+            box-shadow: -8px 0 30px rgba(0,0,0,0.2);
+        }
+        
+        #template-panel.open {
+            transform: translateX(0);
+        }
+        
+        body.dark-mode #template-panel {
+            background: #0f172a;
+        }
+        
+        .template-header {
+            padding: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(135deg, var(--secondary), #059669);
+            color: #fff;
+            flex-shrink: 0;
+        }
+        
+        .template-header h3 {
+            font-size: 14px;
+            font-weight: 700;
+        }
+        
+        #template-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+        }
+        
+        .template-item {
+            background: #f8fafc;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            padding: 10px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        body.dark-mode .template-item {
+            background: #1a1a1a;
+            border-color: #334155;
+        }
+        
+        .template-item:hover {
+            border-color: var(--primary);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 20px rgba(99,102,241,0.2);
+        }
+        
+        .template-preview {
+            width: 100%;
+            aspect-ratio: 1;
+            border-radius: 8px;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 8px;
+            overflow: hidden;
+        }
+        
+        .template-preview canvas,
+        .template-preview svg {
+            width: 80%;
+            height: 80%;
+        }
+        
+        .template-name {
+            font-size: 12px;
+            font-weight: 700;
+            text-align: center;
+        }
+        
+        .template-actions {
+            display: flex;
+            gap: 5px;
+            margin-top: 8px;
+        }
+        
+        .template-btn {
+            flex: 1;
+            padding: 6px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 10px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .template-btn.use {
+            background: var(--primary);
+            color: #fff;
+        }
+        
+        .template-btn.delete {
+            background: var(--danger);
+            color: #fff;
+        }
+        
+        /* ===== LAYER PANEL ===== */
+        #layer-panel {
+            position: fixed;
+            top: calc(var(--header-height) + var(--controls-height));
+            right: 0;
+            height: calc(100% - var(--header-height) - var(--controls-height));
+            width: var(--layer-panel-width);
+            max-width: 90%;
+            background: var(--white);
+            color: var(--text);
+            transform: translateX(100%);
+            transition: transform 0.3s;
+            z-index: 3000;
+            display: flex;
+            flex-direction: column;
+            box-shadow: -8px 0 30px rgba(0,0,0,0.2);
+        }
+        
+        #layer-panel.open {
+            transform: translateX(0);
+        }
+        
+        body.dark-mode #layer-panel {
+            background: #0f172a;
+        }
+        
+        .layer-header {
+            padding: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: #fff;
+            flex-shrink: 0;
+        }
+        
+        .layer-header h3 {
+            font-size: 14px;
+            font-weight: 700;
+        }
+        
+        #layer-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+        }
+        
+        .layer-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px;
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            margin-bottom: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        body.dark-mode .layer-item {
+            background: #1a1a1a;
+            border-color: #334155;
+        }
+        
+        .layer-item:hover {
+            border-color: var(--primary);
+            transform: translateX(3px);
+        }
+        
+        .layer-item.active {
+            border-color: var(--primary);
+            background: rgba(99,102,241,0.1);
+        }
+        
+        .layer-thumbnail {
+            width: 40px;
+            height: 40px;
+            border-radius: 6px;
+            overflow: hidden;
+            flex-shrink: 0;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .layer-thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+        
+        .layer-info {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .layer-name {
+            font-size: 11px;
+            font-weight: 700;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .layer-details {
+            font-size: 9px;
+            color: var(--text-light);
+        }
+        
+        .layer-actions {
+            display: flex;
+            gap: 3px;
+        }
+        
+        .layer-btn {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid var(--border);
+            color: var(--text);
+            width: 24px;
+            height: 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+        
+        .layer-btn:hover {
+            background: var(--primary);
+            color: #fff;
+        }
+        
+        /* ===== TEXT SEAL GENERATOR ===== */
+        #text-seal-modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            border-radius: 16px;
+            padding: 20px;
+            z-index: 6000;
+            max-width: 90%;
+            width: 400px;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.5);
+            border: 2px solid rgba(99,102,241,0.4);
+        }
+        
+        #text-seal-modal h3 {
+            color: var(--primary-light);
+            margin-bottom: 15px;
+            font-size: 16px;
+            font-weight: 700;
+            text-align: center;
+        }
+        
+        .text-seal-input {
+            width: 100%;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: #fff;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 12px;
+            margin-bottom: 10px;
+            outline: none;
+        }
+        
+        .text-seal-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(99,102,241,0.2);
+        }
+        
+        .text-seal-options {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+        
+        .text-seal-select {
+            flex: 1;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: #fff;
+            padding: 8px;
+            border-radius: 8px;
+            font-size: 11px;
+            outline: none;
+        }
+        
+        .text-seal-btn {
+            background: var(--primary);
+            border: none;
+            color: #fff;
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 700;
+            width: 100%;
+            transition: all 0.3s;
+        }
+        
+        .text-seal-btn:hover {
+            background: var(--primary-light);
+            transform: translateY(-2px);
+        }
+        
+        /* ===== AUTOSAVE INDICATOR ===== */
+        #autosave-indicator {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(15,23,42,0.9);
+            color: #fff;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 600;
+            display: none;
+            align-items: center;
+            gap: 6px;
+            z-index: 2500;
+            pointer-events: none;
+        }
+        
+        #autosave-indicator.show {
+            display: flex;
+            animation: fadeInUp 0.3s ease;
+        }
+        
+        #autosave-indicator i {
+            color: var(--secondary);
+        }
+        
+        @keyframes fadeInUp {
+            0% { opacity: 0; transform: translateX(-50%) translateY(20px); }
+            100% { opacity: 1; transform: translateX(-50%) translateY(0); }
         }
         
         /* ===== SIDEBAR ===== */
@@ -849,6 +1299,7 @@
             aspect-ratio: 1;
             border: 1px solid var(--border);
             transition: all 0.3s;
+            position: relative;
         }
         
         body.dark-mode .seal-item {
@@ -870,6 +1321,28 @@
             max-width: 90%;
             max-height: 90%;
             object-fit: contain;
+        }
+        
+        .seal-item .favorite-btn {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            background: rgba(255,255,255,0.9);
+            border: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ccc;
+            transition: all 0.3s;
+        }
+        
+        .seal-item .favorite-btn.active {
+            color: var(--warning);
         }
         
         #settings-btn {
@@ -1213,6 +1686,7 @@
             align-items: center;
             justify-content: center;
             transition: all 0.3s;
+            position: relative;
         }
         
         .quick-btn:hover {
@@ -1222,6 +1696,22 @@
         
         .quick-btn:active {
             transform: scale(0.95);
+        }
+        
+        .quick-btn .badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--danger);
+            color: #fff;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
         }
         
         #bottom-actions {
@@ -1302,6 +1792,8 @@
                 --controls-height: 44px;
                 --sidebar-width: 280px;
                 --toast-width: 250px;
+                --layer-panel-width: 240px;
+                --template-panel-width: 280px;
             }
             
             #header {
@@ -1603,6 +2095,16 @@
             <div class="brand-title" id="title-text">নোটারি সিল স্টুডিও</div>
         </div>
         <div class="header-right">
+            <button class="header-btn" onclick="toggleTemplatePanel()" title="টেমপ্লেট">
+                <i class="fas fa-palette"></i>
+            </button>
+            <button class="header-btn" onclick="toggleLayerPanel()" title="লেয়ার">
+                <i class="fas fa-layer-group"></i>
+                <span class="badge" id="layer-count-badge" style="display:none">0</span>
+            </button>
+            <button class="header-btn" onclick="toggleTextSealModal()" title="টেক্সট সিল">
+                <i class="fas fa-font"></i>
+            </button>
             <button class="header-btn" onclick="toggleLanguage()">
                 <i class="fas fa-globe" id="lang-icon"></i>
             </button>
@@ -1621,17 +2123,17 @@
     <!-- CONTROLS BAR -->
     <div id="controls-bar" style="display:none;">
         <div class="ctrl-group">
+            <button class="ctrl-btn" onclick="undoAction()" id="undo-btn" disabled><i class="fas fa-undo"></i></button>
+            <button class="ctrl-btn" onclick="redoAction()" id="redo-btn" disabled><i class="fas fa-redo"></i></button>
+        </div>
+        <div class="ctrl-group">
             <button class="ctrl-btn" onclick="prevPage()"><i class="fas fa-chevron-left"></i></button>
             <input type="number" class="ctrl-input" id="page-jump" min="1" value="1" onchange="jumpToPage()">
             <span class="ctrl-label" id="page-count-display">/ 1</span>
             <button class="ctrl-btn" onclick="nextPage()"><i class="fas fa-chevron-right"></i></button>
         </div>
         <div class="ctrl-group">
-            <button class="ctrl-btn" onclick="changeZoom(-0.05)"><i class="fas fa-minus"></i></button>
-            <span class="ctrl-label" id="zoom-value">100%</span>
-            <button class="ctrl-btn" onclick="changeZoom(0.05)"><i class="fas fa-plus"></i></button>
-        </div>
-        <div class="ctrl-group">
+            <button class="ctrl-btn" onclick="toggleGrid()" id="grid-btn"><i class="fas fa-th"></i></button>
             <button class="ctrl-btn" onclick="downloadCurrentPage()"><i class="fas fa-download"></i></button>
             <button class="ctrl-btn" style="background:linear-gradient(135deg,var(--secondary),#059669);color:#fff" onclick="printAllPages()"><i class="fas fa-print"></i></button>
         </div>
@@ -1669,13 +2171,13 @@
                 <i class="fas fa-cloud-upload-alt"></i>
                 <span id="upload-btn-text">আপলোড</span>
             </button>
-            <button class="side-action-btn" onclick="downloadAllPages()">
-                <i class="fas fa-download"></i>
-                <span id="download-btn-text">ডাউনলোড</span>
+            <button class="side-action-btn" onclick="saveProject()">
+                <i class="fas fa-save"></i>
+                <span id="save-btn-text">সেভ</span>
             </button>
-            <button class="side-action-btn" onclick="location.reload()">
-                <i class="fas fa-sync-alt"></i>
-                <span id="refresh-btn-text">রিফ্রেশ</span>
+            <button class="side-action-btn" onclick="loadProject()">
+                <i class="fas fa-folder-open"></i>
+                <span id="load-btn-text">লোড</span>
             </button>
         </div>
         <div id="search-container">
@@ -1688,8 +2190,52 @@
         </button>
     </div>
     
+    <!-- TEMPLATE PANEL -->
+    <div id="template-panel">
+        <div class="template-header">
+            <h3><i class="fas fa-palette"></i> <span id="template-title">টেমপ্লেট</span></h3>
+            <button class="icon-btn" onclick="toggleTemplatePanel()"><i class="fas fa-times"></i></button>
+        </div>
+        <div id="template-content"></div>
+    </div>
+    
+    <!-- LAYER PANEL -->
+    <div id="layer-panel">
+        <div class="layer-header">
+            <h3><i class="fas fa-layer-group"></i> <span id="layer-title">লেয়ার</span></h3>
+            <button class="icon-btn" onclick="toggleLayerPanel()"><i class="fas fa-times"></i></button>
+        </div>
+        <div id="layer-list"></div>
+    </div>
+    
+    <!-- TEXT SEAL MODAL -->
+    <div id="text-seal-modal">
+        <h3><i class="fas fa-font"></i> <span id="text-seal-title">টেক্সট সিল জেনারেটর</span></h3>
+        <input type="text" class="text-seal-input" id="text-seal-name" placeholder="নাম লিখুন...">
+        <input type="text" class="text-seal-input" id="text-seal-title-input" placeholder="পদবি লিখুন...">
+        <input type="text" class="text-seal-input" id="text-seal-address" placeholder="ঠিকানা লিখুন...">
+        <div class="text-seal-options">
+            <select class="text-seal-select" id="text-seal-shape">
+                <option value="circle">গোলাকার</option>
+                <option value="rectangle">আয়তাকার</option>
+            </select>
+            <select class="text-seal-select" id="text-seal-color">
+                <option value="#1e40af">নীল</option>
+                <option value="#dc2626">লাল</option>
+                <option value="#059669">সবুজ</option>
+                <option value="#000000">কালো</option>
+            </select>
+        </div>
+        <button class="text-seal-btn" onclick="generateTextSeal()">
+            <i class="fas fa-magic"></i> <span id="generate-btn-text">সিল তৈরি করুন</span>
+        </button>
+        <button class="text-seal-btn" style="background:var(--danger);margin-top:8px" onclick="closeTextSealModal()">
+            <i class="fas fa-times"></i> <span id="cancel-btn-text">বাতিল</span>
+        </button>
+    </div>
+    
     <!-- OVERLAY -->
-    <div id="overlay" onclick="toggleSidebar(false);closeSettingsPanel()"></div>
+    <div id="overlay" onclick="toggleSidebar(false);closeSettingsPanel();toggleTemplatePanel(false);toggleLayerPanel(false);closeTextSealModal()"></div>
     
     <!-- SETTINGS PANEL -->
     <div id="settings-panel">
@@ -1800,8 +2346,22 @@
         </div>
         
         <div class="editor-row">
+            <div class="editor-section">
+                <span class="editor-label">ব্রাইটনেস</span>
+                <input type="range" id="editor-brightness" min="50" max="150" value="100" oninput="editorBrightnessChange(this.value)">
+                <span id="brightness-display" style="color:#94a3b8;font-size:9px;min-width:30px;text-align:center">100%</span>
+            </div>
+            <div class="editor-section">
+                <span class="editor-label">কনট্রাস্ট</span>
+                <input type="range" id="editor-contrast" min="50" max="150" value="100" oninput="editorContrastChange(this.value)">
+                <span id="contrast-display" style="color:#94a3b8;font-size:9px;min-width:30px;text-align:center">100%</span>
+            </div>
+        </div>
+        
+        <div class="editor-row">
             <button class="editor-btn" style="background:linear-gradient(135deg,rgba(239,68,68,0.3),rgba(239,68,68,0.2));border-color:rgba(239,68,68,0.4)" onclick="deleteSeal()"><i class="fas fa-trash"></i></button>
             <button class="editor-btn" style="background:linear-gradient(135deg,rgba(99,102,241,0.3),rgba(99,102,241,0.2));border-color:rgba(99,102,241,0.4)" onclick="duplicateSeal()"><i class="fas fa-copy"></i></button>
+            <button class="editor-btn" style="background:linear-gradient(135deg,rgba(16,185,129,0.3),rgba(16,185,129,0.2));border-color:rgba(16,185,129,0.4)" onclick="saveAsTemplate()"><i class="fas fa-save"></i></button>
             <button class="editor-btn" style="background:linear-gradient(135deg,rgba(16,185,129,0.3),rgba(16,185,129,0.2));border-color:rgba(16,185,129,0.4)" onclick="closeSealEditor()"><i class="fas fa-check"></i></button>
         </div>
     </div>
@@ -1809,6 +2369,8 @@
     <!-- FLOATING BUTTONS -->
     <div id="quick-seal-buttons">
         <button class="quick-btn" onclick="toggleSidebar(true)"><i class="fas fa-th"></i></button>
+        <button class="quick-btn" onclick="toggleTextSealModal()"><i class="fas fa-font"></i></button>
+        <button class="quick-btn" onclick="addRecentSeal()"><i class="fas fa-history"></i></button>
     </div>
     
     <div id="bottom-actions">
@@ -1822,6 +2384,13 @@
         <button onclick="downloadAllPages()"><i class="fas fa-file-export"></i> <span id="all-pages-btn">সকল পেজ</span></button>
         <button onclick="downloadPDF()"><i class="fas fa-file-pdf"></i> <span id="pdf-download-btn">PDF</span></button>
         <button onclick="printAllPages()"><i class="fas fa-print"></i> <span id="print-all-btn">প্রিন্ট</span></button>
+        <button onclick="saveProject()"><i class="fas fa-save"></i> <span id="save-project-btn">প্রজেক্ট সেভ</span></button>
+    </div>
+    
+    <!-- AUTOSAVE INDICATOR -->
+    <div id="autosave-indicator">
+        <i class="fas fa-check-circle"></i>
+        <span id="autosave-text">সেভ হয়েছে</span>
     </div>
     
     <!-- HELP MODAL -->
@@ -1893,6 +2462,14 @@
         let customSealCount=0;
         let pageContainers=[];
         let observer=null;
+        let undoStack=[],redoStack=[];
+        let multiSelectMode=false;
+        let selectedSeals=new Set();
+        let templates=[];
+        let favorites=new Set();
+        let autosaveTimer=null;
+        let gridEnabled=false;
+        let alignmentGuides=[];
         
         // Toast notification
         function showToast(msg,type='success'){
@@ -1942,6 +2519,8 @@
             document.getElementById('lang-icon').className=currentLang==='bn'?'fas fa-globe':'fas fa-globe-americas';
             updateTexts();
             buildMenu();
+            updateLayerPanel();
+            updateTemplatePanel();
             document.getElementById('lang-btn-text').innerText=currentLang==='bn'?'English':'বাংলা';
             localStorage.setItem('lang',currentLang);
             showToast(currentLang==='bn'?'বাংলা ভাষা চালু হয়েছে':'English language enabled');
@@ -1953,6 +2532,8 @@
             document.getElementById('title-text').innerText=bn?'নোটারি সিল স্টুডিও':'Notary Seal Studio';
             document.getElementById('sidebar-title').innerText=bn?'সিল লাইব্রেরি':'Seal Library';
             document.getElementById('upload-btn-text').innerText=bn?'আপলোড':'Upload';
+            document.getElementById('save-btn-text').innerText=bn?'সেভ':'Save';
+            document.getElementById('load-btn-text').innerText=bn?'লোড':'Load';
             document.getElementById('download-btn-text').innerText=bn?'ডাউনলোড':'Download';
             document.getElementById('refresh-btn-text').innerText=bn?'রিফ্রেশ':'Refresh';
             document.getElementById('settings-btn-text').innerText=bn?'সেটিংস':'Settings';
@@ -1963,6 +2544,7 @@
             document.getElementById('all-pages-btn').innerText=bn?'সকল পেজ':'All Pages';
             document.getElementById('pdf-download-btn').innerText=bn?'PDF':'PDF';
             document.getElementById('print-all-btn').innerText=bn?'প্রিন্ট':'Print';
+            document.getElementById('save-project-btn').innerText=bn?'প্রজেক্ট সেভ':'Save Project';
             document.getElementById('editor-title').innerText=bn?'সিল এডিটর':'Seal Editor';
             document.getElementById('settings-title').innerText=bn?'সেটিংস':'Settings';
             document.getElementById('theme-color-title').innerText=bn?'থিম কালার':'Theme Color';
@@ -1974,6 +2556,12 @@
             document.getElementById('reset-btn-text').innerText=bn?'ডিফল্ট সেটিংস':'Default Settings';
             document.getElementById('help-title').innerText=bn?'ব্যবহার টিপস':'Usage Tips';
             document.getElementById('close-btn-text').innerText=bn?'বন্ধ করুন':'Close';
+            document.getElementById('template-title').innerText=bn?'টেমপ্লেট':'Templates';
+            document.getElementById('layer-title').innerText=bn?'লেয়ার':'Layers';
+            document.getElementById('text-seal-title').innerText=bn?'টেক্সট সিল জেনারেটর':'Text Seal Generator';
+            document.getElementById('generate-btn-text').innerText=bn?'সিল তৈরি করুন':'Generate Seal';
+            document.getElementById('cancel-btn-text').innerText=bn?'বাতিল':'Cancel';
+            document.getElementById('autosave-text').innerText=bn?'সেভ হয়েছে':'Saved';
             document.getElementById('help-content').innerHTML=bn?
                 '১. ডকুমেন্ট আপলোড করুন<br>২. সিল বাছুন<br>৩. সিলে চাপ ধরে রাখলে এডিটর খুলবে<br>৪. এডিটর বক্সটি টেনে যেকোনো জায়গায় রাখুন<br>৫. টেনে সরান, রিসাইজ করুন, ঘুরান<br>৬. ডাউনলোড করুন':
                 '1. Upload document<br>2. Select seal<br>3. Press & hold to open editor<br>4. Drag editor anywhere<br>5. Drag, resize, rotate<br>6. Download';
@@ -1983,6 +2571,356 @@
         function toggleSidebar(show){
             document.getElementById('sidebar').classList.toggle('open',show);
             document.getElementById('overlay').classList.toggle('show',show);
+        }
+        
+        // Template panel toggle
+        function toggleTemplatePanel(show){
+            if(show===undefined){
+                show=!document.getElementById('template-panel').classList.contains('open');
+            }
+            document.getElementById('template-panel').classList.toggle('open',show);
+            document.getElementById('overlay').classList.toggle('show',show);
+            if(show) updateTemplatePanel();
+        }
+        
+        // Layer panel toggle
+        function toggleLayerPanel(show){
+            if(show===undefined){
+                show=!document.getElementById('layer-panel').classList.contains('open');
+            }
+            document.getElementById('layer-panel').classList.toggle('open',show);
+            document.getElementById('overlay').classList.toggle('show',show);
+            if(show) updateLayerPanel();
+        }
+        
+        // Text seal modal toggle
+        function toggleTextSealModal(){
+            const modal=document.getElementById('text-seal-modal');
+            const isVisible=modal.style.display==='block';
+            modal.style.display=isVisible?'none':'block';
+            if(!isVisible){
+                document.getElementById('overlay').classList.add('show');
+            } else {
+                document.getElementById('overlay').classList.remove('show');
+            }
+        }
+        
+        function closeTextSealModal(){
+            document.getElementById('text-seal-modal').style.display='none';
+            document.getElementById('overlay').classList.remove('show');
+        }
+        
+        // Grid toggle
+        function toggleGrid(){
+            gridEnabled=!gridEnabled;
+            document.querySelectorAll('.a4-page').forEach(page=>{
+                let grid=page.querySelector('.grid-overlay');
+                if(!grid){
+                    grid=document.createElement('div');
+                    grid.className='grid-overlay';
+                    page.appendChild(grid);
+                }
+                grid.classList.toggle('active',gridEnabled);
+            });
+            document.getElementById('grid-btn').style.background=gridEnabled?'var(--primary)':'';
+            document.getElementById('grid-btn').style.color=gridEnabled?'#fff':'';
+            showToast(gridEnabled?'গ্রিড চালু হয়েছে':'Grid enabled');
+        }
+        
+        // Generate text seal
+        function generateTextSeal(){
+            const name=document.getElementById('text-seal-name').value.trim();
+            const title=document.getElementById('text-seal-title-input').value.trim();
+            const address=document.getElementById('text-seal-address').value.trim();
+            const shape=document.getElementById('text-seal-shape').value;
+            const color=document.getElementById('text-seal-color').value;
+            
+            if(!name){
+                showToast('নাম লিখুন!','error');
+                return;
+            }
+            
+            const canvas=document.createElement('canvas');
+            canvas.width=300;
+            canvas.height=300;
+            const ctx=canvas.getContext('2d');
+            
+            // Clear canvas
+            ctx.clearRect(0,0,300,300);
+            
+            if(shape==='circle'){
+                // Draw circle
+                ctx.beginPath();
+                ctx.arc(150,150,140,0,Math.PI*2);
+                ctx.strokeStyle=color;
+                ctx.lineWidth=3;
+                ctx.stroke();
+                
+                ctx.beginPath();
+                ctx.arc(150,150,135,0,Math.PI*2);
+                ctx.strokeStyle=color;
+                ctx.lineWidth=1;
+                ctx.stroke();
+                
+                // Draw text
+                ctx.fillStyle=color;
+                ctx.textAlign='center';
+                ctx.textBaseline='middle';
+                
+                ctx.font='bold 20px "Inter", sans-serif';
+                ctx.fillText(name,150,100);
+                
+                ctx.font='16px "Inter", sans-serif';
+                ctx.fillText(title,150,140);
+                
+                ctx.font='12px "Inter", sans-serif';
+                ctx.fillText(address,150,180);
+                
+                // Draw stars
+                ctx.font='20px "Inter", sans-serif';
+                ctx.fillText('★',150,60);
+                ctx.fillText('★',150,240);
+            } else {
+                // Draw rectangle
+                ctx.strokeStyle=color;
+                ctx.lineWidth=3;
+                ctx.strokeRect(15,15,270,270);
+                
+                ctx.strokeStyle=color;
+                ctx.lineWidth=1;
+                ctx.strokeRect(25,25,250,250);
+                
+                // Draw text
+                ctx.fillStyle=color;
+                ctx.textAlign='center';
+                ctx.textBaseline='middle';
+                
+                ctx.font='bold 22px "Inter", sans-serif';
+                ctx.fillText(name,150,100);
+                
+                ctx.font='16px "Inter", sans-serif';
+                ctx.fillText(title,150,150);
+                
+                ctx.font='12px "Inter", sans-serif';
+                ctx.fillText(address,150,200);
+            }
+            
+            const dataUrl=canvas.toDataURL('image/png');
+            addSeal(dataUrl);
+            closeTextSealModal();
+            showToast('টেক্সট সিল তৈরি হয়েছে!');
+        }
+        
+        // Save as template
+        function saveAsTemplate(){
+            if(!activeSeal){
+                showToast('সিল নির্বাচন করুন!','error');
+                return;
+            }
+            
+            const imgSrc=activeSeal.querySelector('.seal-img')?.src;
+            if(!imgSrc){
+                showToast('সিল ইমেজ নেই!','error');
+                return;
+            }
+            
+            const templateName=prompt('টেমপ্লেটের নাম দিন:','টেমপ্লেট '+ (templates.length+1));
+            if(!templateName) return;
+            
+            templates.push({
+                name: templateName,
+                src: imgSrc,
+                size: parseInt(activeSeal.style.width)||100,
+                opacity: parseFloat(activeSeal.style.opacity)||1,
+                rotation: parseFloat(activeSeal.querySelector('.seal-img').dataset.rotation)||0
+            });
+            
+            localStorage.setItem('sealTemplates',JSON.stringify(templates));
+            updateTemplatePanel();
+            showToast('টেমপ্লেট সেভ হয়েছে!');
+        }
+        
+        // Update template panel
+        function updateTemplatePanel(){
+            const content=document.getElementById('template-content');
+            content.innerHTML='';
+            
+            if(templates.length===0){
+                content.innerHTML='<div style="text-align:center;color:var(--text-light);padding:20px">'+
+                    (currentLang==='bn'?'কোনো টেমপ্লেট নেই':'No templates') + '</div>';
+                return;
+            }
+            
+            templates.forEach((tpl,index)=>{
+                const item=document.createElement('div');
+                item.className='template-item';
+                item.innerHTML=`
+                    <div class="template-preview">
+                        <img src="${tpl.src}" style="width:80%;height:80%;object-fit:contain;opacity:${tpl.opacity};transform:rotate(${tpl.rotation}deg)">
+                    </div>
+                    <div class="template-name">${tpl.name}</div>
+                    <div class="template-actions">
+                        <button class="template-btn use" onclick="useTemplate(${index})">
+                            <i class="fas fa-plus"></i> ব্যবহার
+                        </button>
+                        <button class="template-btn delete" onclick="deleteTemplate(${index})">
+                            <i class="fas fa-trash"></i> মুছুন
+                        </button>
+                    </div>
+                `;
+                content.appendChild(item);
+            });
+        }
+        
+        // Use template
+        function useTemplate(index){
+            const tpl=templates[index];
+            if(!tpl) return;
+            
+            const wrap=document.createElement('div');
+            wrap.className='seal-wrapper';
+            wrap.style.width=tpl.size+'px';
+            wrap.style.height=tpl.size+'px';
+            wrap.style.left='50%';
+            wrap.style.top='50%';
+            wrap.style.transform='translate(-50%,-50%)';
+            wrap.style.opacity=tpl.opacity;
+            wrap.innerHTML=`
+                <img src="${tpl.src}" class="seal-img" style="transform:rotate(${tpl.rotation}deg)" data-rotation="${tpl.rotation}">
+                <span class="seal-resize-handle" onmousedown="startResize(event, this.parentElement)" ontouchstart="startTouchResize(event, this.parentElement)"><i class="fas fa-expand-arrows-alt"></i></span>
+                <span class="seal-rotate-handle" onmousedown="startRotate(event, this.parentElement)" ontouchstart="startTouchRotate(event, this.parentElement)"><i class="fas fa-sync-alt"></i></span>
+            `;
+            
+            attachSealEvents(wrap);
+            currentPageElement.appendChild(wrap);
+            toggleTemplatePanel(false);
+            showToast('টেমপ্লেট ব্যবহার করা হয়েছে!');
+            autosave();
+        }
+        
+        // Delete template
+        function deleteTemplate(index){
+            templates.splice(index,1);
+            localStorage.setItem('sealTemplates',JSON.stringify(templates));
+            updateTemplatePanel();
+            showToast('টেমপ্লেট মুছে ফেলা হয়েছে!');
+        }
+        
+        // Update layer panel
+        function updateLayerPanel(){
+            const layerList=document.getElementById('layer-list');
+            layerList.innerHTML='';
+            
+            if(!currentPageElement){
+                layerList.innerHTML='<div style="text-align:center;color:var(--text-light);padding:20px">'+
+                    (currentLang==='bn'?'কোনো লেয়ার নেই':'No layers') + '</div>';
+                document.getElementById('layer-count-badge').style.display='none';
+                return;
+            }
+            
+            const seals=Array.from(currentPageElement.querySelectorAll('.seal-wrapper'));
+            const badge=document.getElementById('layer-count-badge');
+            badge.style.display=seals.length>0?'flex':'none';
+            badge.innerText=seals.length;
+            
+            if(seals.length===0){
+                layerList.innerHTML='<div style="text-align:center;color:var(--text-light);padding:20px">'+
+                    (currentLang==='bn'?'কোনো সিল নেই':'No seals') + '</div>';
+                return;
+            }
+            
+            seals.reverse().forEach((wrap,index)=>{
+                const img=wrap.querySelector('.seal-img');
+                const item=document.createElement('div');
+                item.className='layer-item';
+                if(wrap===activeSeal) item.classList.add('active');
+                item.innerHTML=`
+                    <div class="layer-thumbnail">
+                        <img src="${img?.src||''}">
+                    </div>
+                    <div class="layer-info">
+                        <div class="layer-name">${currentLang==='bn'?'সিল':'Seal'} ${index+1}</div>
+                        <div class="layer-details">
+                            ${parseInt(wrap.style.width)||100}px, ${Math.round(parseFloat(wrap.style.opacity)||1*100)}%
+                        </div>
+                    </div>
+                    <div class="layer-actions">
+                        <button class="layer-btn" onclick="selectLayer(this)" title="সিলেক্ট">
+                            <i class="fas fa-mouse-pointer"></i>
+                        </button>
+                        <button class="layer-btn" onclick="moveLayerUp(this)" title="উপরে">
+                            <i class="fas fa-arrow-up"></i>
+                        </button>
+                        <button class="layer-btn" onclick="moveLayerDown(this)" title="নিচে">
+                            <i class="fas fa-arrow-down"></i>
+                        </button>
+                        <button class="layer-btn" onclick="deleteLayer(this)" title="মুছুন">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                `;
+                
+                item.addEventListener('click',(e)=>{
+                    if(!e.target.closest('.layer-btn')){
+                        activateSeal(wrap);
+                        updateLayerPanel();
+                    }
+                });
+                
+                item.dataset.sealIndex=index;
+                layerList.appendChild(item);
+            });
+        }
+        
+        // Layer functions
+        function selectLayer(btn){
+            const item=btn.closest('.layer-item');
+            const seals=Array.from(currentPageElement.querySelectorAll('.seal-wrapper')).reverse();
+            const index=parseInt(item.dataset.sealIndex);
+            if(seals[index]){
+                activateSeal(seals[index]);
+                updateLayerPanel();
+            }
+        }
+        
+        function moveLayerUp(btn){
+            const item=btn.closest('.layer-item');
+            const seals=Array.from(currentPageElement.querySelectorAll('.seal-wrapper')).reverse();
+            const index=parseInt(item.dataset.sealIndex);
+            if(index>0){
+                const seal=seals[index];
+                const prevSeal=seals[index-1];
+                currentPageElement.insertBefore(seal,prevSeal);
+                updateLayerPanel();
+                autosave();
+            }
+        }
+        
+        function moveLayerDown(btn){
+            const item=btn.closest('.layer-item');
+            const seals=Array.from(currentPageElement.querySelectorAll('.seal-wrapper')).reverse();
+            const index=parseInt(item.dataset.sealIndex);
+            if(index<seals.length-1){
+                const seal=seals[index];
+                const nextSeal=seals[index+1];
+                currentPageElement.insertBefore(seal,nextSeal.nextSibling);
+                updateLayerPanel();
+                autosave();
+            }
+        }
+        
+        function deleteLayer(btn){
+            const item=btn.closest('.layer-item');
+            const seals=Array.from(currentPageElement.querySelectorAll('.seal-wrapper')).reverse();
+            const index=parseInt(item.dataset.sealIndex);
+            if(seals[index]){
+                const seal=seals[index];
+                addToUndoStack();
+                seal.remove();
+                updateLayerPanel();
+                showToast('লেয়ার মুছে ফেলা হয়েছে!');
+                autosave();
+            }
         }
         
         // Export menu toggle
@@ -2080,7 +3018,12 @@
                                         const item=document.createElement('div');
                                         item.className='seal-item';
                                         item.onclick=()=>addSeal(src);
-                                        item.innerHTML=`<img src="${src}" alt="seal" loading="lazy" onerror="this.parentElement.style.display='none'">`;
+                                        item.innerHTML=`
+                                            <img src="${src}" alt="seal" loading="lazy" onerror="this.parentElement.style.display='none'">
+                                            <button class="favorite-btn ${favorites.has(src)?'active':''}" onclick="event.stopPropagation();toggleFavorite('${src}',this)">
+                                                <i class="fas fa-star"></i>
+                                            </button>
+                                        `;
                                         imgC.appendChild(item);
                                     });
                                 } else {
@@ -2113,6 +3056,20 @@
                 div.appendChild(nested);
                 tree.appendChild(div);
             });
+        }
+        
+        // Toggle favorite
+        function toggleFavorite(src,btn){
+            if(favorites.has(src)){
+                favorites.delete(src);
+                btn.classList.remove('active');
+                showToast('ফেভারিট থেকে সরানো হয়েছে');
+            } else {
+                favorites.add(src);
+                btn.classList.add('active');
+                showToast('ফেভারিটে যোগ করা হয়েছে!');
+            }
+            localStorage.setItem('favorites',JSON.stringify([...favorites]));
         }
         
         // Toggle level
@@ -2168,6 +3125,8 @@
             container.innerHTML='';
             pageContainers=[];
             allPages=[];
+            undoStack=[];
+            redoStack=[];
             
             for(let fileIndex=0; fileIndex<files.length; fileIndex++){
                 const file=files[fileIndex];
@@ -2262,6 +3221,7 @@
             showToast('✓ '+(currentLang==='bn'?'ফাইল আপলোড হয়েছে':'File uploaded'));
             
             setupScrollObserver();
+            updateLayerPanel();
         }
         
         // Set current page
@@ -2291,6 +3251,7 @@
             }
             
             closeSealEditor();
+            updateLayerPanel();
         }
         
         // Scroll observer
@@ -2321,6 +3282,7 @@
                             }
                             
                             closeSealEditor();
+                            updateLayerPanel();
                         }
                     }
                 });
@@ -2356,32 +3318,75 @@
             setCurrentPage(v);
         }
         
-        // Zoom function - Fix seal position
-        function changeZoom(d){
-            currentZoom = currentZoom + d;
-            if(currentZoom < 0.05) currentZoom = 0.05;
-            if(currentZoom > 5.0) currentZoom = 5.0;
+        // Add recent seal
+        function addRecentSeal(){
+            if(recentSeals.length===0){
+                showToast('কোনো সাম্প্রতিক সিল নেই!','warning');
+                return;
+            }
             
-            document.getElementById('zoom-value').innerText = Math.round(currentZoom * 100) + '%';
+            const recentPanel=document.createElement('div');
+            recentPanel.style.cssText=`
+                position:fixed;bottom:70px;left:8px;z-index:3000;
+                background:linear-gradient(135deg,#1e293b,#0f172a);
+                border-radius:12px;padding:10px;max-width:200px;
+                box-shadow:0 10px 30px rgba(0,0,0,0.4);
+                border:1px solid rgba(255,255,255,0.1);
+            `;
             
-            // Apply zoom to all page containers
-            pageContainers.forEach(pc => {
-                const width = 794 * currentZoom;
-                pc.style.width = width + 'px';
-                pc.style.maxWidth = 'none';
-                pc.style.minWidth = width + 'px';
-                pc.style.flexShrink = '0';
+            recentPanel.innerHTML='<div style="color:#fff;font-size:11px;font-weight:700;margin-bottom:8px;text-align:center">সাম্প্রতিক সিল</div>';
+            
+            const grid=document.createElement('div');
+            grid.style.cssText='display:grid;grid-template-columns:repeat(3,1fr);gap:5px';
+            
+            recentSeals.slice(-6).reverse().forEach(src=>{
+                const item=document.createElement('div');
+                item.style.cssText='cursor:pointer;background:rgba(255,255,255,0.1);border-radius:6px;padding:5px;display:flex;align-items:center;justify-content:center;aspect-ratio:1';
+                item.innerHTML=`<img src="${src}" style="max-width:100%;max-height:100%;object-fit:contain">`;
+                item.onclick=()=>{
+                    addSeal(src);
+                    recentPanel.remove();
+                };
+                grid.appendChild(item);
             });
             
-            // Keep current page centered after zoom
-            if(currentPageElement){
-                const currentContainer = currentPageElement.closest('.page-container');
-                if(currentContainer){
-                    setTimeout(()=>{
-                        currentContainer.scrollIntoView({behavior:'smooth', block:'center'});
-                    },100);
+            recentPanel.appendChild(grid);
+            document.body.appendChild(recentPanel);
+            
+            setTimeout(()=>recentPanel.remove(),5000);
+        }
+        
+        // Attach seal events
+        function attachSealEvents(wrap){
+            wrap.addEventListener('touchstart',(e)=>{
+                e.stopPropagation();
+                if(multiSelectMode){
+                    toggleMultiSelect(wrap);
+                } else {
+                    activateSeal(wrap);
+                    startTouchDrag(e,wrap);
+                    startLongPress(wrap);
                 }
-            }
+            },{passive:false});
+            
+            wrap.addEventListener('touchend',cancelLongPress);
+            wrap.addEventListener('touchmove',cancelLongPress);
+            
+            wrap.addEventListener('mousedown',(e)=>{
+                e.stopPropagation();
+                if(multiSelectMode){
+                    toggleMultiSelect(wrap);
+                } else {
+                    activateSeal(wrap);
+                    startMouseDrag(e,wrap);
+                }
+            });
+            
+            wrap.addEventListener('dblclick',(e)=>{
+                e.stopPropagation();
+                activateSeal(wrap);
+                openSealEditor();
+            });
         }
         
         // Add seal - Fix position with percentage
@@ -2391,6 +3396,9 @@
                 return;
             }
             toggleSidebar(false);
+            
+            addToUndoStack();
+            
             const wrap=document.createElement('div');
             wrap.className='seal-wrapper';
             wrap.style.width='100px';
@@ -2404,30 +3412,38 @@
                 <span class="seal-rotate-handle" onmousedown="startRotate(event, this.parentElement)" ontouchstart="startTouchRotate(event, this.parentElement)"><i class="fas fa-sync-alt"></i></span>
             `;
             
-            wrap.addEventListener('touchstart',(e)=>{
-                e.stopPropagation();
-                activateSeal(wrap);
-                startTouchDrag(e,wrap);
-                startLongPress(wrap);
-            },{passive:false});
-            
-            wrap.addEventListener('touchend',cancelLongPress);
-            wrap.addEventListener('touchmove',cancelLongPress);
-            
-            wrap.addEventListener('mousedown',(e)=>{
-                e.stopPropagation();
-                activateSeal(wrap);
-                startMouseDrag(e,wrap);
-            });
-            
-            wrap.addEventListener('dblclick',(e)=>{
-                e.stopPropagation();
-                activateSeal(wrap);
-                openSealEditor();
-            });
-            
+            attachSealEvents(wrap);
             currentPageElement.appendChild(wrap);
+            
+            if(!recentSeals.includes(src)){
+                recentSeals.push(src);
+            }
+            
             showToast('✓ '+(currentLang==='bn'?'সিল যোগ হয়েছে':'Seal added'));
+            updateLayerPanel();
+            autosave();
+        }
+        
+        // Multi-select toggle
+        function toggleMultiSelect(wrap){
+            if(selectedSeals.has(wrap)){
+                selectedSeals.delete(wrap);
+                wrap.classList.remove('multi-selected');
+            } else {
+                selectedSeals.add(wrap);
+                wrap.classList.add('multi-selected');
+            }
+            
+            if(selectedSeals.size===0){
+                multiSelectMode=false;
+            }
+        }
+        
+        // Enable multi-select mode
+        function enableMultiSelect(){
+            multiSelectMode=true;
+            selectedSeals.clear();
+            showToast('মাল্টি-সিলেক্ট মোড চালু হয়েছে। সিলে চাপ দিন');
         }
         
         // Long press for editor
@@ -2471,11 +3487,14 @@
                 topPercent = Math.max(0, Math.min(100, topPercent));
                 wrap.style.left = leftPercent + '%';
                 wrap.style.top = topPercent + '%';
+                checkAlignment(wrap);
             }
             
             function up(){
                 document.removeEventListener('touchmove',move);
                 document.removeEventListener('touchend',up);
+                clearAlignmentGuides();
+                autosave();
             }
             
             document.addEventListener('touchmove',move,{passive:false});
@@ -2504,15 +3523,56 @@
                 topPercent = Math.max(0, Math.min(100, topPercent));
                 wrap.style.left = leftPercent + '%';
                 wrap.style.top = topPercent + '%';
+                checkAlignment(wrap);
             }
             
             function up(){
                 document.removeEventListener('mousemove',move);
                 document.removeEventListener('mouseup',up);
+                clearAlignmentGuides();
+                autosave();
             }
             
             document.addEventListener('mousemove',move);
             document.addEventListener('mouseup',up);
+        }
+        
+        // Check alignment
+        function checkAlignment(wrap){
+            clearAlignmentGuides();
+            
+            const page=wrap.parentElement;
+            const pageRect=page.getBoundingClientRect();
+            const wrapRect=wrap.getBoundingClientRect();
+            
+            const centerX=wrapRect.left+wrapRect.width/2;
+            const centerY=wrapRect.top+wrapRect.height/2;
+            const pageCenterX=pageRect.left+pageRect.width/2;
+            const pageCenterY=pageRect.top+pageRect.height/2;
+            
+            // Check center alignment
+            if(Math.abs(centerX-pageCenterX)<10){
+                const guide=document.createElement('div');
+                guide.className='alignment-guide vertical';
+                guide.style.left=(pageCenterX-pageRect.left)+'px';
+                page.appendChild(guide);
+                alignmentGuides.push(guide);
+                wrap.style.left='50%';
+            }
+            
+            if(Math.abs(centerY-pageCenterY)<10){
+                const guide=document.createElement('div');
+                guide.className='alignment-guide horizontal';
+                guide.style.top=(pageCenterY-pageRect.top)+'px';
+                page.appendChild(guide);
+                alignmentGuides.push(guide);
+                wrap.style.top='50%';
+            }
+        }
+        
+        function clearAlignmentGuides(){
+            alignmentGuides.forEach(g=>g.remove());
+            alignmentGuides=[];
         }
         
         // Resize handlers
@@ -2535,6 +3595,7 @@
             function up(){
                 document.removeEventListener('mousemove',move);
                 document.removeEventListener('mouseup',up);
+                autosave();
             }
             
             document.addEventListener('mousemove',move);
@@ -2561,6 +3622,7 @@
             function up(){
                 document.removeEventListener('touchmove',move);
                 document.removeEventListener('touchend',up);
+                autosave();
             }
             
             document.addEventListener('touchmove',move,{passive:false});
@@ -2592,6 +3654,7 @@
             function up(){
                 document.removeEventListener('mousemove',move);
                 document.removeEventListener('mouseup',up);
+                autosave();
             }
             
             document.addEventListener('mousemove',move);
@@ -2623,6 +3686,7 @@
             function up(){
                 document.removeEventListener('touchmove',move);
                 document.removeEventListener('touchend',up);
+                autosave();
             }
             
             document.addEventListener('touchmove',move,{passive:false});
@@ -2640,6 +3704,7 @@
             el.querySelector('.seal-resize-handle').style.display='flex';
             el.querySelector('.seal-rotate-handle').style.display='flex';
             activeSeal=el;
+            updateLayerPanel();
         }
         
         // Open seal editor
@@ -2673,12 +3738,20 @@
                 const size=parseInt(activeSeal.style.width)||100;
                 const opacity=parseFloat(activeSeal.style.opacity||1)*100;
                 const rotation=parseFloat(activeSeal.querySelector('.seal-img').dataset.rotation||0);
+                const brightness=parseFloat(activeSeal.querySelector('.seal-img').dataset.brightness||100);
+                const contrast=parseFloat(activeSeal.querySelector('.seal-img').dataset.contrast||100);
+                
                 document.getElementById('editor-size').value=size;
                 document.getElementById('editor-opacity').value=opacity;
                 document.getElementById('editor-rotation').value=rotation;
+                document.getElementById('editor-brightness').value=brightness;
+                document.getElementById('editor-contrast').value=contrast;
+                
                 document.getElementById('size-display').innerText=size+'px';
                 document.getElementById('opacity-display').innerText=Math.round(opacity)+'%';
                 document.getElementById('rotation-display').innerText=Math.round(rotation)+'°';
+                document.getElementById('brightness-display').innerText=Math.round(brightness)+'%';
+                document.getElementById('contrast-display').innerText=Math.round(contrast)+'%';
             } else {
                 editor.style.left='50%';
                 editor.style.top='50%';
@@ -2779,6 +3852,24 @@
             }
         }
         
+        function editorBrightnessChange(v){
+            if(activeSeal){
+                const img=activeSeal.querySelector('.seal-img');
+                img.style.filter=`brightness(${v}%) contrast(${document.getElementById('editor-contrast').value}%)`;
+                img.dataset.brightness=v;
+                document.getElementById('brightness-display').innerText=Math.round(v)+'%';
+            }
+        }
+        
+        function editorContrastChange(v){
+            if(activeSeal){
+                const img=activeSeal.querySelector('.seal-img');
+                img.style.filter=`brightness(${document.getElementById('editor-brightness').value}%) contrast(${v}%)`;
+                img.dataset.contrast=v;
+                document.getElementById('contrast-display').innerText=Math.round(v)+'%';
+            }
+        }
+        
         function applyPreset(size){
             if(activeSeal){
                 activeSeal.style.width=size+'px';
@@ -2828,6 +3919,7 @@
         
         function duplicateSeal(){
             if(!activeSeal)return;
+            addToUndoStack();
             const newS=activeSeal.cloneNode(true);
             let leftPercent = parseFloat(activeSeal.style.left) || 50;
             let topPercent = parseFloat(activeSeal.style.top) || 50;
@@ -2840,15 +3932,181 @@
             newS.classList.remove('active-state');
             newS.querySelector('.seal-resize-handle').style.display='none';
             newS.querySelector('.seal-rotate-handle').style.display='none';
+            attachSealEvents(newS);
             currentPageElement.appendChild(newS);
+            updateLayerPanel();
+            autosave();
         }
         
         function deleteSeal(){
             if(activeSeal){
+                addToUndoStack();
                 activeSeal.remove();
                 closeSealEditor();
+                updateLayerPanel();
                 showToast('✓ '+(currentLang==='bn'?'সিল মুছে ফেলা হয়েছে':'Seal deleted'));
+                autosave();
             }
+        }
+        
+        // Undo/Redo
+        function addToUndoStack(){
+            if(!currentPageElement) return;
+            const snapshot=currentPageElement.innerHTML;
+            undoStack.push(snapshot);
+            if(undoStack.length>50) undoStack.shift();
+            redoStack=[];
+            updateUndoRedoButtons();
+        }
+        
+        function undoAction(){
+            if(undoStack.length===0 || !currentPageElement) return;
+            const current=currentPageElement.innerHTML;
+            redoStack.push(current);
+            const previous=undoStack.pop();
+            currentPageElement.innerHTML=previous;
+            reattachSealEvents();
+            updateUndoRedoButtons();
+            updateLayerPanel();
+            showToast('আনডু করা হয়েছে');
+        }
+        
+        function redoAction(){
+            if(redoStack.length===0 || !currentPageElement) return;
+            const current=currentPageElement.innerHTML;
+            undoStack.push(current);
+            const next=redoStack.pop();
+            currentPageElement.innerHTML=next;
+            reattachSealEvents();
+            updateUndoRedoButtons();
+            updateLayerPanel();
+            showToast('রিডু করা হয়েছে');
+        }
+        
+        function reattachSealEvents(){
+            currentPageElement.querySelectorAll('.seal-wrapper').forEach(wrap=>{
+                attachSealEvents(wrap);
+            });
+        }
+        
+        function updateUndoRedoButtons(){
+            document.getElementById('undo-btn').disabled=undoStack.length===0;
+            document.getElementById('redo-btn').disabled=redoStack.length===0;
+        }
+        
+        // Autosave
+        function autosave(){
+            const indicator=document.getElementById('autosave-indicator');
+            indicator.classList.add('show');
+            
+            clearTimeout(autosaveTimer);
+            autosaveTimer=setTimeout(()=>{
+                indicator.classList.remove('show');
+            },2000);
+            
+            // Save to localStorage
+            if(currentPageElement){
+                const state={
+                    html: currentPageElement.innerHTML,
+                    pageNumber: currentPageNumber,
+                    timestamp: Date.now()
+                };
+                localStorage.setItem('autosave_state',JSON.stringify(state));
+            }
+        }
+        
+        // Save project
+        function saveProject(){
+            if(!currentPageElement){
+                showToast('কোনো ডকুমেন্ট নেই!','error');
+                return;
+            }
+            
+            const projectData={
+                version: '2.0',
+                pages: pageContainers.map(pc=>pc.innerHTML),
+                currentPage: currentPageNumber,
+                templates: templates,
+                timestamp: Date.now()
+            };
+            
+            const blob=new Blob([JSON.stringify(projectData)],{type:'application/json'});
+            const url=URL.createObjectURL(blob);
+            const a=document.createElement('a');
+            a.href=url;
+            a.download='seal_project.sealproj';
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            showToast('প্রজেক্ট সেভ হয়েছে!');
+        }
+        
+        // Load project
+        function loadProject(){
+            const input=document.createElement('input');
+            input.type='file';
+            input.accept='.sealproj,application/json';
+            input.onchange=function(e){
+                const file=e.target.files[0];
+                if(!file) return;
+                
+                const reader=new FileReader();
+                reader.onload=function(ev){
+                    try{
+                        const projectData=JSON.parse(ev.target.result);
+                        
+                        if(projectData.pages && projectData.pages.length>0){
+                            const container=document.getElementById('content-layer');
+                            container.innerHTML='';
+                            pageContainers=[];
+                            allPages=[];
+                            
+                            projectData.pages.forEach((pageHtml,index)=>{
+                                const pc=document.createElement('div');
+                                pc.className='page-container';
+                                pc.dataset.pageNumber=index+1;
+                                pc.innerHTML=pageHtml;
+                                
+                                pc.addEventListener('click', function(e) {
+                                    if(!e.target.closest('.seal-wrapper')){
+                                        setCurrentPage(parseInt(this.dataset.pageNumber));
+                                    }
+                                });
+                                
+                                container.appendChild(pc);
+                                pageContainers.push(pc);
+                                const pd=pc.querySelector('.a4-page');
+                                if(pd){
+                                    allPages.push(pd);
+                                    if(index===0){
+                                        currentPageElement=pd;
+                                        pd.classList.add('current-page');
+                                        pc.classList.add('active-page');
+                                    }
+                                }
+                            });
+                            
+                            totalPages=pageContainers.length;
+                            currentPageNumber=1;
+                            
+                            document.getElementById('controls-bar').style.display='flex';
+                            document.getElementById('page-count-display').innerText=`/ ${totalPages}`;
+                            document.getElementById('page-jump').max=totalPages;
+                            document.getElementById('page-jump').value=1;
+                            
+                            reattachSealEvents();
+                            setupScrollObserver();
+                            updateLayerPanel();
+                            
+                            showToast('প্রজেক্ট লোড হয়েছে!');
+                        }
+                    }catch(error){
+                        showToast('ফাইল লোড করা যায়নি!','error');
+                    }
+                };
+                reader.readAsText(file);
+            };
+            input.click();
         }
         
         // Download functions
@@ -2992,10 +4250,29 @@
         
         // Close on outside click
         document.addEventListener('click',(e)=>{
-            if(!e.target.closest('#export-options')&&!e.target.closest('#export-btn')&&!e.target.closest('#seal-editor')&&!e.target.closest('.seal-wrapper')&&!e.target.closest('#help-modal')&&!e.target.closest('.header-btn')&&!e.target.closest('#settings-panel')&&!e.target.closest('#settings-btn')){
+            if(!e.target.closest('#export-options')&&!e.target.closest('#export-btn')&&!e.target.closest('#seal-editor')&&!e.target.closest('.seal-wrapper')&&!e.target.closest('#help-modal')&&!e.target.closest('.header-btn')&&!e.target.closest('#settings-panel')&&!e.target.closest('#settings-btn')&&!e.target.closest('#text-seal-modal')&&!e.target.closest('.quick-btn')){
                 document.getElementById('export-options').classList.remove('show');
                 closeSealEditor();
                 closeHelp();
+            }
+        });
+        
+        // Keyboard shortcuts
+        document.addEventListener('keydown',(e)=>{
+            if(e.ctrlKey&&e.key==='z'){
+                e.preventDefault();
+                undoAction();
+            } else if(e.ctrlKey&&e.key==='y'){
+                e.preventDefault();
+                redoAction();
+            } else if(e.ctrlKey&&e.key==='s'){
+                e.preventDefault();
+                saveProject();
+            } else if(e.key==='Delete'&&activeSeal){
+                deleteSeal();
+            } else if(e.ctrlKey&&e.key==='d'){
+                e.preventDefault();
+                duplicateSeal();
             }
         });
         
@@ -3003,12 +4280,55 @@
         window.addEventListener('DOMContentLoaded',()=>{
             const savedDark=localStorage.getItem('darkMode');
             if(savedDark==='true') toggleDarkMode();
+            
             const savedLang=localStorage.getItem('lang');
             if(savedLang==='en') toggleLanguage();
+            
+            const savedTemplates=localStorage.getItem('sealTemplates');
+            if(savedTemplates){
+                templates=JSON.parse(savedTemplates);
+            }
+            
+            const savedFavorites=localStorage.getItem('favorites');
+            if(savedFavorites){
+                favorites=new Set(JSON.parse(savedFavorites));
+            }
             
             buildMenu();
             makeEditorDraggable();
             updateTexts();
+            updateTemplatePanel();
+            updateLayerPanel();
+            
+            // Restore autosave if exists
+            const autosaveState=localStorage.getItem('autosave_state');
+            if(autosaveState){
+                const state=JSON.parse(autosaveState);
+                if(state.html && currentPageElement){
+                    currentPageElement.innerHTML=state.html;
+                    reattachSealEvents();
+                    updateLayerPanel();
+                    showToast('অটোসেভ থেকে পুনরুদ্ধার করা হয়েছে');
+                }
+            }
+            
+            // Multi-select mode toggle with Shift key
+            document.addEventListener('keydown',(e)=>{
+                if(e.key==='Shift'){
+                    multiSelectMode=true;
+                    showToast('মাল্টি-সিলেক্ট মোড চালু');
+                }
+            });
+            
+            document.addEventListener('keyup',(e)=>{
+                if(e.key==='Shift'){
+                    multiSelectMode=false;
+                    selectedSeals.clear();
+                    document.querySelectorAll('.seal-wrapper').forEach(w=>{
+                        w.classList.remove('multi-selected');
+                    });
+                }
+            });
         });
     </script>
 </body>
