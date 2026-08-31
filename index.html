@@ -2516,12 +2516,13 @@
         <div id="layer-list"></div>
     </div>
     
-    <!-- TEXT SEAL MODAL -->
+    <!-- TEXT SEAL GENERATOR MODAL -->
     <div id="text-seal-modal">
         <h3><i class="fas fa-font"></i> <span id="text-seal-title">টেক্সট সিল জেনারেটর</span></h3>
         <input type="text" class="text-seal-input" id="text-seal-name" placeholder="নাম লিখুন...">
         <input type="text" class="text-seal-input" id="text-seal-title-input" placeholder="পদবি লিখুন...">
         <input type="text" class="text-seal-input" id="text-seal-address" placeholder="ঠিকানা লিখুন...">
+        <input type="text" class="text-seal-input" id="text-seal-signature" placeholder="সাক্ষর লিখুন...">
         <div class="text-seal-options">
             <select class="text-seal-select" id="text-seal-shape">
                 <option value="circle">গোলাকার</option>
@@ -2949,11 +2950,12 @@
             showToast(gridEnabled?'গ্রিড চালু হয়েছে (প্রিন্ট/ডাউনলোডে থাকবে না)':'Grid enabled (won\'t print/download)');
         }
         
-        // Generate text seal
+        // Generate text seal with signature
         function generateTextSeal(){
             const name=document.getElementById('text-seal-name').value.trim();
             const title=document.getElementById('text-seal-title-input').value.trim();
             const address=document.getElementById('text-seal-address').value.trim();
+            const signature=document.getElementById('text-seal-signature').value.trim();
             const shape=document.getElementById('text-seal-shape').value;
             const color=document.getElementById('text-seal-color').value;
             
@@ -2986,18 +2988,28 @@
                 ctx.textAlign='center';
                 ctx.textBaseline='middle';
                 
+                // Top text - Name
                 ctx.font='bold 20px "Inter", sans-serif';
-                ctx.fillText(name,150,100);
+                ctx.fillText(name,150,80);
                 
+                // Middle - Title
                 ctx.font='16px "Inter", sans-serif';
-                ctx.fillText(title,150,140);
+                ctx.fillText(title,150,120);
                 
+                // Address
                 ctx.font='12px "Inter", sans-serif';
-                ctx.fillText(address,150,180);
+                ctx.fillText(address,150,155);
                 
+                // Signature
+                if(signature){
+                    ctx.font='italic 18px "Brush Script MT", cursive';
+                    ctx.fillText(signature,150,200);
+                }
+                
+                // Stars at top and bottom
                 ctx.font='20px "Inter", sans-serif';
-                ctx.fillText('★',150,60);
-                ctx.fillText('★',150,240);
+                ctx.fillText('★',150,50);
+                ctx.fillText('★',150,250);
             } else {
                 ctx.strokeStyle=color;
                 ctx.lineWidth=3;
@@ -3011,14 +3023,23 @@
                 ctx.textAlign='center';
                 ctx.textBaseline='middle';
                 
+                // Top text - Name
                 ctx.font='bold 22px "Inter", sans-serif';
-                ctx.fillText(name,150,100);
+                ctx.fillText(name,150,80);
                 
+                // Middle - Title
                 ctx.font='16px "Inter", sans-serif';
-                ctx.fillText(title,150,150);
+                ctx.fillText(title,150,130);
                 
+                // Address
                 ctx.font='12px "Inter", sans-serif';
-                ctx.fillText(address,150,200);
+                ctx.fillText(address,150,170);
+                
+                // Signature
+                if(signature){
+                    ctx.font='italic 18px "Brush Script MT", cursive';
+                    ctx.fillText(signature,150,220);
+                }
             }
             
             const dataUrl=canvas.toDataURL('image/png');
@@ -3652,7 +3673,7 @@
             setCurrentPage(v);
         }
         
-        // Zoom functions
+        // Zoom functions - seal position stays consistent
         function zoomIn(){
             if(currentZoom < 3){
                 currentZoom += 0.1;
@@ -4493,7 +4514,7 @@
             input.click();
         }
         
-        // Load project data
+        // Load project data - attach events properly
         function loadProjectData(projectData){
             if(!projectData.pages || projectData.pages.length===0){
                 showToast('কোনো পেজ নেই!','error');
@@ -4514,7 +4535,7 @@
                 pc.innerHTML=pageHtml;
                 
                 pc.addEventListener('click', function(e) {
-                    if(!e.target.closest('.seal-wrapper')){
+                    if(!e.target.closest('.seal-wrapper') && !e.target.closest('.seal-resize-handle') && !e.target.closest('.seal-rotate-handle')){
                         setCurrentPage(parseInt(this.dataset.pageNumber));
                     }
                 });
