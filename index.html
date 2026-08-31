@@ -429,6 +429,7 @@
             background: var(--white);
             position: relative;
             overflow: hidden;
+            transform-origin: top left;
         }
         
         .a4-page canvas,
@@ -443,7 +444,7 @@
             box-shadow: inset 0 0 0 2px var(--primary);
         }
         
-        /* ===== SEAL WRAPPER - ABSOLUTE POSITION ===== */
+        /* ===== SEAL WRAPPER - FIXED POSITION WITH TRANSFORM ===== */
         .seal-wrapper {
             position: absolute;
             z-index: 10;
@@ -451,11 +452,8 @@
             cursor: move;
             touch-action: none;
             /* This ensures the seal stays at exact position */
-            left: 50%;
-            top: 50%;
-            width: 100px;
-            height: 100px;
             transform: translate(-50%, -50%);
+            transition: width 0.2s, height 0.2s;
         }
         
         .seal-wrapper.active-state {
@@ -2386,7 +2384,7 @@
             }
         }
         
-        // Add seal - Use percentage based positioning
+        // Add seal - Fix position with percentage
         function addSeal(src){
             if(!currentPageElement){
                 showToast(currentLang==='bn'?'প্রথমে ডকুমেন্ট আপলোড করুন':'Please upload document first','error');
