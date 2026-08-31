@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="theme-color" content="#6366f1">
-    <meta name="description" content="প্রফেশনাল নোটারি সিল স্টুডিও - অ্যাডভান্সড ভার্সন">
-    <title>Pro Notary Seal Studio - Advanced</title>
+    <meta name="description" content="প্রফেশনাল নোটারি সিল স্টুডিও - প্রিমিয়াম ভার্সন">
+    <title>Pro Notary Seal Studio - Premium</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
@@ -35,6 +35,7 @@
             --toast-width: 280px;
             --layer-panel-width: 260px;
             --template-panel-width: 320px;
+            --project-panel-width: 340px;
         }
         
         * {
@@ -48,6 +49,8 @@
         html, body {
             height: 100%;
             overflow: hidden;
+            overscroll-behavior: none;
+            -webkit-overflow-scrolling: touch;
         }
         
         body {
@@ -57,6 +60,8 @@
             color: var(--text);
             user-select: none;
             -webkit-user-select: none;
+            -webkit-touch-callout: none;
+            touch-action: manipulation;
         }
         
         body.dark-mode {
@@ -92,6 +97,8 @@
             align-items: center;
             gap: 4px;
             flex-shrink: 0;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
         }
         
         .header-btn {
@@ -148,6 +155,7 @@
             justify-content: center;
             font-size: 18px;
             box-shadow: 0 4px 15px rgba(99,102,241,0.3);
+            flex-shrink: 0;
         }
         
         .brand-title {
@@ -172,7 +180,9 @@
             border-bottom: 1px solid var(--border);
             z-index: 1900;
             flex-shrink: 0;
-            flex-wrap: wrap;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
         }
         
         body.dark-mode #controls-bar {
@@ -301,6 +311,7 @@
             overflow-x: auto;
             overflow-y: auto;
             position: relative;
+            touch-action: pan-x pan-y;
         }
         
         #preview-container::-webkit-scrollbar {
@@ -462,6 +473,7 @@
             background: var(--white);
             position: relative;
             overflow: hidden;
+            touch-action: none;
         }
         
         .a4-page canvas,
@@ -470,21 +482,26 @@
             height: 100%!important;
             object-fit: contain!important;
             display: block;
+            pointer-events: none;
         }
         
         .a4-page.current-page {
             box-shadow: inset 0 0 0 2px var(--primary);
         }
         
-        /* ===== SEAL WRAPPER - FIXED POSITION WITH TRANSFORM ===== */
+        /* ===== SEAL WRAPPER - OPTIMIZED FOR MOBILE ===== */
         .seal-wrapper {
             position: absolute;
             z-index: 10;
             user-select: none;
+            -webkit-user-select: none;
+            -webkit-touch-callout: none;
             cursor: move;
             touch-action: none;
             transform: translate(-50%, -50%);
             transition: width 0.2s, height 0.2s;
+            will-change: transform;
+            pointer-events: auto;
         }
         
         .seal-wrapper.active-state {
@@ -509,14 +526,16 @@
             display: block;
             filter: drop-shadow(0 4px 15px rgba(0,0,0,0.2));
             transition: filter 0.3s, opacity 0.3s, transform 0.3s;
+            -webkit-user-drag: none;
+            -webkit-touch-callout: none;
         }
         
         .seal-resize-handle {
             position: absolute;
             bottom: -10px;
             right: -10px;
-            width: 24px;
-            height: 24px;
+            width: 28px;
+            height: 28px;
             background: linear-gradient(135deg, var(--secondary), #059669);
             border-radius: 50%;
             border: 3px solid var(--white);
@@ -524,18 +543,20 @@
             align-items: center;
             justify-content: center;
             color: #fff;
-            font-size: 9px;
+            font-size: 10px;
             z-index: 20;
             cursor: nwse-resize;
             box-shadow: 0 4px 15px rgba(16,185,129,0.4);
+            touch-action: none;
+            pointer-events: auto;
         }
         
         .seal-rotate-handle {
             position: absolute;
             top: -10px;
             left: -10px;
-            width: 24px;
-            height: 24px;
+            width: 28px;
+            height: 28px;
             background: linear-gradient(135deg, var(--primary), var(--primary-light));
             border-radius: 50%;
             border: 3px solid var(--white);
@@ -543,10 +564,12 @@
             align-items: center;
             justify-content: center;
             color: #fff;
-            font-size: 9px;
+            font-size: 10px;
             z-index: 20;
             cursor: grab;
             box-shadow: 0 4px 15px rgba(99,102,241,0.4);
+            touch-action: none;
+            pointer-events: auto;
         }
         
         .seal-wrapper.active-state .seal-resize-handle,
@@ -735,6 +758,154 @@
         .preset-btn:hover {
             background: var(--primary);
             transform: scale(1.05);
+        }
+        
+        /* ===== PROJECT LIST PANEL ===== */
+        #project-panel {
+            position: fixed;
+            top: calc(var(--header-height) + var(--controls-height));
+            right: 0;
+            height: calc(100% - var(--header-height) - var(--controls-height));
+            width: var(--project-panel-width);
+            max-width: 95%;
+            background: var(--white);
+            color: var(--text);
+            transform: translateX(100%);
+            transition: transform 0.3s;
+            z-index: 3000;
+            display: flex;
+            flex-direction: column;
+            box-shadow: -8px 0 30px rgba(0,0,0,0.2);
+        }
+        
+        #project-panel.open {
+            transform: translateX(0);
+        }
+        
+        body.dark-mode #project-panel {
+            background: #0f172a;
+        }
+        
+        .project-header {
+            padding: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(135deg, var(--warning), #d97706);
+            color: #fff;
+            flex-shrink: 0;
+        }
+        
+        .project-header h3 {
+            font-size: 14px;
+            font-weight: 700;
+        }
+        
+        #project-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+        }
+        
+        .project-item {
+            background: #f8fafc;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 10px;
+            transition: all 0.3s;
+            position: relative;
+        }
+        
+        body.dark-mode .project-item {
+            background: #1a1a1a;
+            border-color: #334155;
+        }
+        
+        .project-item:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(99,102,241,0.2);
+        }
+        
+        .project-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .project-name {
+            font-size: 13px;
+            font-weight: 700;
+            flex: 1;
+            min-width: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .project-date {
+            font-size: 10px;
+            color: var(--text-light);
+            flex-shrink: 0;
+        }
+        
+        .project-thumbnail {
+            width: 100%;
+            aspect-ratio: 210/297;
+            border-radius: 8px;
+            background: #fff;
+            overflow: hidden;
+            margin-bottom: 10px;
+            border: 1px solid var(--border);
+            position: relative;
+        }
+        
+        .project-thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+        
+        .project-actions {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .project-btn {
+            flex: 1;
+            padding: 8px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 10px;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+        }
+        
+        .project-btn.edit {
+            background: var(--primary);
+            color: #fff;
+        }
+        
+        .project-btn.download {
+            background: var(--secondary);
+            color: #fff;
+        }
+        
+        .project-btn.print {
+            background: var(--warning);
+            color: #fff;
+        }
+        
+        .project-btn.delete {
+            background: var(--danger);
+            color: #fff;
         }
         
         /* ===== TEMPLATE PANEL ===== */
@@ -1794,6 +1965,7 @@
                 --toast-width: 250px;
                 --layer-panel-width: 240px;
                 --template-panel-width: 280px;
+                --project-panel-width: 300px;
             }
             
             #header {
@@ -1916,21 +2088,21 @@
             }
             
             .seal-resize-handle {
-                width: 18px;
-                height: 18px;
-                bottom: -7px;
-                right: -7px;
-                font-size: 7px;
-                border-width: 2px;
+                width: 28px;
+                height: 28px;
+                bottom: -8px;
+                right: -8px;
+                font-size: 10px;
+                border-width: 3px;
             }
             
             .seal-rotate-handle {
-                width: 18px;
-                height: 18px;
-                top: -7px;
-                left: -7px;
-                font-size: 7px;
-                border-width: 2px;
+                width: 28px;
+                height: 28px;
+                top: -8px;
+                left: -8px;
+                font-size: 10px;
+                border-width: 3px;
             }
             
             .quick-btn {
@@ -1966,6 +2138,7 @@
                 --header-height: 48px;
                 --controls-height: 42px;
                 --toast-width: 230px;
+                --project-panel-width: 280px;
             }
             
             #header {
@@ -2079,6 +2252,24 @@
                 padding: 2px 4px;
                 font-size: 7px;
             }
+            
+            .seal-resize-handle {
+                width: 24px;
+                height: 24px;
+                bottom: -6px;
+                right: -6px;
+                font-size: 8px;
+                border-width: 2px;
+            }
+            
+            .seal-rotate-handle {
+                width: 24px;
+                height: 24px;
+                top: -6px;
+                left: -6px;
+                font-size: 8px;
+                border-width: 2px;
+            }
         }
     </style>
 </head>
@@ -2095,6 +2286,10 @@
             <div class="brand-title" id="title-text">নোটারি সিল স্টুডিও</div>
         </div>
         <div class="header-right">
+            <button class="header-btn" onclick="toggleProjectPanel()" title="প্রজেক্ট লিস্ট">
+                <i class="fas fa-list"></i>
+                <span class="badge" id="project-count-badge" style="display:none">0</span>
+            </button>
             <button class="header-btn" onclick="toggleTemplatePanel()" title="টেমপ্লেট">
                 <i class="fas fa-palette"></i>
             </button>
@@ -2107,9 +2302,6 @@
             </button>
             <button class="header-btn" onclick="toggleLanguage()">
                 <i class="fas fa-globe" id="lang-icon"></i>
-            </button>
-            <button class="header-btn" onclick="showHelp()">
-                <i class="fas fa-question-circle"></i>
             </button>
             <button class="header-btn" onclick="toggleDarkMode()">
                 <i class="fas fa-moon" id="dark-icon"></i>
@@ -2190,6 +2382,15 @@
         </button>
     </div>
     
+    <!-- PROJECT LIST PANEL -->
+    <div id="project-panel">
+        <div class="project-header">
+            <h3><i class="fas fa-list"></i> <span id="project-title">প্রজেক্ট লিস্ট</span></h3>
+            <button class="icon-btn" onclick="toggleProjectPanel()"><i class="fas fa-times"></i></button>
+        </div>
+        <div id="project-list"></div>
+    </div>
+    
     <!-- TEMPLATE PANEL -->
     <div id="template-panel">
         <div class="template-header">
@@ -2235,7 +2436,7 @@
     </div>
     
     <!-- OVERLAY -->
-    <div id="overlay" onclick="toggleSidebar(false);closeSettingsPanel();toggleTemplatePanel(false);toggleLayerPanel(false);closeTextSealModal()"></div>
+    <div id="overlay" onclick="closeAllPanels()"></div>
     
     <!-- SETTINGS PANEL -->
     <div id="settings-panel">
@@ -2343,19 +2544,6 @@
             </div>
             <button class="editor-btn" style="background:linear-gradient(135deg,var(--warning),#d97706)" onclick="rotateSealBy(15)"><i class="fas fa-redo"></i></button>
             <button class="editor-btn" style="background:linear-gradient(135deg,var(--warning),#d97706)" onclick="rotateSealBy(-15)"><i class="fas fa-undo"></i></button>
-        </div>
-        
-        <div class="editor-row">
-            <div class="editor-section">
-                <span class="editor-label">ব্রাইটনেস</span>
-                <input type="range" id="editor-brightness" min="50" max="150" value="100" oninput="editorBrightnessChange(this.value)">
-                <span id="brightness-display" style="color:#94a3b8;font-size:9px;min-width:30px;text-align:center">100%</span>
-            </div>
-            <div class="editor-section">
-                <span class="editor-label">কনট্রাস্ট</span>
-                <input type="range" id="editor-contrast" min="50" max="150" value="100" oninput="editorContrastChange(this.value)">
-                <span id="contrast-display" style="color:#94a3b8;font-size:9px;min-width:30px;text-align:center">100%</span>
-            </div>
         </div>
         
         <div class="editor-row">
@@ -2470,6 +2658,8 @@
         let autosaveTimer=null;
         let gridEnabled=false;
         let alignmentGuides=[];
+        let projectList=[];
+        let currentProjectId=null;
         
         // Toast notification
         function showToast(msg,type='success'){
@@ -2504,6 +2694,16 @@
             },3000);
         }
         
+        // Close all panels
+        function closeAllPanels(){
+            toggleSidebar(false);
+            closeSettingsPanel();
+            toggleTemplatePanel(false);
+            toggleLayerPanel(false);
+            toggleProjectPanel(false);
+            closeTextSealModal();
+        }
+        
         // Dark mode toggle
         function toggleDarkMode(){
             isDarkMode=!isDarkMode;
@@ -2521,6 +2721,7 @@
             buildMenu();
             updateLayerPanel();
             updateTemplatePanel();
+            updateProjectPanel();
             document.getElementById('lang-btn-text').innerText=currentLang==='bn'?'English':'বাংলা';
             localStorage.setItem('lang',currentLang);
             showToast(currentLang==='bn'?'বাংলা ভাষা চালু হয়েছে':'English language enabled');
@@ -2534,8 +2735,6 @@
             document.getElementById('upload-btn-text').innerText=bn?'আপলোড':'Upload';
             document.getElementById('save-btn-text').innerText=bn?'সেভ':'Save';
             document.getElementById('load-btn-text').innerText=bn?'লোড':'Load';
-            document.getElementById('download-btn-text').innerText=bn?'ডাউনলোড':'Download';
-            document.getElementById('refresh-btn-text').innerText=bn?'রিফ্রেশ':'Refresh';
             document.getElementById('settings-btn-text').innerText=bn?'সেটিংস':'Settings';
             document.getElementById('search-input').placeholder=bn?'সিল খুঁজুন...':'Search seals...';
             document.getElementById('doc-placeholder').innerText=bn?'ডকুমেন্ট আপলোড করুন':'Upload Document';
@@ -2562,15 +2761,26 @@
             document.getElementById('generate-btn-text').innerText=bn?'সিল তৈরি করুন':'Generate Seal';
             document.getElementById('cancel-btn-text').innerText=bn?'বাতিল':'Cancel';
             document.getElementById('autosave-text').innerText=bn?'সেভ হয়েছে':'Saved';
+            document.getElementById('project-title').innerText=bn?'প্রজেক্ট লিস্ট':'Project List';
             document.getElementById('help-content').innerHTML=bn?
-                '১. ডকুমেন্ট আপলোড করুন<br>২. সিল বাছুন<br>৩. সিলে চাপ ধরে রাখলে এডিটর খুলবে<br>৪. এডিটর বক্সটি টেনে যেকোনো জায়গায় রাখুন<br>৫. টেনে সরান, রিসাইজ করুন, ঘুরান<br>৬. ডাউনলোড করুন':
-                '1. Upload document<br>2. Select seal<br>3. Press & hold to open editor<br>4. Drag editor anywhere<br>5. Drag, resize, rotate<br>6. Download';
+                '১. ডকুমেন্ট আপলোড করুন<br>২. সিল বাছুন<br>৩. সিলে চাপ ধরে টেনে সরান<br>৪. সিলে ডাবল ট্যাপ করলে এডিটর খুলবে<br>৫. টেনে সরান, রিসাইজ করুন, ঘুরান<br>৬. ডাউনলোড করুন':
+                '1. Upload document<br>2. Select seal<br>3. Press & drag to move<br>4. Double tap to open editor<br>5. Drag, resize, rotate<br>6. Download';
         }
         
         // Sidebar toggle
         function toggleSidebar(show){
             document.getElementById('sidebar').classList.toggle('open',show);
             document.getElementById('overlay').classList.toggle('show',show);
+        }
+        
+        // Project panel toggle
+        function toggleProjectPanel(show){
+            if(show===undefined){
+                show=!document.getElementById('project-panel').classList.contains('open');
+            }
+            document.getElementById('project-panel').classList.toggle('open',show);
+            document.getElementById('overlay').classList.toggle('show',show);
+            if(show) updateProjectPanel();
         }
         
         // Template panel toggle
@@ -2624,7 +2834,7 @@
             });
             document.getElementById('grid-btn').style.background=gridEnabled?'var(--primary)':'';
             document.getElementById('grid-btn').style.color=gridEnabled?'#fff':'';
-            showToast(gridEnabled?'গ্রিড চালু হয়েছে':'Grid enabled');
+            showToast(gridEnabled?'গ্রিড চালু হয়েছে (প্রিন্ট/ডাউনলোডে থাকবে না)':'Grid enabled (won\'t print/download)');
         }
         
         // Generate text seal
@@ -2645,11 +2855,9 @@
             canvas.height=300;
             const ctx=canvas.getContext('2d');
             
-            // Clear canvas
             ctx.clearRect(0,0,300,300);
             
             if(shape==='circle'){
-                // Draw circle
                 ctx.beginPath();
                 ctx.arc(150,150,140,0,Math.PI*2);
                 ctx.strokeStyle=color;
@@ -2662,7 +2870,6 @@
                 ctx.lineWidth=1;
                 ctx.stroke();
                 
-                // Draw text
                 ctx.fillStyle=color;
                 ctx.textAlign='center';
                 ctx.textBaseline='middle';
@@ -2676,12 +2883,10 @@
                 ctx.font='12px "Inter", sans-serif';
                 ctx.fillText(address,150,180);
                 
-                // Draw stars
                 ctx.font='20px "Inter", sans-serif';
                 ctx.fillText('★',150,60);
                 ctx.fillText('★',150,240);
             } else {
-                // Draw rectangle
                 ctx.strokeStyle=color;
                 ctx.lineWidth=3;
                 ctx.strokeRect(15,15,270,270);
@@ -2690,7 +2895,6 @@
                 ctx.lineWidth=1;
                 ctx.strokeRect(25,25,250,250);
                 
-                // Draw text
                 ctx.fillStyle=color;
                 ctx.textAlign='center';
                 ctx.textBaseline='middle';
@@ -2787,8 +2991,8 @@
             wrap.style.opacity=tpl.opacity;
             wrap.innerHTML=`
                 <img src="${tpl.src}" class="seal-img" style="transform:rotate(${tpl.rotation}deg)" data-rotation="${tpl.rotation}">
-                <span class="seal-resize-handle" onmousedown="startResize(event, this.parentElement)" ontouchstart="startTouchResize(event, this.parentElement)"><i class="fas fa-expand-arrows-alt"></i></span>
-                <span class="seal-rotate-handle" onmousedown="startRotate(event, this.parentElement)" ontouchstart="startTouchRotate(event, this.parentElement)"><i class="fas fa-sync-alt"></i></span>
+                <span class="seal-resize-handle"><i class="fas fa-expand-arrows-alt"></i></span>
+                <span class="seal-rotate-handle"><i class="fas fa-sync-alt"></i></span>
             `;
             
             attachSealEvents(wrap);
@@ -2841,7 +3045,7 @@
                     <div class="layer-info">
                         <div class="layer-name">${currentLang==='bn'?'সিল':'Seal'} ${index+1}</div>
                         <div class="layer-details">
-                            ${parseInt(wrap.style.width)||100}px, ${Math.round(parseFloat(wrap.style.opacity)||1*100)}%
+                            ${parseInt(wrap.style.width)||100}px, ${Math.round((parseFloat(wrap.style.opacity)||1)*100)}%
                         </div>
                     </div>
                     <div class="layer-actions">
@@ -3166,6 +3370,7 @@
                         canvas.style.width='100%';
                         canvas.style.height='100%';
                         canvas.style.objectFit='contain';
+                        canvas.style.pointerEvents='none';
                         pd.appendChild(canvas);
                         pc.appendChild(pd);
                         container.appendChild(pc);
@@ -3201,6 +3406,7 @@
                     img.style.width='100%';
                     img.style.height='100%';
                     img.style.objectFit='contain';
+                    img.style.pointerEvents='none';
                     pd.appendChild(img);
                     pc.appendChild(pd);
                     container.appendChild(pc);
@@ -3222,6 +3428,7 @@
             
             setupScrollObserver();
             updateLayerPanel();
+            autosaveProject();
         }
         
         // Set current page
@@ -3356,37 +3563,296 @@
             setTimeout(()=>recentPanel.remove(),5000);
         }
         
-        // Attach seal events
+        // Attach seal events - OPTIMIZED FOR MOBILE
         function attachSealEvents(wrap){
+            // Remove existing listeners
+            const newWrap=wrap.cloneNode(true);
+            wrap.parentNode.replaceChild(newWrap,wrap);
+            wrap=newWrap;
+            
+            const img=wrap.querySelector('.seal-img');
+            const resizeHandle=wrap.querySelector('.seal-resize-handle');
+            const rotateHandle=wrap.querySelector('.seal-rotate-handle');
+            
+            // Make image non-draggable
+            img.style.pointerEvents='none';
+            img.style.webkitUserDrag='none';
+            
+            // Touch events for dragging
             wrap.addEventListener('touchstart',(e)=>{
                 e.stopPropagation();
-                if(multiSelectMode){
-                    toggleMultiSelect(wrap);
-                } else {
-                    activateSeal(wrap);
-                    startTouchDrag(e,wrap);
-                    startLongPress(wrap);
+                e.preventDefault();
+                
+                const touch=e.touches[0];
+                const pageRect=wrap.parentElement.getBoundingClientRect();
+                const wrapRect=wrap.getBoundingClientRect();
+                
+                // Store initial positions
+                const startX=touch.clientX;
+                const startY=touch.clientY;
+                const startLeft=parseFloat(wrap.style.left)||50;
+                const startTop=parseFloat(wrap.style.top)||50;
+                
+                activateSeal(wrap);
+                
+                let moved=false;
+                let longPressTriggered=false;
+                
+                // Long press timer for editor
+                const longPressTimer=setTimeout(()=>{
+                    longPressTriggered=true;
+                    openSealEditor();
+                },500);
+                
+                function onTouchMove(ev){
+                    ev.preventDefault();
+                    ev.stopPropagation();
+                    
+                    const t=ev.touches[0];
+                    const dx=t.clientX-startX;
+                    const dy=t.clientY-startY;
+                    
+                    if(Math.abs(dx)>5 || Math.abs(dy)>5){
+                        moved=true;
+                        clearTimeout(longPressTimer);
+                        
+                        // Calculate new position in pixels
+                        const newLeftPx=(startLeft/100)*pageRect.width + dx;
+                        const newTopPx=(startTop/100)*pageRect.height + dy;
+                        
+                        // Convert to percentage
+                        let leftPercent=(newLeftPx/pageRect.width)*100;
+                        let topPercent=(newTopPx/pageRect.height)*100;
+                        
+                        // Clamp to bounds
+                        leftPercent=Math.max(0,Math.min(100,leftPercent));
+                        topPercent=Math.max(0,Math.min(100,topPercent));
+                        
+                        wrap.style.left=leftPercent+'%';
+                        wrap.style.top=topPercent+'%';
+                        
+                        checkAlignment(wrap);
+                    }
                 }
+                
+                function onTouchEnd(ev){
+                    ev.preventDefault();
+                    clearTimeout(longPressTimer);
+                    
+                    if(!moved && !longPressTriggered){
+                        // Tap to activate
+                        activateSeal(wrap);
+                    }
+                    
+                    document.removeEventListener('touchmove',onTouchMove);
+                    document.removeEventListener('touchend',onTouchEnd);
+                    clearAlignmentGuides();
+                    autosave();
+                }
+                
+                document.addEventListener('touchmove',onTouchMove,{passive:false});
+                document.addEventListener('touchend',onTouchEnd);
             },{passive:false});
             
-            wrap.addEventListener('touchend',cancelLongPress);
-            wrap.addEventListener('touchmove',cancelLongPress);
-            
+            // Mouse events for dragging
             wrap.addEventListener('mousedown',(e)=>{
                 e.stopPropagation();
-                if(multiSelectMode){
-                    toggleMultiSelect(wrap);
-                } else {
-                    activateSeal(wrap);
-                    startMouseDrag(e,wrap);
+                e.preventDefault();
+                
+                const pageRect=wrap.parentElement.getBoundingClientRect();
+                const startX=e.clientX;
+                const startY=e.clientY;
+                const startLeft=parseFloat(wrap.style.left)||50;
+                const startTop=parseFloat(wrap.style.top)||50;
+                
+                activateSeal(wrap);
+                
+                function onMouseMove(ev){
+                    ev.preventDefault();
+                    
+                    const dx=ev.clientX-startX;
+                    const dy=ev.clientY-startY;
+                    
+                    const newLeftPx=(startLeft/100)*pageRect.width + dx;
+                    const newTopPx=(startTop/100)*pageRect.height + dy;
+                    
+                    let leftPercent=(newLeftPx/pageRect.width)*100;
+                    let topPercent=(newTopPx/pageRect.height)*100;
+                    
+                    leftPercent=Math.max(0,Math.min(100,leftPercent));
+                    topPercent=Math.max(0,Math.min(100,topPercent));
+                    
+                    wrap.style.left=leftPercent+'%';
+                    wrap.style.top=topPercent+'%';
+                    
+                    checkAlignment(wrap);
                 }
+                
+                function onMouseUp(){
+                    document.removeEventListener('mousemove',onMouseMove);
+                    document.removeEventListener('mouseup',onMouseUp);
+                    clearAlignmentGuides();
+                    autosave();
+                }
+                
+                document.addEventListener('mousemove',onMouseMove);
+                document.addEventListener('mouseup',onMouseUp);
             });
             
+            // Double tap/click for editor
             wrap.addEventListener('dblclick',(e)=>{
                 e.stopPropagation();
                 activateSeal(wrap);
                 openSealEditor();
             });
+            
+            // Resize handle events
+            if(resizeHandle){
+                resizeHandle.addEventListener('touchstart',(e)=>{
+                    e.stopPropagation();
+                    e.preventDefault();
+                    
+                    const touch=e.touches[0];
+                    const startX=touch.clientX;
+                    const startW=parseInt(wrap.style.width)||100;
+                    
+                    function onResizeMove(ev){
+                        ev.preventDefault();
+                        ev.stopPropagation();
+                        
+                        const t=ev.touches[0];
+                        const dx=t.clientX-startX;
+                        const newSize=Math.max(30,Math.min(500,startW+dx));
+                        
+                        wrap.style.width=newSize+'px';
+                        wrap.style.height=newSize+'px';
+                        
+                        if(document.getElementById('editor-size')){
+                            document.getElementById('editor-size').value=newSize;
+                            document.getElementById('size-display').innerText=newSize+'px';
+                        }
+                    }
+                    
+                    function onResizeEnd(){
+                        document.removeEventListener('touchmove',onResizeMove);
+                        document.removeEventListener('touchend',onResizeEnd);
+                        autosave();
+                    }
+                    
+                    document.addEventListener('touchmove',onResizeMove,{passive:false});
+                    document.addEventListener('touchend',onResizeEnd);
+                },{passive:false});
+                
+                resizeHandle.addEventListener('mousedown',(e)=>{
+                    e.stopPropagation();
+                    e.preventDefault();
+                    
+                    const startX=e.clientX;
+                    const startW=parseInt(wrap.style.width)||100;
+                    
+                    function onResizeMove(ev){
+                        ev.preventDefault();
+                        
+                        const dx=ev.clientX-startX;
+                        const newSize=Math.max(30,Math.min(500,startW+dx));
+                        
+                        wrap.style.width=newSize+'px';
+                        wrap.style.height=newSize+'px';
+                        
+                        if(document.getElementById('editor-size')){
+                            document.getElementById('editor-size').value=newSize;
+                            document.getElementById('size-display').innerText=newSize+'px';
+                        }
+                    }
+                    
+                    function onResizeEnd(){
+                        document.removeEventListener('mousemove',onResizeMove);
+                        document.removeEventListener('mouseup',onResizeEnd);
+                        autosave();
+                    }
+                    
+                    document.addEventListener('mousemove',onResizeMove);
+                    document.addEventListener('mouseup',onResizeEnd);
+                });
+            }
+            
+            // Rotate handle events
+            if(rotateHandle){
+                rotateHandle.addEventListener('touchstart',(e)=>{
+                    e.stopPropagation();
+                    e.preventDefault();
+                    
+                    const touch=e.touches[0];
+                    const rect=wrap.getBoundingClientRect();
+                    const centerX=rect.left+rect.width/2;
+                    const centerY=rect.top+rect.height/2;
+                    const startAngle=Math.atan2(touch.clientY-centerY,touch.clientX-centerX)*180/Math.PI;
+                    const startRotation=parseFloat(img.dataset.rotation||0);
+                    
+                    function onRotateMove(ev){
+                        ev.preventDefault();
+                        ev.stopPropagation();
+                        
+                        const t=ev.touches[0];
+                        const angle=Math.atan2(t.clientY-centerY,t.clientX-centerX)*180/Math.PI;
+                        const diff=angle-startAngle;
+                        const newRotation=startRotation+diff;
+                        
+                        img.style.transform=`rotate(${newRotation}deg)`;
+                        img.dataset.rotation=newRotation;
+                        
+                        if(document.getElementById('editor-rotation')){
+                            document.getElementById('editor-rotation').value=newRotation;
+                            document.getElementById('rotation-display').innerText=Math.round(newRotation)+'°';
+                        }
+                    }
+                    
+                    function onRotateEnd(){
+                        document.removeEventListener('touchmove',onRotateMove);
+                        document.removeEventListener('touchend',onRotateEnd);
+                        autosave();
+                    }
+                    
+                    document.addEventListener('touchmove',onRotateMove,{passive:false});
+                    document.addEventListener('touchend',onRotateEnd);
+                },{passive:false});
+                
+                rotateHandle.addEventListener('mousedown',(e)=>{
+                    e.stopPropagation();
+                    e.preventDefault();
+                    
+                    const rect=wrap.getBoundingClientRect();
+                    const centerX=rect.left+rect.width/2;
+                    const centerY=rect.top+rect.height/2;
+                    const startAngle=Math.atan2(e.clientY-centerY,e.clientX-centerX)*180/Math.PI;
+                    const startRotation=parseFloat(img.dataset.rotation||0);
+                    
+                    function onRotateMove(ev){
+                        ev.preventDefault();
+                        
+                        const angle=Math.atan2(ev.clientY-centerY,ev.clientX-centerX)*180/Math.PI;
+                        const diff=angle-startAngle;
+                        const newRotation=startRotation+diff;
+                        
+                        img.style.transform=`rotate(${newRotation}deg)`;
+                        img.dataset.rotation=newRotation;
+                        
+                        if(document.getElementById('editor-rotation')){
+                            document.getElementById('editor-rotation').value=newRotation;
+                            document.getElementById('rotation-display').innerText=Math.round(newRotation)+'°';
+                        }
+                    }
+                    
+                    function onRotateEnd(){
+                        document.removeEventListener('mousemove',onRotateMove);
+                        document.removeEventListener('mouseup',onRotateEnd);
+                        autosave();
+                    }
+                    
+                    document.addEventListener('mousemove',onRotateMove);
+                    document.addEventListener('mouseup',onRotateEnd);
+                });
+            }
         }
         
         // Add seal - Fix position with percentage
@@ -3408,12 +3874,12 @@
             wrap.style.transform='translate(-50%, -50%)';
             wrap.innerHTML=`
                 <img src="${src}" class="seal-img" onerror="this.parentElement.remove()">
-                <span class="seal-resize-handle" onmousedown="startResize(event, this.parentElement)" ontouchstart="startTouchResize(event, this.parentElement)"><i class="fas fa-expand-arrows-alt"></i></span>
-                <span class="seal-rotate-handle" onmousedown="startRotate(event, this.parentElement)" ontouchstart="startTouchRotate(event, this.parentElement)"><i class="fas fa-sync-alt"></i></span>
+                <span class="seal-resize-handle"><i class="fas fa-expand-arrows-alt"></i></span>
+                <span class="seal-rotate-handle"><i class="fas fa-sync-alt"></i></span>
             `;
             
-            attachSealEvents(wrap);
             currentPageElement.appendChild(wrap);
+            attachSealEvents(wrap);
             
             if(!recentSeals.includes(src)){
                 recentSeals.push(src);
@@ -3422,6 +3888,7 @@
             showToast('✓ '+(currentLang==='bn'?'সিল যোগ হয়েছে':'Seal added'));
             updateLayerPanel();
             autosave();
+            autosaveProject();
         }
         
         // Multi-select toggle
@@ -3446,97 +3913,6 @@
             showToast('মাল্টি-সিলেক্ট মোড চালু হয়েছে। সিলে চাপ দিন');
         }
         
-        // Long press for editor
-        function startLongPress(wrap){
-            cancelLongPress();
-            longPressTimer=setTimeout(()=>{
-                activateSeal(wrap);
-                openSealEditor();
-            },500);
-        }
-        
-        function cancelLongPress(){
-            if(longPressTimer){
-                clearTimeout(longPressTimer);
-                longPressTimer=null;
-            }
-        }
-        
-        // Touch drag - Store position as percentage
-        function startTouchDrag(e,wrap){
-            e.preventDefault();
-            const touch=e.touches[0];
-            const pr=wrap.parentElement;
-            const rect=pr.getBoundingClientRect();
-            let startX=touch.clientX-rect.left;
-            let startY=touch.clientY-rect.top;
-            let startLeft=parseFloat(wrap.style.left);
-            let startTop=parseFloat(wrap.style.top);
-            
-            function move(ev){
-                ev.preventDefault();
-                cancelLongPress();
-                const t=ev.touches[0];
-                let x=t.clientX-rect.left;
-                let y=t.clientY-rect.top;
-                let nl=startLeft+(x-startX);
-                let nt=startTop+(y-startY);
-                let leftPercent = (nl / rect.width) * 100;
-                let topPercent = (nt / rect.height) * 100;
-                leftPercent = Math.max(0, Math.min(100, leftPercent));
-                topPercent = Math.max(0, Math.min(100, topPercent));
-                wrap.style.left = leftPercent + '%';
-                wrap.style.top = topPercent + '%';
-                checkAlignment(wrap);
-            }
-            
-            function up(){
-                document.removeEventListener('touchmove',move);
-                document.removeEventListener('touchend',up);
-                clearAlignmentGuides();
-                autosave();
-            }
-            
-            document.addEventListener('touchmove',move,{passive:false});
-            document.addEventListener('touchend',up);
-        }
-        
-        // Mouse drag - Store position as percentage
-        function startMouseDrag(e,wrap){
-            e.preventDefault();
-            const pr=wrap.parentElement;
-            const rect=pr.getBoundingClientRect();
-            let startX=e.clientX-rect.left;
-            let startY=e.clientY-rect.top;
-            let startLeft=parseFloat(wrap.style.left);
-            let startTop=parseFloat(wrap.style.top);
-            
-            function move(ev){
-                ev.preventDefault();
-                let x=ev.clientX-rect.left;
-                let y=ev.clientY-rect.top;
-                let nl=startLeft+(x-startX);
-                let nt=startTop+(y-startY);
-                let leftPercent = (nl / rect.width) * 100;
-                let topPercent = (nt / rect.height) * 100;
-                leftPercent = Math.max(0, Math.min(100, leftPercent));
-                topPercent = Math.max(0, Math.min(100, topPercent));
-                wrap.style.left = leftPercent + '%';
-                wrap.style.top = topPercent + '%';
-                checkAlignment(wrap);
-            }
-            
-            function up(){
-                document.removeEventListener('mousemove',move);
-                document.removeEventListener('mouseup',up);
-                clearAlignmentGuides();
-                autosave();
-            }
-            
-            document.addEventListener('mousemove',move);
-            document.addEventListener('mouseup',up);
-        }
-        
         // Check alignment
         function checkAlignment(wrap){
             clearAlignmentGuides();
@@ -3550,7 +3926,6 @@
             const pageCenterX=pageRect.left+pageRect.width/2;
             const pageCenterY=pageRect.top+pageRect.height/2;
             
-            // Check center alignment
             if(Math.abs(centerX-pageCenterX)<10){
                 const guide=document.createElement('div');
                 guide.className='alignment-guide vertical';
@@ -3575,134 +3950,20 @@
             alignmentGuides=[];
         }
         
-        // Resize handlers
-        function startResize(e,wrap){
-            e.preventDefault();
-            e.stopPropagation();
-            const startW=parseInt(wrap.style.width)||100;
-            let startX=e.clientX;
-            
-            function move(ev){
-                ev.preventDefault();
-                let dx=ev.clientX-startX;
-                let newSize=Math.max(30,Math.min(500,startW+dx));
-                wrap.style.width=newSize+'px';
-                wrap.style.height=newSize+'px';
-                document.getElementById('editor-size').value=newSize;
-                document.getElementById('size-display').innerText=newSize+'px';
-            }
-            
-            function up(){
-                document.removeEventListener('mousemove',move);
-                document.removeEventListener('mouseup',up);
-                autosave();
-            }
-            
-            document.addEventListener('mousemove',move);
-            document.addEventListener('mouseup',up);
-        }
-        
-        function startTouchResize(e,wrap){
-            e.preventDefault();
-            e.stopPropagation();
-            const touch=e.touches[0];
-            const startW=parseInt(wrap.style.width)||100;
-            let startX=touch.clientX;
-            
-            function move(ev){
-                ev.preventDefault();
-                let dx=ev.touches[0].clientX-startX;
-                let newSize=Math.max(30,Math.min(500,startW+dx));
-                wrap.style.width=newSize+'px';
-                wrap.style.height=newSize+'px';
-                document.getElementById('editor-size').value=newSize;
-                document.getElementById('size-display').innerText=newSize+'px';
-            }
-            
-            function up(){
-                document.removeEventListener('touchmove',move);
-                document.removeEventListener('touchend',up);
-                autosave();
-            }
-            
-            document.addEventListener('touchmove',move,{passive:false});
-            document.addEventListener('touchend',up);
-        }
-        
-        // Rotate handlers
-        function startRotate(e,wrap){
-            e.preventDefault();
-            e.stopPropagation();
-            const rect=wrap.getBoundingClientRect();
-            const centerX=rect.left+rect.width/2;
-            const centerY=rect.top+rect.height/2;
-            let startAngle=Math.atan2(e.clientY-centerY,e.clientX-centerX)*180/Math.PI;
-            let currentRotation=parseFloat(wrap.querySelector('.seal-img').dataset.rotation||0);
-            
-            function move(ev){
-                ev.preventDefault();
-                let angle=Math.atan2(ev.clientY-centerY,ev.clientX-centerX)*180/Math.PI;
-                let diff=angle-startAngle;
-                let newRotation=currentRotation+diff;
-                const img=wrap.querySelector('.seal-img');
-                img.style.transform=`rotate(${newRotation}deg)`;
-                img.dataset.rotation=newRotation;
-                document.getElementById('editor-rotation').value=newRotation;
-                document.getElementById('rotation-display').innerText=Math.round(newRotation)+'°';
-            }
-            
-            function up(){
-                document.removeEventListener('mousemove',move);
-                document.removeEventListener('mouseup',up);
-                autosave();
-            }
-            
-            document.addEventListener('mousemove',move);
-            document.addEventListener('mouseup',up);
-        }
-        
-        function startTouchRotate(e,wrap){
-            e.preventDefault();
-            e.stopPropagation();
-            const touch=e.touches[0];
-            const rect=wrap.getBoundingClientRect();
-            const centerX=rect.left+rect.width/2;
-            const centerY=rect.top+rect.height/2;
-            let startAngle=Math.atan2(touch.clientY-centerY,touch.clientX-centerX)*180/Math.PI;
-            let currentRotation=parseFloat(wrap.querySelector('.seal-img').dataset.rotation||0);
-            
-            function move(ev){
-                ev.preventDefault();
-                let angle=Math.atan2(ev.touches[0].clientY-centerY,ev.touches[0].clientX-centerX)*180/Math.PI;
-                let diff=angle-startAngle;
-                let newRotation=currentRotation+diff;
-                const img=wrap.querySelector('.seal-img');
-                img.style.transform=`rotate(${newRotation}deg)`;
-                img.dataset.rotation=newRotation;
-                document.getElementById('editor-rotation').value=newRotation;
-                document.getElementById('rotation-display').innerText=Math.round(newRotation)+'°';
-            }
-            
-            function up(){
-                document.removeEventListener('touchmove',move);
-                document.removeEventListener('touchend',up);
-                autosave();
-            }
-            
-            document.addEventListener('touchmove',move,{passive:false});
-            document.addEventListener('touchend',up);
-        }
-        
         // Activate seal
         function activateSeal(el){
             document.querySelectorAll('.seal-wrapper').forEach(w=>{
                 w.classList.remove('active-state');
-                w.querySelector('.seal-resize-handle').style.display='none';
-                w.querySelector('.seal-rotate-handle').style.display='none';
+                const rh=w.querySelector('.seal-resize-handle');
+                const roh=w.querySelector('.seal-rotate-handle');
+                if(rh) rh.style.display='none';
+                if(roh) roh.style.display='none';
             });
             el.classList.add('active-state');
-            el.querySelector('.seal-resize-handle').style.display='flex';
-            el.querySelector('.seal-rotate-handle').style.display='flex';
+            const rh=el.querySelector('.seal-resize-handle');
+            const roh=el.querySelector('.seal-rotate-handle');
+            if(rh) rh.style.display='flex';
+            if(roh) roh.style.display='flex';
             activeSeal=el;
             updateLayerPanel();
         }
@@ -3735,11 +3996,12 @@
                 editor.style.top=Math.max(5,editorY)+'px';
                 editor.style.transform='none';
                 
+                const img=activeSeal.querySelector('.seal-img');
                 const size=parseInt(activeSeal.style.width)||100;
                 const opacity=parseFloat(activeSeal.style.opacity||1)*100;
-                const rotation=parseFloat(activeSeal.querySelector('.seal-img').dataset.rotation||0);
-                const brightness=parseFloat(activeSeal.querySelector('.seal-img').dataset.brightness||100);
-                const contrast=parseFloat(activeSeal.querySelector('.seal-img').dataset.contrast||100);
+                const rotation=parseFloat(img?.dataset.rotation||0);
+                const brightness=parseFloat(img?.dataset.brightness||100);
+                const contrast=parseFloat(img?.dataset.contrast||100);
                 
                 document.getElementById('editor-size').value=size;
                 document.getElementById('editor-opacity').value=opacity;
@@ -3764,8 +4026,10 @@
             document.getElementById('seal-editor').classList.remove('show');
             if(activeSeal){
                 activeSeal.classList.remove('active-state');
-                activeSeal.querySelector('.seal-resize-handle').style.display='none';
-                activeSeal.querySelector('.seal-rotate-handle').style.display='none';
+                const rh=activeSeal.querySelector('.seal-resize-handle');
+                const roh=activeSeal.querySelector('.seal-rotate-handle');
+                if(rh) rh.style.display='none';
+                if(roh) roh.style.display='none';
                 activeSeal=null;
             }
         }
@@ -3855,7 +4119,8 @@
         function editorBrightnessChange(v){
             if(activeSeal){
                 const img=activeSeal.querySelector('.seal-img');
-                img.style.filter=`brightness(${v}%) contrast(${document.getElementById('editor-contrast').value}%)`;
+                const contrast=document.getElementById('editor-contrast').value;
+                img.style.filter=`brightness(${v}%) contrast(${contrast}%)`;
                 img.dataset.brightness=v;
                 document.getElementById('brightness-display').innerText=Math.round(v)+'%';
             }
@@ -3864,7 +4129,8 @@
         function editorContrastChange(v){
             if(activeSeal){
                 const img=activeSeal.querySelector('.seal-img');
-                img.style.filter=`brightness(${document.getElementById('editor-brightness').value}%) contrast(${v}%)`;
+                const brightness=document.getElementById('editor-brightness').value;
+                img.style.filter=`brightness(${brightness}%) contrast(${v}%)`;
                 img.dataset.contrast=v;
                 document.getElementById('contrast-display').innerText=Math.round(v)+'%';
             }
@@ -3901,19 +4167,19 @@
         
         function moveSeal(dx,dy){
             if(activeSeal){
-                const pr = activeSeal.parentElement;
-                const rect = pr.getBoundingClientRect();
-                let leftPercent = parseFloat(activeSeal.style.left) || 50;
-                let topPercent = parseFloat(activeSeal.style.top) || 50;
+                const pr=activeSeal.parentElement;
+                const rect=pr.getBoundingClientRect();
+                let leftPercent=parseFloat(activeSeal.style.left)||50;
+                let topPercent=parseFloat(activeSeal.style.top)||50;
                 
-                leftPercent += (dx / rect.width) * 100;
-                topPercent += (dy / rect.height) * 100;
+                leftPercent+=(dx/rect.width)*100;
+                topPercent+=(dy/rect.height)*100;
                 
-                leftPercent = Math.max(0, Math.min(100, leftPercent));
-                topPercent = Math.max(0, Math.min(100, topPercent));
+                leftPercent=Math.max(0,Math.min(100,leftPercent));
+                topPercent=Math.max(0,Math.min(100,topPercent));
                 
-                activeSeal.style.left = leftPercent + '%';
-                activeSeal.style.top = topPercent + '%';
+                activeSeal.style.left=leftPercent+'%';
+                activeSeal.style.top=topPercent+'%';
             }
         }
         
@@ -3921,21 +4187,25 @@
             if(!activeSeal)return;
             addToUndoStack();
             const newS=activeSeal.cloneNode(true);
-            let leftPercent = parseFloat(activeSeal.style.left) || 50;
-            let topPercent = parseFloat(activeSeal.style.top) || 50;
+            let leftPercent=parseFloat(activeSeal.style.left)||50;
+            let topPercent=parseFloat(activeSeal.style.top)||50;
             
-            leftPercent = Math.max(0, Math.min(100, leftPercent + 5));
-            topPercent = Math.max(0, Math.min(100, topPercent + 5));
+            leftPercent=Math.max(0,Math.min(100,leftPercent+5));
+            topPercent=Math.max(0,Math.min(100,topPercent+5));
             
-            newS.style.left = leftPercent + '%';
-            newS.style.top = topPercent + '%';
+            newS.style.left=leftPercent+'%';
+            newS.style.top=topPercent+'%';
             newS.classList.remove('active-state');
-            newS.querySelector('.seal-resize-handle').style.display='none';
-            newS.querySelector('.seal-rotate-handle').style.display='none';
-            attachSealEvents(newS);
+            const rh=newS.querySelector('.seal-resize-handle');
+            const roh=newS.querySelector('.seal-rotate-handle');
+            if(rh) rh.style.display='none';
+            if(roh) roh.style.display='none';
+            
             currentPageElement.appendChild(newS);
+            attachSealEvents(newS);
             updateLayerPanel();
             autosave();
+            autosaveProject();
         }
         
         function deleteSeal(){
@@ -3946,6 +4216,7 @@
                 updateLayerPanel();
                 showToast('✓ '+(currentLang==='bn'?'সিল মুছে ফেলা হয়েছে':'Seal deleted'));
                 autosave();
+                autosaveProject();
             }
         }
         
@@ -4004,7 +4275,6 @@
                 indicator.classList.remove('show');
             },2000);
             
-            // Save to localStorage
             if(currentPageElement){
                 const state={
                     html: currentPageElement.innerHTML,
@@ -4015,26 +4285,78 @@
             }
         }
         
+        // Autosave project to list
+        function autosaveProject(){
+            if(!currentPageElement || pageContainers.length===0) return;
+            
+            const projectData={
+                id: currentProjectId || Date.now(),
+                name: 'প্রজেক্ট ' + (projectList.length + 1),
+                pages: pageContainers.map(pc=>pc.innerHTML),
+                currentPage: currentPageNumber,
+                timestamp: Date.now()
+            };
+            
+            if(currentProjectId){
+                const index=projectList.findIndex(p=>p.id===currentProjectId);
+                if(index>=0){
+                    projectList[index]=projectData;
+                }
+            } else {
+                currentProjectId=projectData.id;
+                projectList.unshift(projectData);
+            }
+            
+            // Keep only last 10 projects
+            if(projectList.length>10){
+                projectList=projectList.slice(0,10);
+            }
+            
+            localStorage.setItem('projectList',JSON.stringify(projectList));
+            updateProjectPanel();
+        }
+        
         // Save project
         function saveProject(){
-            if(!currentPageElement){
+            if(!currentPageElement || pageContainers.length===0){
                 showToast('কোনো ডকুমেন্ট নেই!','error');
                 return;
             }
             
+            const projectName=prompt('প্রজেক্টের নাম দিন:','প্রজেক্ট ' + (projectList.length + 1));
+            if(!projectName) return;
+            
             const projectData={
-                version: '2.0',
+                id: currentProjectId || Date.now(),
+                name: projectName,
                 pages: pageContainers.map(pc=>pc.innerHTML),
                 currentPage: currentPageNumber,
-                templates: templates,
                 timestamp: Date.now()
             };
             
+            if(currentProjectId){
+                const index=projectList.findIndex(p=>p.id===currentProjectId);
+                if(index>=0){
+                    projectList[index]=projectData;
+                }
+            } else {
+                currentProjectId=projectData.id;
+                projectList.unshift(projectData);
+            }
+            
+            if(projectList.length>10){
+                projectList=projectList.slice(0,10);
+            }
+            
+            localStorage.setItem('projectList',JSON.stringify(projectList));
+            updateProjectPanel();
+            
+            // Also save as file
             const blob=new Blob([JSON.stringify(projectData)],{type:'application/json'});
             const url=URL.createObjectURL(blob);
             const a=document.createElement('a');
             a.href=url;
-            a.download='seal_project.sealproj';
+            a.download=projectName+'.sealproj';
             a.click();
             URL.revokeObjectURL(url);
             
@@ -4054,52 +4376,8 @@
                 reader.onload=function(ev){
                     try{
                         const projectData=JSON.parse(ev.target.result);
-                        
-                        if(projectData.pages && projectData.pages.length>0){
-                            const container=document.getElementById('content-layer');
-                            container.innerHTML='';
-                            pageContainers=[];
-                            allPages=[];
-                            
-                            projectData.pages.forEach((pageHtml,index)=>{
-                                const pc=document.createElement('div');
-                                pc.className='page-container';
-                                pc.dataset.pageNumber=index+1;
-                                pc.innerHTML=pageHtml;
-                                
-                                pc.addEventListener('click', function(e) {
-                                    if(!e.target.closest('.seal-wrapper')){
-                                        setCurrentPage(parseInt(this.dataset.pageNumber));
-                                    }
-                                });
-                                
-                                container.appendChild(pc);
-                                pageContainers.push(pc);
-                                const pd=pc.querySelector('.a4-page');
-                                if(pd){
-                                    allPages.push(pd);
-                                    if(index===0){
-                                        currentPageElement=pd;
-                                        pd.classList.add('current-page');
-                                        pc.classList.add('active-page');
-                                    }
-                                }
-                            });
-                            
-                            totalPages=pageContainers.length;
-                            currentPageNumber=1;
-                            
-                            document.getElementById('controls-bar').style.display='flex';
-                            document.getElementById('page-count-display').innerText=`/ ${totalPages}`;
-                            document.getElementById('page-jump').max=totalPages;
-                            document.getElementById('page-jump').value=1;
-                            
-                            reattachSealEvents();
-                            setupScrollObserver();
-                            updateLayerPanel();
-                            
-                            showToast('প্রজেক্ট লোড হয়েছে!');
-                        }
+                        loadProjectData(projectData);
+                        showToast('প্রজেক্ট লোড হয়েছে!');
                     }catch(error){
                         showToast('ফাইল লোড করা যায়নি!','error');
                     }
@@ -4109,106 +4387,198 @@
             input.click();
         }
         
-        // Download functions
-        async function downloadCurrentPage(){
-            const pc=currentPageElement?.closest('.page-container');
-            if(!pc){
-                showToast(currentLang==='bn'?'কোনো পেজ নেই!':'No page found!','error');
+        // Load project data
+        function loadProjectData(projectData){
+            if(!projectData.pages || projectData.pages.length===0){
+                showToast('কোনো পেজ নেই!','error');
                 return;
             }
-            closeSealEditor();
-            document.getElementById('loader').style.display='block';
-            try{
-                await new Promise(r=>setTimeout(r,200));
-                const canvas=await html2canvas(pc,{scale:4,useCORS:true,backgroundColor:'#ffffff',logging:false});
-                const link=document.createElement('a');
-                link.download=`page-${currentPageNumber}.png`;
-                link.href=canvas.toDataURL('image/png');
-                link.click();
-                document.getElementById('loader').style.display='none';
-                showToast('✓ '+(currentLang==='bn'?'ডাউনলোড সম্পন্ন':'Download complete'));
-            }catch(e){
-                document.getElementById('loader').style.display='none';
-                showToast('✗ '+e.message,'error');
+            
+            const container=document.getElementById('content-layer');
+            container.innerHTML='';
+            pageContainers=[];
+            allPages=[];
+            undoStack=[];
+            redoStack=[];
+            
+            projectData.pages.forEach((pageHtml,index)=>{
+                const pc=document.createElement('div');
+                pc.className='page-container';
+                pc.dataset.pageNumber=index+1;
+                pc.innerHTML=pageHtml;
+                
+                pc.addEventListener('click', function(e) {
+                    if(!e.target.closest('.seal-wrapper')){
+                        setCurrentPage(parseInt(this.dataset.pageNumber));
+                    }
+                });
+                
+                container.appendChild(pc);
+                pageContainers.push(pc);
+                const pd=pc.querySelector('.a4-page');
+                if(pd){
+                    allPages.push(pd);
+                    if(index===0){
+                        currentPageElement=pd;
+                        pd.classList.add('current-page');
+                        pc.classList.add('active-page');
+                    }
+                }
+            });
+            
+            totalPages=pageContainers.length;
+            currentPageNumber=1;
+            currentProjectId=projectData.id||null;
+            
+            document.getElementById('controls-bar').style.display='flex';
+            document.getElementById('page-count-display').innerText=`/ ${totalPages}`;
+            document.getElementById('page-jump').max=totalPages;
+            document.getElementById('page-jump').value=1;
+            
+            const uploadBox=document.getElementById('upload-box');
+            if(uploadBox) uploadBox.style.display='none';
+            
+            reattachSealEvents();
+            setupScrollObserver();
+            updateLayerPanel();
+            toggleProjectPanel(false);
+        }
+        
+        // Update project panel
+        function updateProjectPanel(){
+            const list=document.getElementById('project-list');
+            list.innerHTML='';
+            
+            const badge=document.getElementById('project-count-badge');
+            badge.style.display=projectList.length>0?'flex':'none';
+            badge.innerText=projectList.length;
+            
+            if(projectList.length===0){
+                list.innerHTML='<div style="text-align:center;color:var(--text-light);padding:30px">'+
+                    (currentLang==='bn'?'কোনো প্রজেক্ট নেই':'No projects') + '</div>';
+                return;
+            }
+            
+            projectList.forEach((project,index)=>{
+                const item=document.createElement('div');
+                item.className='project-item';
+                
+                const date=new Date(project.timestamp);
+                const dateStr=date.toLocaleDateString('bn-BD',{day:'numeric',month:'short',year:'numeric'});
+                
+                item.innerHTML=`
+                    <div class="project-item-header">
+                        <div class="project-name">${project.name||'প্রজেক্ট '+(index+1)}</div>
+                        <div class="project-date">${dateStr}</div>
+                    </div>
+                    <div class="project-actions">
+                        <button class="project-btn edit" onclick="editProject(${index})">
+                            <i class="fas fa-edit"></i> ইডিট
+                        </button>
+                        <button class="project-btn download" onclick="downloadProject(${index})">
+                            <i class="fas fa-download"></i> ডাউনলোড
+                        </button>
+                        <button class="project-btn print" onclick="printProject(${index})">
+                            <i class="fas fa-print"></i> প্রিন্ট
+                        </button>
+                        <button class="project-btn delete" onclick="deleteProject(${index})">
+                            <i class="fas fa-trash"></i> মুছুন
+                        </button>
+                    </div>
+                `;
+                
+                list.appendChild(item);
+            });
+        }
+        
+        // Edit project from list
+        function editProject(index){
+            const project=projectList[index];
+            if(project){
+                loadProjectData(project);
+                toggleProjectPanel(false);
+                showToast('প্রজেক্ট লোড হয়েছে!');
             }
         }
         
-        async function downloadAllPages(){
-            const pages=pageContainers;
-            if(pages.length===0){
-                showToast(currentLang==='bn'?'কোনো পেজ নেই!':'No pages!','error');
-                return;
-            }
-            closeSealEditor();
+        // Download project from list
+        async function downloadProject(index){
+            const project=projectList[index];
+            if(!project) return;
+            
+            // Temporarily load project
+            const tempPages=project.pages;
             document.getElementById('loader').style.display='block';
+            
             try{
                 const zip=new JSZip();
-                const folder=zip.folder('sealed_pages');
-                for(let i=0;i<pages.length;i++){
+                const folder=zip.folder('project_'+(index+1));
+                
+                for(let i=0;i<tempPages.length;i++){
                     await new Promise(r=>setTimeout(r,200));
-                    const canvas=await html2canvas(pages[i],{scale:4,useCORS:true,backgroundColor:'#ffffff',logging:false});
+                    
+                    const tempDiv=document.createElement('div');
+                    tempDiv.innerHTML=tempPages[i];
+                    const cleanClone=cleanPageForExport(tempDiv.firstChild);
+                    cleanClone.style.cssText='width:794px;margin:0;border:none;box-shadow:none;border-radius:0';
+                    
+                    const tempContainer=document.createElement('div');
+                    tempContainer.style.cssText='position:fixed;left:-9999px;top:0;z-index:-9999';
+                    tempContainer.appendChild(cleanClone);
+                    document.body.appendChild(tempContainer);
+                    
+                    const canvas=await html2canvas(cleanClone,{scale:4,useCORS:true,backgroundColor:'#ffffff',logging:false});
+                    document.body.removeChild(tempContainer);
+                    
                     folder.file(`page-${i+1}.png`,canvas.toDataURL('image/png').split(',')[1],{base64:true});
                 }
+                
                 const blob=await zip.generateAsync({type:'blob'});
                 const a=document.createElement('a');
-                a.download='sealed_pages.zip';
+                a.download=(project.name||'project')+'.zip';
                 a.href=URL.createObjectURL(blob);
                 a.click();
+                
                 document.getElementById('loader').style.display='none';
-                showToast('✓ '+(currentLang==='bn'?'সকল পেজ ডাউনলোড':'All pages downloaded'));
+                showToast('✓ ডাউনলোড সম্পন্ন');
             }catch(e){
                 document.getElementById('loader').style.display='none';
                 showToast('✗ '+e.message,'error');
             }
         }
         
-        async function downloadPDF(){
-            const pages=pageContainers;
-            if(pages.length===0){
-                showToast(currentLang==='bn'?'কোনো পেজ নেই!':'No pages!','error');
-                return;
-            }
-            closeSealEditor();
-            document.getElementById('loader').style.display='block';
-            try{
-                const{jsPDF}=window.jspdf;
-                const pdf=new jsPDF('p','mm','a4');
-                for(let i=0;i<pages.length;i++){
-                    await new Promise(r=>setTimeout(r,200));
-                    const canvas=await html2canvas(pages[i],{scale:3,useCORS:true,backgroundColor:'#ffffff',logging:false});
-                    if(i>0)pdf.addPage();
-                    pdf.addImage(canvas.toDataURL('image/jpeg',0.98),'JPEG',0,0,210,297);
-                }
-                pdf.save('sealed_document.pdf');
-                document.getElementById('loader').style.display='none';
-                showToast('✓ '+(currentLang==='bn'?'PDF ডাউনলোড':'PDF downloaded'));
-            }catch(e){
-                document.getElementById('loader').style.display='none';
-                showToast('✗ '+e.message,'error');
-            }
-        }
-        
-        async function printAllPages(){
-            const pages=pageContainers;
-            if(pages.length===0){
-                showToast(currentLang==='bn'?'কোনো পেজ নেই!':'No pages!','error');
-                return;
-            }
-            closeSealEditor();
+        // Print project from list
+        async function printProject(index){
+            const project=projectList[index];
+            if(!project) return;
+            
             document.getElementById('loader').style.display='block';
             
             try{
                 const images=[];
-                for(let i=0;i<pages.length;i++){
+                for(let i=0;i<project.pages.length;i++){
                     await new Promise(r=>setTimeout(r,300));
-                    const canvas=await html2canvas(pages[i],{scale:4,useCORS:true,backgroundColor:'#ffffff',logging:false});
+                    
+                    const tempDiv=document.createElement('div');
+                    tempDiv.innerHTML=project.pages[i];
+                    const cleanClone=cleanPageForExport(tempDiv.firstChild);
+                    cleanClone.style.cssText='width:794px;margin:0;border:none;box-shadow:none;border-radius:0';
+                    
+                    const tempContainer=document.createElement('div');
+                    tempContainer.style.cssText='position:fixed;left:-9999px;top:0;z-index:-9999';
+                    tempContainer.appendChild(cleanClone);
+                    document.body.appendChild(tempContainer);
+                    
+                    const canvas=await html2canvas(cleanClone,{scale:4,useCORS:true,backgroundColor:'#ffffff',logging:false});
+                    document.body.removeChild(tempContainer);
+                    
                     images.push(canvas.toDataURL('image/jpeg',1.0));
                 }
                 
                 const pw=window.open('','_blank');
                 if(!pw){
                     document.getElementById('loader').style.display='none';
-                    showToast(currentLang==='bn'?'পপ-আপ ব্লক!':'Popup blocked!','error');
+                    showToast('পপ-আপ ব্লক!','error');
                     return;
                 }
                 
@@ -4230,7 +4600,7 @@
                 pw.document.close();
                 
                 document.getElementById('loader').style.display='none';
-                showToast('✓ '+(currentLang==='bn'?'প্রিন্ট হচ্ছে...':'Printing...'));
+                showToast('✓ প্রিন্ট হচ্ছে...');
                 
                 setTimeout(()=>{
                     try{
@@ -4238,7 +4608,221 @@
                         pw.print();
                         setTimeout(()=>pw.close(),1000);
                     }catch(e){
-                        showToast(currentLang==='bn'?'প্রিন্ট উইন্ডোতে সমস্যা!':'Print issue!','error');
+                        showToast('প্রিন্ট উইন্ডোতে সমস্যা!','error');
+                    }
+                },800);
+                
+            }catch(e){
+                document.getElementById('loader').style.display='none';
+                showToast('✗ '+e.message,'error');
+            }
+        }
+        
+        // Delete project from list
+        function deleteProject(index){
+            if(confirm('প্রজেক্টটি মুছে ফেলতে চান?')){
+                projectList.splice(index,1);
+                localStorage.setItem('projectList',JSON.stringify(projectList));
+                updateProjectPanel();
+                showToast('প্রজেক্ট মুছে ফেলা হয়েছে!');
+            }
+        }
+        
+        // Clean page for export (remove grid, borders, handles)
+        function cleanPageForExport(pageElement){
+            const clone=pageElement.cloneNode(true);
+            
+            clone.querySelectorAll('.grid-overlay').forEach(el=>el.remove());
+            clone.querySelectorAll('.seal-resize-handle, .seal-rotate-handle').forEach(el=>el.remove());
+            clone.querySelectorAll('.seal-wrapper').forEach(wrap=>{
+                wrap.classList.remove('active-state','multi-selected');
+                wrap.style.outline='none';
+                wrap.style.boxShadow='none';
+                wrap.style.borderRadius='0';
+            });
+            clone.querySelectorAll('.a4-page').forEach(page=>{
+                page.classList.remove('current-page');
+                page.style.boxShadow='none';
+            });
+            clone.querySelectorAll('.alignment-guide').forEach(el=>el.remove());
+            
+            return clone;
+        }
+        
+        // Download functions
+        async function downloadCurrentPage(){
+            const pc=currentPageElement?.closest('.page-container');
+            if(!pc){
+                showToast('কোনো পেজ নেই!','error');
+                return;
+            }
+            closeSealEditor();
+            document.getElementById('loader').style.display='block';
+            try{
+                await new Promise(r=>setTimeout(r,200));
+                const cleanClone=cleanPageForExport(pc);
+                cleanClone.style.cssText='width:794px;margin:0;border:none;box-shadow:none;border-radius:0';
+                
+                const tempContainer=document.createElement('div');
+                tempContainer.style.cssText='position:fixed;left:-9999px;top:0;z-index:-9999';
+                tempContainer.appendChild(cleanClone);
+                document.body.appendChild(tempContainer);
+                
+                const canvas=await html2canvas(cleanClone,{scale:4,useCORS:true,backgroundColor:'#ffffff',logging:false});
+                document.body.removeChild(tempContainer);
+                
+                const link=document.createElement('a');
+                link.download=`page-${currentPageNumber}.png`;
+                link.href=canvas.toDataURL('image/png');
+                link.click();
+                document.getElementById('loader').style.display='none';
+                showToast('✓ ডাউনলোড সম্পন্ন');
+            }catch(e){
+                document.getElementById('loader').style.display='none';
+                showToast('✗ '+e.message,'error');
+            }
+        }
+        
+        async function downloadAllPages(){
+            const pages=pageContainers;
+            if(pages.length===0){
+                showToast('কোনো পেজ নেই!','error');
+                return;
+            }
+            closeSealEditor();
+            document.getElementById('loader').style.display='block';
+            try{
+                const zip=new JSZip();
+                const folder=zip.folder('sealed_pages');
+                
+                for(let i=0;i<pages.length;i++){
+                    await new Promise(r=>setTimeout(r,200));
+                    const cleanClone=cleanPageForExport(pages[i]);
+                    cleanClone.style.cssText='width:794px;margin:0;border:none;box-shadow:none;border-radius:0';
+                    
+                    const tempContainer=document.createElement('div');
+                    tempContainer.style.cssText='position:fixed;left:-9999px;top:0;z-index:-9999';
+                    tempContainer.appendChild(cleanClone);
+                    document.body.appendChild(tempContainer);
+                    
+                    const canvas=await html2canvas(cleanClone,{scale:4,useCORS:true,backgroundColor:'#ffffff',logging:false});
+                    document.body.removeChild(tempContainer);
+                    
+                    folder.file(`page-${i+1}.png`,canvas.toDataURL('image/png').split(',')[1],{base64:true});
+                }
+                
+                const blob=await zip.generateAsync({type:'blob'});
+                const a=document.createElement('a');
+                a.download='sealed_pages.zip';
+                a.href=URL.createObjectURL(blob);
+                a.click();
+                document.getElementById('loader').style.display='none';
+                showToast('✓ সকল পেজ ডাউনলোড');
+            }catch(e){
+                document.getElementById('loader').style.display='none';
+                showToast('✗ '+e.message,'error');
+            }
+        }
+        
+        async function downloadPDF(){
+            const pages=pageContainers;
+            if(pages.length===0){
+                showToast('কোনো পেজ নেই!','error');
+                return;
+            }
+            closeSealEditor();
+            document.getElementById('loader').style.display='block';
+            try{
+                const{jsPDF}=window.jspdf;
+                const pdf=new jsPDF('p','mm','a4');
+                
+                for(let i=0;i<pages.length;i++){
+                    await new Promise(r=>setTimeout(r,200));
+                    const cleanClone=cleanPageForExport(pages[i]);
+                    cleanClone.style.cssText='width:794px;margin:0;border:none;box-shadow:none;border-radius:0';
+                    
+                    const tempContainer=document.createElement('div');
+                    tempContainer.style.cssText='position:fixed;left:-9999px;top:0;z-index:-9999';
+                    tempContainer.appendChild(cleanClone);
+                    document.body.appendChild(tempContainer);
+                    
+                    const canvas=await html2canvas(cleanClone,{scale:3,useCORS:true,backgroundColor:'#ffffff',logging:false});
+                    document.body.removeChild(tempContainer);
+                    
+                    if(i>0)pdf.addPage();
+                    pdf.addImage(canvas.toDataURL('image/jpeg',0.98),'JPEG',0,0,210,297);
+                }
+                
+                pdf.save('sealed_document.pdf');
+                document.getElementById('loader').style.display='none';
+                showToast('✓ PDF ডাউনলোড');
+            }catch(e){
+                document.getElementById('loader').style.display='none';
+                showToast('✗ '+e.message,'error');
+            }
+        }
+        
+        async function printAllPages(){
+            const pages=pageContainers;
+            if(pages.length===0){
+                showToast('কোনো পেজ নেই!','error');
+                return;
+            }
+            closeSealEditor();
+            document.getElementById('loader').style.display='block';
+            
+            try{
+                const images=[];
+                for(let i=0;i<pages.length;i++){
+                    await new Promise(r=>setTimeout(r,300));
+                    const cleanClone=cleanPageForExport(pages[i]);
+                    cleanClone.style.cssText='width:794px;margin:0;border:none;box-shadow:none;border-radius:0';
+                    
+                    const tempContainer=document.createElement('div');
+                    tempContainer.style.cssText='position:fixed;left:-9999px;top:0;z-index:-9999';
+                    tempContainer.appendChild(cleanClone);
+                    document.body.appendChild(tempContainer);
+                    
+                    const canvas=await html2canvas(cleanClone,{scale:4,useCORS:true,backgroundColor:'#ffffff',logging:false});
+                    document.body.removeChild(tempContainer);
+                    
+                    images.push(canvas.toDataURL('image/jpeg',1.0));
+                }
+                
+                const pw=window.open('','_blank');
+                if(!pw){
+                    document.getElementById('loader').style.display='none';
+                    showToast('পপ-আপ ব্লক!','error');
+                    return;
+                }
+                
+                let html='<html><head><title>Print</title><style>';
+                html+='@page{size:A4;margin:0}';
+                html+='body{margin:0;padding:0;background:#fff}';
+                html+='.print-page{width:210mm;height:297mm;page-break-after:always;position:relative;overflow:hidden;background:#fff}';
+                html+='.print-page:last-child{page-break-after:auto}';
+                html+='.print-page img{width:100%;height:100%;object-fit:contain}';
+                html+='</style></head><body>';
+                
+                images.forEach(img=>{
+                    html+=`<div class="print-page"><img src="${img}"></div>`;
+                });
+                
+                html+='</body></html>';
+                
+                pw.document.write(html);
+                pw.document.close();
+                
+                document.getElementById('loader').style.display='none';
+                showToast('✓ প্রিন্ট হচ্ছে...');
+                
+                setTimeout(()=>{
+                    try{
+                        pw.focus();
+                        pw.print();
+                        setTimeout(()=>pw.close(),1000);
+                    }catch(e){
+                        showToast('প্রিন্ট উইন্ডোতে সমস্যা!','error');
                     }
                 },800);
                 
@@ -4250,7 +4834,7 @@
         
         // Close on outside click
         document.addEventListener('click',(e)=>{
-            if(!e.target.closest('#export-options')&&!e.target.closest('#export-btn')&&!e.target.closest('#seal-editor')&&!e.target.closest('.seal-wrapper')&&!e.target.closest('#help-modal')&&!e.target.closest('.header-btn')&&!e.target.closest('#settings-panel')&&!e.target.closest('#settings-btn')&&!e.target.closest('#text-seal-modal')&&!e.target.closest('.quick-btn')){
+            if(!e.target.closest('#export-options')&&!e.target.closest('#export-btn')&&!e.target.closest('#seal-editor')&&!e.target.closest('.seal-wrapper')&&!e.target.closest('#help-modal')&&!e.target.closest('.header-btn')&&!e.target.closest('#settings-panel')&&!e.target.closest('#settings-btn')&&!e.target.closest('#text-seal-modal')&&!e.target.closest('.quick-btn')&&!e.target.closest('#project-panel')&&!e.target.closest('#project-panel .project-btn')){
                 document.getElementById('export-options').classList.remove('show');
                 closeSealEditor();
                 closeHelp();
@@ -4294,13 +4878,18 @@
                 favorites=new Set(JSON.parse(savedFavorites));
             }
             
+            const savedProjects=localStorage.getItem('projectList');
+            if(savedProjects){
+                projectList=JSON.parse(savedProjects);
+            }
+            
             buildMenu();
             makeEditorDraggable();
             updateTexts();
             updateTemplatePanel();
             updateLayerPanel();
+            updateProjectPanel();
             
-            // Restore autosave if exists
             const autosaveState=localStorage.getItem('autosave_state');
             if(autosaveState){
                 const state=JSON.parse(autosaveState);
@@ -4312,7 +4901,6 @@
                 }
             }
             
-            // Multi-select mode toggle with Shift key
             document.addEventListener('keydown',(e)=>{
                 if(e.key==='Shift'){
                     multiSelectMode=true;
